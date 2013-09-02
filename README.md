@@ -7,12 +7,13 @@ personal AI.
 
 Hactar is made up of three components that are designed to be modular:
 
- * *backend* - Stores data (sqlite?)
- * *core* - Contains logic and connects frontend to backend
- * *frontend* - Displays information and enables user interaction.
+ * **backend** - Stores data (sqlite?)
+ * **core** - Contains logic and connects frontend to backend
+ * **frontend** - Displays information and enables user interaction.
 
 Hactar may also support plugins that add extra functionality such as scraping
-websites and intelligent searching.
+websites and intelligent searching. These plugins should only mainly interact
+with the core (not the front or back ends).
 
 User stories
 ------------
@@ -25,22 +26,25 @@ find previously bookmarked information.
 
 Betty likes to keep to-do lists. Hactar will accept various tasks and
 attempt to prioritise them for betty. Tasks can have information attached to
-them, due dates and be made up of other tasks.
+them, due dates and contain subtasks.
 
 Data model
 ----------
 
 Information is stored in a **nugget**. A nugget consists of:
- * description
+ * description (markdown)
  * keywords
  * added date
  * modified date
- * url (optional)
- * blob (jpeg, mp3, etc..)
+ * data: url or binary blob
 
-A **task** consists of:
- * description
+Data must be unique, i.e. each url or binary blob may only exist once.
+
+TODO and action items are represented by a **task**, this consists of:
+ * description (markdown, should be one line)
  * priority
- * finish/due datetime (optional)
+ * due datetime (optional)
  * start datetime
+ * finish datetime
  * subtasks
+ * nuggets
