@@ -36,12 +36,13 @@ Information is stored in a **nugget**. A nugget consists of:
  * keywords
  * added date
  * modified date
- * data: url or binary blob
+ * uri (optional)
+ * id (hash of url or blob)
 
-Data must be unique, i.e. each url or binary blob may only exist once.
+Data must be unique, i.e. each uri may only exist once.
 
 TODO and action items are represented by a **task**, this consists of:
- * description (markdown, should be one line)
+ * text (markdown, should be one line)
  * priority
  * due datetime (optional)
  * start datetime
