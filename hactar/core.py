@@ -35,6 +35,7 @@ class Task():
     _hash = None
     added = None
     modified = None
+    priority = 0
     
     def __init__(self, text, due=None, start=None, finish=None):
         self.text = text
