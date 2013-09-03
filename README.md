@@ -15,6 +15,11 @@ Hactar may also support plugins that add extra functionality such as scraping
 websites and intelligent searching. These plugins should only mainly interact
 with the core (not the front or back ends).
 
+Planned plugins (in planned implementation order):
+ 1. scraper - scrape linked urls for information that can later be searced
+ 2. advanced search - return synonyms, related topics, near matches etc.
+ 3. dumper - dump related topics into cheatsheets
+
 User stories
 ------------
 
@@ -23,6 +28,9 @@ help her in her work. She uses hactar to bookmark code snippets, guides,
 critical documentation and other information that she may need in the future.
 Later alice can search for related terms, eg. 'multithreading in python' to
 find previously bookmarked information.
+The tasks that alice needs to complete are:
+ 1. add nugget/bookmark with text/description
+ 2. search nuggets by topic/keywords
 
 Betty likes to keep to-do lists. Hactar will accept various tasks and
 attempt to prioritise them for betty. Tasks can have information attached to
