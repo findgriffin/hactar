@@ -1,6 +1,7 @@
 from unittest import TestCase
 from hactar import sqlite
 from hactar.core import Nugget
+from sqlite3 import IntegrityError
 import os
 
 class TestSqlite(TestCase):
@@ -24,4 +25,27 @@ class TestSqlite(TestCase):
         backend = sqlite.Sqlite(loc)
         ngt = Nugget('Google, a great search engine.', 'http://www.google.com')
         backend.add_nugget(ngt)
+
+    def test_add_identical_nuggets(self):
+        loc = 'test_add_identical_nuggets.sqlite'
+        try:
+            os.remove(loc)
+        except OSError:
+            pass
+        backend = sqlite.Sqlite(loc)
+        ngt = Nugget('Google, a great search engine.', 'http://www.google.com')
+        backend.add_nugget(ngt)
+        with self.assertRaises(IntegrityError):
+            backend.add_nugget(ngt)
+    def test_add_multiple_nuggets(self):
+        loc = 'test_add_multiple_nuggets.sqlite'
+        try:
+            os.remove(loc)
+        except OSError:
+            pass
+        backend = sqlite.Sqlite(loc)
+        ngt = Nugget('Google, a great search engine.', 'http://www.google.com')
+        backend.add_nugget(ngt)
+        with self.assertRaises(IntegrityError):
+            backend.add_nugget(ngt)
 
