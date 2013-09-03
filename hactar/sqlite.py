@@ -1,5 +1,8 @@
 import sqlite3 as lite
 import os
+from hactar.core import Nugget
+from hactar.core import Task
+from hactar.core import User
 
 TASK_FIELDS = {
     'id': 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
@@ -19,6 +22,7 @@ NUGGET_FIELDS = {
     'modified': 'INTEGER',
     'keywords': 'TEXT',
 }
+
 class Sqlite():
     loc = None
     def __init__(self, location='test.sqlite'):
@@ -35,6 +39,17 @@ class Sqlite():
         else:
                 check_table(TASK_FIELDS, 'tasks', location)
                 check_table(NUGGET_FIELDS, 'nuggets', location)
+
+    def add_nugget(self, ngt):
+        """ Attempt to add a Nugget object to the database."""
+        with lite.connect(self.loc) as db:
+            fields = NUGGET_FIELDS.keys()
+            fields.sort()
+            insert = 'INSERT INTO nuggets(%s) VALUES ' % ', '.join(fields)
+            vals = [ngt.added, ngt.sha1, ngt.keywords, ngt.modified, ngt.text,
+                    ngt.uri]
+            executestr = insert+'(%s)' % ', '.join(format_values(vals))
+            db.execute(executestr)
 
 
 def check_table(fields, table, location):
@@ -60,4 +75,14 @@ def check_table(fields, table, location):
                 elif 'PRIMARY KEY' not in info and col[5] == 1:
                     raise ValueError(invalid+' column %s should not be PK' % col[1])
 
-
+def format_values(values):
+    """ Format a list of values (python objects) for sql statements"""
+    for val in values:
+        if type(val) == str:
+            yield "'"+val+"'"
+        elif type(val) == int:
+            yield str(val)
+        elif type(val) == float:
+            yield str(val)
+        elif val == None:
+            yield 'NULL'

@@ -8,7 +8,7 @@ class Nugget():
     _hash = None
     added = None
     modified = None
-    # TODO: keywords
+    keywords = None
     
     def __init__(self, text, uri=None):
         if uri is not None:
