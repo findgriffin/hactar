@@ -26,9 +26,11 @@ NUGGET_FIELDS = {
 
 class Sqlite(Backend):
     loc = None
-    def __init__(self, location):
+    def __init__(self, location, create=True):
         self.loc = location
         if not os.path.exists(location):
+            if not create:
+                raise ValueError('backend %s is nonexistant' % location)
             with lite.connect(location) as db:
                 create = 'CREATE TABLE '
                 fields = [' '.join(field) for field in NUGGET_FIELDS.items()]
