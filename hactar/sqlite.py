@@ -26,7 +26,7 @@ NUGGET_FIELDS = {
 
 class Sqlite(Backend):
     loc = None
-    def __init__(self, location='test.sqlite'):
+    def __init__(self, location):
         self.loc = location
         if not os.path.exists(location):
             with lite.connect(location) as db:
