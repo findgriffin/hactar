@@ -1,0 +1,14 @@
+#! /usr/bin/env python
+
+import cgi
+form = cgi.FieldStorage()
+val1 = form.getvalue('comments')
+print """Content-type: text/html
+
+<html><head><title>Add Nugget Confirm</title></head>
+<body>
+The form input is...<br/> """
+print form.getvalue('user')
+print form.getvalue('url')
+print form.getvalue('description')
+print "</body></html>"
