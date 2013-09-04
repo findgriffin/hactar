@@ -60,10 +60,14 @@ class User():
 
     def __init__(self, name, backend=None, nuggets=None, tasks=None):
         self.name = name
-        if backend is not None:
-            self.backend = backend
+        if backend is None or type(backend) == str:
+            if type(backend) == str:
+                backend_loc = backend+'.sqlite'
+            else:
+                backend_loc = name+'.sqlite'
+            self.backend = BACKEND_DEFAULT(backend_loc, create=False)
         else:
-            self.backend = BACKEND_DEFAULT(name)
+            self.backend = backend
         if nuggets is not None:
             self.nuggets = nuggets
         if tasks is not None:
