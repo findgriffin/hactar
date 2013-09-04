@@ -27,6 +27,7 @@ class TestBasic(TestCase):
         self.assertEqual(usr.name, 'dave')
         self.assertEqual(usr.backend, backend)
 
+
     def test_add_nugget(self):
         loc = 'test/basic_add_nugget.sqlite'
         try:
