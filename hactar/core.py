@@ -1,6 +1,9 @@
 """ core.py The core of Hactar, connecting the frontend to the backend."""
 import hashlib
 import time
+import sqlite
+
+BACKEND_DEFAULT = sqlite.Sqlite
 
 class Nugget():
     uri = None
@@ -55,9 +58,12 @@ class User():
     name = None
     backend = None
 
-    def __init__(self, name, backend, nuggets=None, tasks=None):
+    def __init__(self, name, backend=None, nuggets=None, tasks=None):
         self.name = name
-        self.backend = backend
+        if backend is not None:
+            self.backend = backend
+        else:
+            self.backend = BACKEND_DEFAULT(name)
         if nuggets is not None:
             self.nuggets = nuggets
         if tasks is not None:

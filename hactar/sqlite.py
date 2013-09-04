@@ -1,8 +1,6 @@
+""" A simple sqlite backend for Hactar."""
 import sqlite3 as lite
 import os
-from hactar.core import Nugget
-from hactar.core import Task
-from hactar.core import User
 from hactar.backend import Backend
 
 TASK_FIELDS = {
