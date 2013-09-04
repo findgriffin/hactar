@@ -38,8 +38,10 @@ class Sqlite(Backend):
                 executestr = create+'tasks(%s)' % ', '.join(fields)
                 db.execute(executestr)
         else:
-                check_table(TASK_FIELDS, 'tasks', location)
-                check_table(NUGGET_FIELDS, 'nuggets', location)
+            if create:
+                raise ValueError('backend %s already exists' % location)
+            check_table(TASK_FIELDS, 'tasks', location)
+            check_table(NUGGET_FIELDS, 'nuggets', location)
 
     def add_nugget(self, ngt):
         """ Attempt to add a Nugget object to the database."""
