@@ -1,14 +1,49 @@
 #! /usr/bin/env python
 
 import cgi
+import sys
+sys.path.append('..')
+from hactar.core import User
 form = cgi.FieldStorage()
-val1 = form.getvalue('comments')
-print """Content-type: text/html
 
-<html><head><title>Add Nugget Confirm</title></head>
-<body>
-The form input is...<br/> """
-print form.getvalue('user')
-print form.getvalue('url')
-print form.getvalue('description')
-print "</body></html>"
+user = form.getvalue('user')
+url = form.getvalue('url')
+description = form.getvalue('description')
+
+def head():
+    print "Content-type: text/html"
+    print
+    print "<html><head><title>Add Nugget Confirm</title></head>"
+
+def body(form):
+    print "<body>"
+    print "The form input is...</br>"
+    print form.getvalue('user')+"</br>"
+    print form.getvalue('url')+"</br>"
+    print form.getvalue('description')+"</br>"
+    print "</body>"
+
+def foot():
+    print "</html>"
+
+def invalid_user(user):
+    print "<body>"
+    print 'Failed: Username %s is invalid' % user
+    print "</body>"
+
+head()
+# validate user
+try:
+    usr = User(user)
+except ValueError:
+    # display invalid user page
+    invalid_user()
+else:
+    body(form)
+
+# validate url
+
+# validate description
+
+
+foot()
