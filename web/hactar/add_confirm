@@ -28,7 +28,7 @@ def foot():
 
 def invalid_user(user):
     print "<body>"
-    print 'Failed: Username %s is invalid' % user
+    print 'Failed: user %s does not exist.' % user
     print "</body>"
 
 head()
@@ -37,7 +37,7 @@ try:
     usr = User(user)
 except ValueError:
     # display invalid user page
-    invalid_user()
+    invalid_user(user)
 else:
     body(form)
 
