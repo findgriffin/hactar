@@ -1,0 +1,15 @@
+#! /usr/bin/env python
+
+print """Content-type: text/html
+
+<html><head><title>Create User</title></head>
+<body>
+<form method="post" action="create_confirm">
+username:
+</br>
+<textarea name="user" cols="60" rows="1"></textarea>
+<br/>
+<input type="submit" value="Create">
+</form>
+</body></html>
+"""
