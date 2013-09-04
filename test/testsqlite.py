@@ -6,7 +6,7 @@ import os
 
 class TestSqlite(TestCase):
     def test_create(self):
-        loc = 'test_create.sqlite'
+        loc = 'test/test_create.sqlite'
         try:
             os.remove(loc)
         except OSError:
@@ -17,7 +17,7 @@ class TestSqlite(TestCase):
         os.remove(loc)
 
     def test_add_nugget(self):
-        loc = 'test_add_nugget.sqlite'
+        loc = 'test/add_nugget.sqlite'
         try:
             os.remove(loc)
         except OSError:
@@ -27,7 +27,7 @@ class TestSqlite(TestCase):
         backend.add_nugget(ngt)
 
     def test_add_identical_nuggets(self):
-        loc = 'test_add_identical_nuggets.sqlite'
+        loc = 'test/add_identical_nuggets.sqlite'
         try:
             os.remove(loc)
         except OSError:
@@ -38,7 +38,7 @@ class TestSqlite(TestCase):
         with self.assertRaises(IntegrityError):
             backend.add_nugget(ngt)
     def test_add_multiple_nuggets(self):
-        loc = 'test_add_multiple_nuggets.sqlite'
+        loc = 'test/add_multiple_nuggets.sqlite'
         try:
             os.remove(loc)
         except OSError:
