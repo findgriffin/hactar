@@ -52,6 +52,9 @@ class Sqlite(Backend):
             executestr = insert+'(%s)' % ', '.join(format_values(vals))
             db.execute(executestr)
 
+    def get_nuggets(self):
+        with lite.connect(self.loc) as db:
+            return db.execute('SELECT * FROM nuggets').fetchall()
 
 def check_table(fields, table, location):
         with lite.connect(location) as db:

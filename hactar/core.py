@@ -63,4 +63,9 @@ class User():
         if tasks is not None:
             self.tasks = tasks
 
+    def add_nugget(self, nugget):
+        # plugin hooks go here
+        self.backend.add_nugget(nugget)
 
+    def get_nuggets(self):
+        return self.backend.get_nuggets()
