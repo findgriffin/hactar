@@ -3,6 +3,7 @@ import os
 from hactar.core import Nugget
 from hactar.core import Task
 from hactar.core import User
+from hactar.backend import Backend
 
 TASK_FIELDS = {
     'id': 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
@@ -23,7 +24,7 @@ NUGGET_FIELDS = {
     'keywords': 'TEXT',
 }
 
-class Sqlite():
+class Sqlite(Backend):
     loc = None
     def __init__(self, location='test.sqlite'):
         self.loc = location

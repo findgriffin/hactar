@@ -3,6 +3,7 @@ from unittest import TestCase
 from hactar.core import User
 from hactar.core import Nugget
 from hactar.core import Task
+from hactar.backend import Backend
 
 class TestBasic(TestCase):
 
@@ -15,7 +16,8 @@ class TestBasic(TestCase):
         self.assertEqual(tsk.text, 'do something')
 
     def test_create_user(self):
-        usr = User('dave', 'backend')
+        backend = Backend()
+        usr = User('dave', backend)
         self.assertEqual(usr.name, 'dave')
-        self.assertEqual(usr.backend, 'backend')
+        self.assertEqual(usr.backend, backend)
 
