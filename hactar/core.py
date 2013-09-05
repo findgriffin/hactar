@@ -19,17 +19,20 @@ URI_SCHEMES=[
 ]
 class Nugget():
     uri = None
-    text = None
+    desc = None
     _hash = None
     added = None
     modified = None
     keywords = None
     
-    def __init__(self, text, uri=None):
+    def __init__(self, desc, uri=None):
         if uri is not None:
             validate_uri(uri)
             self.uri = uri
-        self.text = text
+        if len(desc.split()) < 2:
+            raise ValueError('nugget text must be more than one word')
+
+        self.desc = desc
         self.added = time.time()
         self.modified = self.added
 

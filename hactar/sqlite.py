@@ -5,7 +5,7 @@ from hactar.backend import Backend
 
 TASK_FIELDS = {
     'id': 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL',
-    'text': 'TEXT NOT NULL',
+    'desc': 'TEXT NOT NULL',
     'added': 'INTEGER',
     'modified': 'INTEGER',
     'due': 'INTEGER',
@@ -16,7 +16,7 @@ TASK_FIELDS = {
 NUGGET_FIELDS = {
     'id': 'CHAR(32) PRIMARY KEY NOT NULL', 
     'uri': 'TEXT', 
-    'text': 'TEXT NOT NULL', 
+    'desc': 'TEXT NOT NULL', 
     'added': 'INTEGER', 
     'modified': 'INTEGER',
     'keywords': 'TEXT',
@@ -49,7 +49,7 @@ class Sqlite(Backend):
             fields = NUGGET_FIELDS.keys()
             fields.sort()
             insert = 'INSERT INTO nuggets(%s) VALUES ' % ', '.join(fields)
-            vals = [ngt.added, ngt.sha1, ngt.keywords, ngt.modified, ngt.text,
+            vals = [ngt.added, ngt.sha1, ngt.keywords, ngt.modified, ngt.desc,
                     ngt.uri]
             executestr = insert+'(%s)' % ', '.join(format_values(vals))
             db.execute(executestr)
