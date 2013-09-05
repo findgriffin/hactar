@@ -12,8 +12,8 @@ class TestSqlite(TestCase):
             os.remove(loc)
         except OSError:
             pass
-        one = sqlite.Sqlite(loc)
-        two = sqlite.Sqlite(loc)
+        one = sqlite.Sqlite(loc, create=True)
+        two = sqlite.Sqlite(loc, create=False)
         self.assertEqual(one.loc, two.loc)
         os.remove(loc)
 
