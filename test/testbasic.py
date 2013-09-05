@@ -1,5 +1,6 @@
 import os
 from unittest import TestCase
+from sqlite3 import IntegrityError
 
 from hactar.core import User
 from hactar.core import Nugget

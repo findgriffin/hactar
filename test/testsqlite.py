@@ -1,6 +1,7 @@
 from unittest import TestCase
 from hactar import sqlite
 from hactar.core import Nugget
+from hactar.core import User
 from sqlite3 import IntegrityError
 import os
 
@@ -43,10 +44,11 @@ class TestSqlite(TestCase):
         except OSError:
             pass
         backend = sqlite.Sqlite(loc)
-        ngt = Nugget('Google, a great search engine.', 'http://www.google.com')
-        backend.add_nugget(ngt)
+        ngt0 = Nugget('foo is great', 'http://www.foo.com')
+        ngt1 = Nugget('foo is awesome', 'http://www.foo.com')
+        backend.add_nugget(ngt0)
         with self.assertRaises(IntegrityError):
-            backend.add_nugget(ngt)
+            backend.add_nugget(ngt1)
 
     def test_add_multiple_nuggets(self):
         loc = 'test/add_multiple_nuggets.sqlite'
@@ -55,8 +57,25 @@ class TestSqlite(TestCase):
         except OSError:
             pass
         backend = sqlite.Sqlite(loc)
-        ngt = Nugget('Google, a great search engine.', 'http://www.google.com')
-        backend.add_nugget(ngt)
-        with self.assertRaises(IntegrityError):
-            backend.add_nugget(ngt)
+        ngt0 = Nugget('foo is great', 'http://www.foo.com')
+        ngt1 = Nugget('bar is awesome', 'http://www.bar.com')
+        backend.add_nugget(ngt0)
+        backend.add_nugget(ngt1)
+        ngts = backend.get_nuggets()
+        self.assertEqual(len(ngts), 2)
 
+
+    def test_persistence(self):
+        loc = 'test/test_create.sqlite'
+        try:
+            os.remove(loc)
+        except OSError:
+            pass
+        bck_one = sqlite.Sqlite(loc, create=True)
+        usr_one = User('funnyman', bck_one)
+        usr_one.add_nugget('foo world', 'http://www.foo.com')
+        bck_two = sqlite.Sqlite(loc, create=False)
+        usr_two = User('funnyman', bck_two)
+        ngts = usr_two.get_nuggets()
+        self.assertEqual(len(ngts), 1)
+        os.remove(loc)
