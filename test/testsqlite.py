@@ -88,12 +88,12 @@ class TestSqlite(TestCase):
             pass
         bck_one = sqlite.Sqlite(loc, create=True)
         usr = User('funnyman', bck_one)
-        ngt1 = (u'foo world', u'http://www.fooworld.com')
-        ngt2 = (u'bar world', u'http://www.barworld.com')
-        ngt3 = (u'baz world', u'http://www.bazworld.com')
-        ngt4 = (u'foo face', u'http://www.fooface.com')
-        ngt5 = (u'bar face', u'http://www.barface.com')
-        ngt6 = (u'baz face', u'http://www.bazface.com')
+        ngt1 = ('foo world', 'http://www.fooworld.com')
+        ngt2 = ('bar world', 'http://www.barworld.com')
+        ngt3 = ('baz world', 'http://www.bazworld.com')
+        ngt4 = ('foo face', 'http://www.fooface.com')
+        ngt5 = ('bar face', 'http://www.barface.com')
+        ngt6 = ('baz face', 'http://www.bazface.com')
         usr.add_nugget(*ngt1)
         usr.add_nugget(*ngt2)
         usr.add_nugget(*ngt3)
@@ -102,7 +102,7 @@ class TestSqlite(TestCase):
         usr.add_nugget(*ngt6)
         ngts = usr.get_nuggets(['world'])
         self.assertEqual(len(ngts), 3)
-        ngts_simple = [(i[5], i[2]) for i in ngts]
+        ngts_simple = [(str(i[5]), str(i[2])) for i in ngts]
         for ngt in [ngt1, ngt2, ngt3]:
             self.assertIn(ngt, ngts_simple)
         os.remove(loc)
