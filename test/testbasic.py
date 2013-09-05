@@ -53,3 +53,12 @@ class TestNugget(TestCase):
         ngt = Nugget('Cricket is not cool.')
         self.assertEqual(ngt.sha1, 'e5f54f60323ee882c1dedda2540f2a58fb2acf3b')
 
+    def test_index(self):
+        ngt = Nugget('Cricket is not cool.')
+        keywords = ngt.keywords
+        self.assertEqual(len(keywords), 4)
+        self.assertIn('cricket', keywords)
+        self.assertIn('is', keywords)
+        self.assertIn('not', keywords)
+        self.assertIn('cool', keywords)
+
