@@ -94,9 +94,15 @@ def format_values(values):
             yield str(val)
         elif type(val) == float:
             yield str(val)
+        elif type(val) == set:
+            yield '"'+':'.join(val)+'"'
         elif val == None:
             yield 'NULL'
+        else:
+            raise TypeError('value: %s is of type %s' % (val, type(val)))
 
 def execute_sql(instance, conn, statement):
     instance.log.warn(statement)
     return conn.execute(statement)
+
+
