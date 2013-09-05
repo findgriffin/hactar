@@ -55,7 +55,7 @@ class Sqlite(Backend):
             executestr = insert+'(%s)' % ', '.join(format_values(vals))
             execute_sql(self, conn, executestr)
 
-    def get_nuggets(self, terms):
+    def get_nuggets(self, terms=None):
         """ Get nuggets filtered by search terms."""
         # just get all nuggets from db and filter them here because I am lazy
         # and don't know how to do it in sql
