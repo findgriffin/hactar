@@ -2,12 +2,13 @@
 
 import cgi
 import sys
+from sqlite3 import IntegrityError
 sys.path.append('..')
 from hactar.core import User
 form = cgi.FieldStorage()
 
 user = form.getvalue('user')
-url = form.getvalue('url')
+uri = form.getvalue('url')
 description = form.getvalue('description')
 
 def head():
@@ -37,6 +38,11 @@ def invalid_nugget(message):
     print message
     print "</body>"
 
+def duplicate_nugget(uri):
+    print "<body>"
+    print 'Failed: Nugget with uri: %s already exists.' % uri
+    print "</body>"
+
 head()
 # validate user
 try:
@@ -48,10 +54,12 @@ except ValueError:
     exit()
 
 try:
-    usr.add_nugget(description, url)
+    usr.add_nugget(description, uri)
     body(form)
 except ValueError as err:
     invalid_nugget(err.message)
+except IntegrityError as err:
+    duplicate_nugget(uri)
 
 # validate url
 
