@@ -1,0 +1,37 @@
+#! /usr/bin/env python
+
+import cgi
+import sys
+sys.path.append('..')
+from hactar.core import User
+
+form = cgi.FieldStorage()
+
+user = form.getvalue('user')
+terms = form.getvalue('terms')
+
+def head():
+    lines = [
+    "Content-type: text/html",
+    "",
+    "<html><head><title>View Nuggets</title></head>",
+    "<body>",
+    ]
+    return '\n'.join(lines)
+def foot():
+    return "</body></html>"
+
+def body():
+    return 'You are viewing user %s and terms: %s' % (user, terms)
+
+def unknown_user(user):
+    return 'User %s is unknown' % user
+
+print head()
+try:
+    usr = User(user)
+except ValueError:
+    print unknown_user(user)
+else:
+    print body()
+print foot()
