@@ -17,6 +17,7 @@ URI_SCHEMES=[
     'postal2', 'secondlife', 'skype', 'spotify', 'ssh', 'svn', 'sftp', 'smb',
     'sms', 'steam', 'webcal', 'winamp', 'wyciwyg', 'xfire', 'ymsgr',
 ]
+
 class Nugget():
     uri = None
     desc = None
@@ -98,9 +99,10 @@ class User():
         if tasks is not None:
             self.tasks = tasks
 
-    def add_nugget(self, nugget):
+    def add_nugget(self, desc, uri=None):
         # plugin hooks go here
-        self.backend.add_nugget(nugget)
+        ngt = Nugget(desc, uri)
+        self.backend.add_nugget(ngt)
 
     def get_nuggets(self):
         return self.backend.get_nuggets()

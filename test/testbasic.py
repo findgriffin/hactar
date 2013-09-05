@@ -36,6 +36,6 @@ class TestBasic(TestCase):
             pass
         backend = Sqlite(loc)
         usr = User('dave', backend)
-        usr.add_nugget(self.ngt1)
+        usr.add_nugget('Google, a great search engine.', 'http://www.google.com')
         nuggets = usr.get_nuggets()
         self.assertEqual(len(nuggets), 1)
