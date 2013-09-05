@@ -106,3 +106,30 @@ class TestSqlite(TestCase):
         for ngt in [ngt1, ngt2, ngt3]:
             self.assertIn(ngt, ngts_simple)
         os.remove(loc)
+
+    def test_search_multiple(self):
+        loc = 'test/test_create.sqlite'
+        try:
+            os.remove(loc)
+        except OSError:
+            pass
+        bck_one = sqlite.Sqlite(loc, create=True)
+        usr = User('funnyman', bck_one)
+        ngt1 = ('foo world', 'http://www.fooworld.com')
+        ngt2 = ('bar world', 'http://www.barworld.com')
+        ngt3 = ('baz world', 'http://www.bazworld.com')
+        ngt4 = ('foo face', 'http://www.fooface.com')
+        ngt5 = ('bar face', 'http://www.barface.com')
+        ngt6 = ('baz face', 'http://www.bazface.com')
+        usr.add_nugget(*ngt1)
+        usr.add_nugget(*ngt2)
+        usr.add_nugget(*ngt3)
+        usr.add_nugget(*ngt4)
+        usr.add_nugget(*ngt5)
+        usr.add_nugget(*ngt6)
+        ngts = usr.get_nuggets(['foo', 'baz'])
+        self.assertEqual(len(ngts), 4)
+        ngts_simple = [(str(i[5]), str(i[2])) for i in ngts]
+        for ngt in [ngt1, ngt3, ngt4, ngt6]:
+            self.assertIn(ngt, ngts_simple)
+        os.remove(loc)
