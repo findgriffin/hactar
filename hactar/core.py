@@ -5,6 +5,18 @@ import sqlite
 
 BACKEND_DEFAULT = sqlite.Sqlite
 
+URI_SCHEMES=[
+    'aaa', 'aaas', 'about', 'acap', 'cap', 'cid', 'crid', 'data', 'dav',
+    'dict', 'dns', 'fax', 'file', 'ftp', 'geo', 'go', 'gopher', 'h323', 'http',
+    'https', 'iax', 'im', 'imap', 'info', 'ldap', 'mailto', 'mid', 'news',
+    'nfs', 'nntp', 'pop', 'rsync', 'pres', 'rtsp', 'sip', 'S-HTTP', 'sips',
+    'snmp', 'tag', 'tel', 'telnet', 'tftp', 'urn', 'view-source', 'wais', 'ws',
+    'wss', 'xmpp', 'afp', 'aim', 'apt', 'bolo', 'bzr', 'callto', 'coffee',
+    'cvs', 'daap', 'dsnp', 'ed2k', 'feed', 'fish', 'gg', 'git', 'gizmoproject',
+    'irc', 'ircs', 'itms', 'javascript', 'ldaps', 'magnet', 'mms', 'msnim',
+    'postal2', 'secondlife', 'skype', 'spotify', 'ssh', 'svn', 'sftp', 'smb',
+    'sms', 'steam', 'webcal', 'winamp', 'wyciwyg', 'xfire', 'ymsgr',
+]
 class Nugget():
     uri = None
     text = None
@@ -15,6 +27,7 @@ class Nugget():
     
     def __init__(self, text, uri=None):
         if uri is not None:
+            validate_uri(uri)
             self.uri = uri
         self.text = text
         self.added = time.time()
@@ -29,6 +42,15 @@ class Nugget():
                 sha = hashlib.sha1(self.text)
             self._hash = sha.hexdigest()
         return self._hash
+
+def validate_uri(uri):
+    parts = uri.split(':')
+    if len(parts) < 2:
+        raise ValueError('URI:%s does not specify a scheme' % uri)
+    elif parts[0] not in URI_SCHEMES and parts[0] != 'urn':
+        raise ValueError('%s is not recognised as a URI scheme' % parts[0])
+
+
 
 class Task():
     text = None
