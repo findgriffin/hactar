@@ -49,8 +49,8 @@ class Sqlite(Backend):
             fields = NUGGET_FIELDS.keys()
             fields.sort()
             insert = 'INSERT INTO nuggets(%s) VALUES ' % ', '.join(fields)
-            vals = [ngt.added, ngt.sha1, ngt.keywords, ngt.modified, ngt.desc,
-                    ngt.uri]
+            vals = [ngt.added, ngt.desc, ngt.sha1, ngt.keywords, ngt.modified,
+                    ngt.uri] 
             executestr = insert+'(%s)' % ', '.join(format_values(vals))
             db.execute(executestr)
 
