@@ -1,6 +1,7 @@
 """ core.py The core of Hactar, connecting the frontend to the backend."""
 from hashlib import sha1
 import time
+import string
 import hactar.sqlite
 
 BACKEND_DEFAULT = hactar.sqlite.Sqlite
@@ -25,7 +26,7 @@ class Nugget():
     _hash = None
     added = None
     modified = None
-    keywords = None
+    keywords = set()
     
     def __init__(self, desc, uri=None):
         if uri is not None:
@@ -49,6 +50,12 @@ class Nugget():
                 sha = sha1(self.desc)
             self._hash = sha.hexdigest()
         return self._hash
+    
+    def create_index(self):
+        for word in self.desc.split():
+            self.keywords.add(word.translate(string.maketrans("",""),
+                string.punctuation))
+
 
 def validate_uri(uri):
     """ Check that the given URI is valid. Raise an exception if it is not."""
@@ -109,6 +116,7 @@ class User():
         """ Add a nugget to this users collection."""
         # plugin hooks go here
         ngt = Nugget(desc, uri)
+        ngt.create_index()
         self.backend.add_nugget(ngt)
 
     def get_nuggets(self):
