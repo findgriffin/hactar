@@ -31,7 +31,7 @@ class Nugget():
             validate_uri(uri)
             self.uri = uri
         if len(desc.split()) < 2:
-            raise ValueError('nugget text must be more than one word')
+            raise ValueError('description must be more than one word')
 
         self.desc = desc
         self.added = time.time()
@@ -52,7 +52,7 @@ def validate_uri(uri):
     if len(parts) < 2:
         raise ValueError('URI:%s does not specify a scheme' % uri)
     elif parts[0] not in URI_SCHEMES and parts[0] != 'urn':
-        raise ValueError('%s is not recognised as a URI scheme' % parts[0])
+        raise ValueError('URI:%s is not a recognised scheme' % parts[0])
 
 
 
