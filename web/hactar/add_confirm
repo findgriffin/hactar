@@ -17,7 +17,7 @@ def head():
 
 def body(form):
     print "<body>"
-    print "The form input is...</br>"
+    print "Successfully added nugget:</br>"
     print form.getvalue('user')+"</br>"
     print form.getvalue('url')+"</br>"
     print form.getvalue('description')+"</br>"
@@ -31,6 +31,12 @@ def invalid_user(user):
     print 'Failed: user %s does not exist.' % user
     print "</body>"
 
+def invalid_nugget(message):
+    print "<body>"
+    print 'Failed to add nugget:</br>'
+    print message
+    print "</body>"
+
 head()
 # validate user
 try:
@@ -38,8 +44,14 @@ try:
 except ValueError:
     # display invalid user page
     invalid_user(user)
-else:
+    foot()
+    exit()
+
+try:
+    usr.add_nugget(description, url)
     body(form)
+except ValueError as err:
+    invalid_nugget(err.message)
 
 # validate url
 
