@@ -2,12 +2,15 @@
 similar to an interface. I.e. it defines the methods that a backend must
 implement.
 """
+import logging
 
 
 class Backend(object):
     """ A superclass for all Hactar backends."""
 
     loc = None
+    log_level = logging.WARN
+    log = logging
 
     def __init__(self, location):
         """ Initialise using data located at location."""
