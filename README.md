@@ -2,7 +2,7 @@ hactar
 ======
 
 Hactar is a personal todo list, diary and knowledge management system. Your
-personal AI.
+personal AI (not really).
 
 
 Hactar is made up of three components that are designed to be modular:
@@ -16,7 +16,7 @@ websites and intelligent searching. These plugins should only mainly interact
 with the core (not the front or back ends).
 
 Planned plugins (in planned implementation order):
- 1. scraper - scrape linked urls for information that can later be searced
+ 1. scraper - scrape linked urls for information that can later be searched
  2. advanced search - return synonyms, related topics, near matches etc.
  3. dumper - dump related topics into cheatsheets
 
