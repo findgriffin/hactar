@@ -34,10 +34,10 @@ class Sqlite(Backend):
                 create = 'CREATE TABLE '
                 fields = [' '.join(field) for field in NUGGET_FIELDS.items()]
                 executestr = create+'nuggets(%s)' % ', '.join(fields)
-                conn.execute(executestr)
+                execute_sql(self, conn, executestr)
                 fields = [' '.join(field) for field in TASK_FIELDS.items()]
                 executestr = create+'tasks(%s)' % ', '.join(fields)
-                conn.execute(executestr)
+                execute_sql(self, conn, executestr)
         else:
             if create:
                 raise ValueError('backend %s already exists' % location)
@@ -53,11 +53,12 @@ class Sqlite(Backend):
             vals = [ngt.added, ngt.desc, ngt.sha1, ngt.keywords, ngt.modified,
                     ngt.uri] 
             executestr = insert+'(%s)' % ', '.join(format_values(vals))
-            conn.execute(executestr)
+            execute_sql(self, conn, executestr)
 
     def get_nuggets(self):
         with lite.connect(self.loc) as conn:
-            return conn.execute('SELECT * FROM nuggets').fetchall()
+            executestr = 'SELECT * FROM nuggets'
+            return execute_sql(self, conn, executestr).fetchall()
 
 def check_table(fields, table, location):
     """ Check that table in database location has and only has the given
@@ -95,3 +96,7 @@ def format_values(values):
             yield str(val)
         elif val == None:
             yield 'NULL'
+
+def execute_sql(instance, conn, statement):
+    instance.log.warn(statement)
+    return conn.execute(statement)
