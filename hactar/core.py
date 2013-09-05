@@ -3,6 +3,7 @@ from hashlib import sha1
 import time
 import string
 import hactar.sqlite
+import logging
 
 BACKEND_DEFAULT = hactar.sqlite.Sqlite
 
@@ -53,8 +54,10 @@ class Nugget():
     
     def create_index(self):
         for word in self.desc.split():
-            self.keywords.add(word.translate(string.maketrans("",""),
-                string.punctuation))
+            cleaned = word.lower().translate(string.maketrans("",""), 
+                    string.punctuation)
+            logging.debug('adding word to keywords: %s' % cleaned)
+            self.keywords.add(cleaned)
 
 
 def validate_uri(uri):
