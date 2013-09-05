@@ -122,6 +122,6 @@ class User():
         ngt.create_index()
         self.backend.add_nugget(ngt)
 
-    def get_nuggets(self):
-        """ Return all the nuggets of this user."""
-        return self.backend.get_nuggets()
+    def get_nuggets(self, terms=None):
+        """ Return the nuggets of this user, filtered by terms."""
+        return self.backend.get_nuggets(terms)

@@ -55,10 +55,24 @@ class Sqlite(Backend):
             executestr = insert+'(%s)' % ', '.join(format_values(vals))
             execute_sql(self, conn, executestr)
 
-    def get_nuggets(self):
+    def get_nuggets(self, terms):
+        """ Get nuggets filtered by search terms."""
+        # just get all nuggets from db and filter them here because I am lazy
+        # and don't know how to do it in sql
         with lite.connect(self.loc) as conn:
             executestr = 'SELECT * FROM nuggets'
-            return execute_sql(self, conn, executestr).fetchall()
+            rows = execute_sql(self, conn, executestr).fetchall()
+        if terms is None:
+            return rows
+        matched = []
+        for term in terms:
+            for row in rows:
+                if term in row[3]:
+                    matched.append(row)
+                    rows.remove(row)
+                    
+        return matched
+
 
 def check_table(fields, table, location):
     """ Check that table in database location has and only has the given

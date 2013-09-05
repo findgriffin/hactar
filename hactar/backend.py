@@ -21,6 +21,6 @@ class Backend(object):
         """ Store a nugget in the backend."""
         pass
 
-    def get_nuggets(self):
-        """ Get all nuggets from the backend."""
+    def get_nuggets(self, terms=None):
+        """ Return the nuggets of this user, filtered by terms."""
         pass
