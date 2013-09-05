@@ -1,11 +1,11 @@
 """ core.py The core of Hactar, connecting the frontend to the backend."""
-import hashlib
+from hashlib import sha1
 import time
-import sqlite
+import hactar.sqlite
 
-BACKEND_DEFAULT = sqlite.Sqlite
+BACKEND_DEFAULT = hactar.sqlite.Sqlite
 
-URI_SCHEMES=[
+URI_SCHEMES = [
     'aaa', 'aaas', 'about', 'acap', 'cap', 'cid', 'crid', 'data', 'dav',
     'dict', 'dns', 'fax', 'file', 'ftp', 'geo', 'go', 'gopher', 'h323', 'http',
     'https', 'iax', 'im', 'imap', 'info', 'ldap', 'mailto', 'mid', 'news',
@@ -19,6 +19,7 @@ URI_SCHEMES=[
 ]
 
 class Nugget():
+    """ A nugget of information. Consists of description and optional URI."""
     uri = None
     desc = None
     _hash = None
@@ -39,15 +40,18 @@ class Nugget():
 
     @property
     def sha1(self):
+        """ Return the sha1 hash of this nugget. Use the URL if it exists or
+        the description if this nugget has no URI."""
         if self._hash is None:
             if self.uri is not None:
-                sha = hashlib.sha1(self.uri)
+                sha = sha1(self.uri)
             else:
-                sha = hashlib.sha1(self.text)
+                sha = sha1(self.desc)
             self._hash = sha.hexdigest()
         return self._hash
 
 def validate_uri(uri):
+    """ Check that the given URI is valid. Raise an exception if it is not."""
     parts = uri.split(':')
     if len(parts) < 2:
         raise ValueError('URI:%s does not specify a scheme' % uri)
@@ -57,6 +61,7 @@ def validate_uri(uri):
 
 
 class Task():
+    """ A task, something that the user needs to do."""
     text = None
     due = None
     start = None
@@ -78,6 +83,7 @@ class Task():
         self.modified = self.added
 
 class User():
+    """ This class represent a user and is a container for nuggets and tasks."""
 
     nuggets = {}
     tasks = {}
@@ -100,9 +106,11 @@ class User():
             self.tasks = tasks
 
     def add_nugget(self, desc, uri=None):
+        """ Add a nugget to this users collection."""
         # plugin hooks go here
         ngt = Nugget(desc, uri)
         self.backend.add_nugget(ngt)
 
     def get_nuggets(self):
+        """ Return all the nuggets of this user."""
         return self.backend.get_nuggets()

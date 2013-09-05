@@ -4,14 +4,20 @@ implement.
 """
 
 
-class Backend():
+class Backend(object):
+    """ A superclass for all Hactar backends."""
+
     loc = None
-    def __init__(self, location='test.sqlite'):
+
+    def __init__(self, location):
         """ Initialise using data located at location."""
-        pass
+        self.loc = location
+        super(Backend, self).__init__()
 
     def add_nugget(self, ngt):
+        """ Store a nugget in the backend."""
         pass
 
     def get_nuggets(self):
+        """ Get all nuggets from the backend."""
         pass

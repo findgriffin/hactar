@@ -1,6 +1,5 @@
 import os
 from unittest import TestCase
-from sqlite3 import IntegrityError
 
 from hactar.core import User
 from hactar.core import Nugget
@@ -17,7 +16,7 @@ class TestTask(TestCase):
 class TestUser(TestCase):
 
     def test_create_user(self):
-        backend = Backend()
+        backend = Backend('x-marks-the-spot')
         usr = User('dave', backend)
         self.assertEqual(usr.name, 'dave')
         self.assertEqual(usr.backend, backend)
@@ -49,4 +48,8 @@ class TestNugget(TestCase):
         with self.assertRaises(ValueError) as err:
             Nugget('Google,', 'http://www.google.com')
         self.assertTrue(err.exception.message.startswith('description'))
+
+    def test_desc_only(self):
+        ngt = Nugget('Cricket is not cool.')
+        self.assertEqual(ngt.sha1, 'e5f54f60323ee882c1dedda2540f2a58fb2acf3b')
 
