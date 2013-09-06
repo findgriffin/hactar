@@ -57,8 +57,12 @@ class Nugget():
         for word in self.desc.split():
             cleaned = word.lower().translate(string.maketrans("",""), 
                     string.punctuation)
-            logging.debug('adding word to keywords: %s' % cleaned)
+            logging.debug('adding %s to keywords' % cleaned)
             self.keywords.add(cleaned)
+
+    def __str__(self):
+        return 'nugget: %s|%s|%s|%s|%s' % (self.desc, self.uri, self.keywords,
+                self.added, self.modified)
 
 
 def validate_uri(uri):
@@ -121,6 +125,7 @@ class User():
         # plugin hooks go here
         ngt = Nugget(desc, uri)
         ngt.create_index()
+        logging.debug('about to add '+str(ngt))
         self.backend.add_nugget(ngt)
 
     def get_nuggets(self, terms=None):
