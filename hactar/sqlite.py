@@ -64,11 +64,11 @@ class Sqlite(Backend):
             rows = execute_sql(self, conn, executestr).fetchall()
         if terms is None:
             return rows
-        matched = []
+        matched = set()
         for term in terms:
             for row in rows:
                 if term in row[3]:
-                    matched.append(row)
+                    matched.add(row)
                     rows.remove(row)
                     
         return matched

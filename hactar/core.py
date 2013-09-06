@@ -27,7 +27,7 @@ class Nugget():
     _hash = None
     added = None
     modified = None
-    keywords = set()
+    keywords = None
     
     def __init__(self, desc, uri=None):
         if uri is not None:
@@ -35,6 +35,7 @@ class Nugget():
             self.uri = uri
         if len(desc.split()) < 2:
             raise ValueError('description must be more than one word')
+        self.keywords = set()
 
         self.desc = desc
         self.added = time.time()
