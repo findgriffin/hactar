@@ -4,6 +4,7 @@ import time
 import string
 import hactar.sqlite
 import logging
+import os
 
 BACKEND_DEFAULT = hactar.sqlite.Sqlite
 
@@ -19,6 +20,39 @@ URI_SCHEMES = [
     'postal2', 'secondlife', 'skype', 'spotify', 'ssh', 'svn', 'sftp', 'smb',
     'sms', 'steam', 'webcal', 'winamp', 'wyciwyg', 'xfire', 'ymsgr',
 ]
+
+def initialise_plugins(plugin_dir='plugins'):
+    plugins = []
+    hooks = {
+        'nugget': {'create': [], 'update': [], 'delete': []},
+        'task':   {'create': [], 'update': [], 'delete': []},
+        'user':   {'create': [], 'update': [], 'delete': []},
+                }
+    try:
+        candidates = os.listdir(plugin_dir)
+        for candidate in candidates:
+            location = os.path.join(plugin_dir, candidate)
+            conf = os.path.join(location, 'conf.json')
+            if os.path.isdir(candidate) and os.path.exists(conf):
+                try:
+                    plugins.append(__import__(location))
+                except ImportError as err:
+                    logging.error('error loading %s plugin:%s' (
+                        candidate, err.message))
+    except OSError as err:
+        logging.error('error loading plugins:'+err.message)
+    for plugin in plugins:
+        logging.debug('inspecting %s plugin' % plugin)
+        for key1 in hooks.keys():
+            for key2 in key1.keys():
+                name = key1+'_'+key2
+                logging.debug('looking for %s in %s' % (name, plugin))
+                if name in dir(plugin):
+                    hooks[key1][key2].append(getattr(plugin, name))
+    return hooks
+
+plugins = initialise_plugins()
+        
 
 class Nugget():
     """ A nugget of information. Consists of description and optional URI."""
@@ -72,8 +106,6 @@ def validate_uri(uri):
         raise ValueError('URI:%s does not specify a scheme' % uri)
     elif parts[0] not in URI_SCHEMES and parts[0] != 'urn':
         raise ValueError('URI:%s is not a recognised scheme' % parts[0])
-
-
 
 class Task():
     """ A task, something that the user needs to do."""
@@ -131,3 +163,4 @@ class User():
     def get_nuggets(self, terms=None):
         """ Return the nuggets of this user, filtered by terms."""
         return self.backend.get_nuggets(terms)
+
