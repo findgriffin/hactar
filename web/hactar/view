@@ -21,9 +21,14 @@ def head():
 def foot():
     return "</body></html>"
 
-def body():
-    return 'You are viewing user %s and terms: %s' % (user, terms)
-
+def body(ngts):
+    lines = ['You are viewing user %s and terms: %s' % (user, terms)]
+    if len(ngts) == 0:
+        lines.append('No results were found')
+    else:
+        for ngt in ngts:
+            lines.append(str(ngt))
+    return  '</br>'.join(lines)
 def unknown_user(user):
     return 'User %s is unknown' % user
 
@@ -33,5 +38,6 @@ try:
 except ValueError:
     print unknown_user(user)
 else:
-    print body()
+    ngts = usr.get_nuggets(terms.split() if terms is not None else None)
+    print body(ngts)
 print foot()
