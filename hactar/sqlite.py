@@ -66,11 +66,12 @@ class Sqlite(Backend):
             return rows
         matched = set()
         for term in terms:
+            toremove = []
             for row in rows:
                 if term in row[3]:
                     matched.add(row)
-                    rows.remove(row)
-                    
+                    toremove.append(row)
+            [rows.remove(row) for row in toremove]
         return matched
 
 
