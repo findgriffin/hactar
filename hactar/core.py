@@ -158,7 +158,7 @@ class User():
 
     # this is just here to make testing easier (eg. inspecting the last nugget
     # added
-    just_added = None
+    last_nugget = None
 
     def __init__(self, name, backend=None, nuggets=None, tasks=None,
             plugins=None):
@@ -183,7 +183,7 @@ class User():
         ngt = Nugget(desc, uri)
         ngt.create_index()
         self.plugins.run(ngt, 'create')
-        self.just_added = ngt
+        self.last_nugget = ngt
         logging.debug('about to add '+str(ngt))
         self.backend.add_nugget(ngt)
 

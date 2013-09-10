@@ -31,4 +31,4 @@ class TestPlugins(TestCase):
         backend = Sqlite(loc)
         usr = User('dave', backend)
         usr.add_nugget('Google, a great search engine.', 'http://www.google.com')
-        self.assertTrue(usr.just_added.scraped)
+        self.assertTrue(usr.last_nugget.scraped)
