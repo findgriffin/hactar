@@ -62,6 +62,17 @@ class Plugins():
         self.task = hooks['task']
         self.user = hooks['user']
 
+    def run(self, obj, task):
+        if isinstance(obj, Nugget):
+            function_list = self.nugget[task]
+        elif isinstance(obj, Task):
+            function_list = self.task[task]
+        elif isinstance(obj, User):
+            function_list = self.user[task]
+        else:
+            raise ValueError('%s must be Nugget, Task or User, instead it is: %s' % (obj, type(obj)))
+        [func(obj) for func in function_list]
+
 class Nugget():
     """ A nugget of information. Consists of description and optional URI."""
     uri = None
@@ -145,8 +156,14 @@ class User():
     name = None
     backend = None
 
-    def __init__(self, name, backend=None, nuggets=None, tasks=None):
+    # this is just here to make testing easier (eg. inspecting the last nugget
+    # added
+    just_added = None
+
+    def __init__(self, name, backend=None, nuggets=None, tasks=None,
+            plugins=None):
         self.name = name
+        self.plugins = Plugins() if plugins is None else Plugins(plugins)
         if backend is None or type(backend) == str:
             if type(backend) == str:
                 backend_loc = backend+'.sqlite'
@@ -165,6 +182,8 @@ class User():
         # plugin hooks go here
         ngt = Nugget(desc, uri)
         ngt.create_index()
+        self.plugins.run(ngt, 'create')
+        self.just_added = ngt
         logging.debug('about to add '+str(ngt))
         self.backend.add_nugget(ngt)
 

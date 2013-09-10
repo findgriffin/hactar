@@ -1,5 +1,9 @@
+import os
 from unittest import TestCase
+
 from hactar.core import Plugins
+from hactar.core import User
+from hactar.sqlite import Sqlite
 
 class TestPlugins(TestCase):
 
@@ -18,3 +22,13 @@ class TestPlugins(TestCase):
         self.assertEqual(len(plugins.user['update']), 0 )
         self.assertEqual(len(plugins.user['delete']), 0 )
 
+    def test_nugget_create(self):
+        loc = 'test/basic_add_nugget.sqlite'
+        try:
+            os.remove(loc)
+        except OSError:
+            pass
+        backend = Sqlite(loc)
+        usr = User('dave', backend)
+        usr.add_nugget('Google, a great search engine.', 'http://www.google.com')
+        self.assertTrue(usr.just_added.scraped)
