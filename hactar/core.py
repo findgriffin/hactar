@@ -21,38 +21,46 @@ URI_SCHEMES = [
     'sms', 'steam', 'webcal', 'winamp', 'wyciwyg', 'xfire', 'ymsgr',
 ]
 
-def initialise_plugins(plugin_dir='plugins'):
-    plugins = []
-    hooks = {
-        'nugget': {'create': [], 'update': [], 'delete': []},
-        'task':   {'create': [], 'update': [], 'delete': []},
-        'user':   {'create': [], 'update': [], 'delete': []},
-                }
-    try:
-        candidates = os.listdir(plugin_dir)
-        for candidate in candidates:
-            location = os.path.join(plugin_dir, candidate)
-            conf = os.path.join(location, 'conf.json')
-            if os.path.isdir(candidate) and os.path.exists(conf):
-                try:
-                    plugins.append(__import__(location))
-                except ImportError as err:
-                    logging.error('error loading %s plugin:%s' (
-                        candidate, err.message))
-    except OSError as err:
-        logging.error('error loading plugins:'+err.message)
-    for plugin in plugins:
-        logging.debug('inspecting %s plugin' % plugin)
-        for key1 in hooks.keys():
-            for key2 in key1.keys():
-                name = key1+'_'+key2
-                logging.debug('looking for %s in %s' % (name, plugin))
-                if name in dir(plugin):
-                    hooks[key1][key2].append(getattr(plugin, name))
-    return hooks
+class Plugins():
 
-plugins = initialise_plugins()
-        
+    def __init__(self, plugin_dir='plugins'):
+        plugins = []
+        hooks = {
+            'nugget': {'create': [], 'update': [], 'delete': []},
+            'task':   {'create': [], 'update': [], 'delete': []},
+            'user':   {'create': [], 'update': [], 'delete': []},
+                    }
+        try:
+            candidates = os.listdir(plugin_dir)
+            logging.debug('plugin candidates: %s' % ', '.join(candidates))
+            for candidate in candidates:
+                location = os.path.join(plugin_dir, candidate)
+                conf = os.path.join(location, '__init__.py')
+                if os.path.isdir(location) and os.path.exists(conf):
+                    logging.debug('attempting to import plugin:%s' % candidate)
+                    try:
+                        plugins.append(__import__(location.replace(os.path.sep,
+                            '.'), fromlist=['plugins']))
+                    except ImportError as err:
+                        logging.error('error loading %s plugin:%s' % (
+                            candidate, err.message))
+        except OSError as err:
+            logging.error('error loading plugins:'+err.message)
+        if len(plugins) == 0:
+            logging.debug('found no plugins to inspect')
+        for plugin in plugins:
+            logging.debug('inspecting plugin %s ' % plugin)
+            for key1 in hooks.keys():
+                for key2 in hooks[key1]:
+                    name = key1+'_'+key2
+                    if name in dir(plugin):
+                        logging.debug('%s found in %s' % (name, plugin))
+                        hooks[key1][key2].append(getattr(plugin, name))
+                    else:
+                        logging.debug('%s not found in %s' % (name, plugin))
+        self.nugget = hooks['nugget']
+        self.task = hooks['task']
+        self.user = hooks['user']
 
 class Nugget():
     """ A nugget of information. Consists of description and optional URI."""
