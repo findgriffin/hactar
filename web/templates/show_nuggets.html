@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block body %}
+  {% if session.logged_in %}
+    <form action="{{ url_for('add_nugget') }}" method=post class=add-nugget>
+      <dl>
+        <dt>Url:
+        <dd><input type=text size=60 name=uri>
+        <dt>Description:
+        <dd><textarea name=desc rows=10 cols=50></textarea>
+        <dd><input type=submit value=Add>
+      </dl>
+    </form>
+  {% endif %}
+  <ul class=nuggets>
+  {% for nugget in nuggets %}
+    <li><h2>{{ nugget.uri }}</h2>{{ nugget.text|safe }}
+  {% else %}
+    <li><em>Unbelievable.  No nuggets here so far</em>
+  {% endfor %}
+  </ul>
+{% endblock %}
