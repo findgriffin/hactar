@@ -7,6 +7,7 @@
 """
 
 from sqlite3 import dbapi2 as sqlite3
+from sqlite3 import IntegrityError
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
 
@@ -83,6 +84,9 @@ def add_nugget():
         flash('New nugget was successfully added')
     except ValueError as err:
         flash(err.message)
+    except IntegrityError as err:
+        if 'primary key must be unique' in err.message.lower():
+            flash('Nugget with that URI or description already exists')
     return redirect(url_for('show_nuggets'))
 
 
