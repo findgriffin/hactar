@@ -105,6 +105,13 @@ class Nugget():
                 sha = sha1(self.desc)
             self._hash = sha.hexdigest()
         return self._hash
+
+    @property
+    def id(self):
+        """ Return the (first 15 digits) sha1 hash of this nugget as an
+        integer."""
+        return int(self.sha1[:15], 16)
+
     
     def create_index(self):
         for word in self.desc.split():
