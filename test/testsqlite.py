@@ -8,6 +8,7 @@ import os
 class TestSqlite(TestCase):
 
     def test_create(self):
+        """Create sqlite database"""
         loc = 'test/test_create.sqlite'
         try:
             os.remove(loc)
@@ -19,6 +20,7 @@ class TestSqlite(TestCase):
         os.remove(loc)
 
     def test_add_nugget(self):
+        """Add nugget to database"""
         loc = 'test/add_nugget.sqlite'
         try:
             os.remove(loc)
@@ -29,6 +31,7 @@ class TestSqlite(TestCase):
         backend.add_nugget(ngt)
 
     def test_create_fail(self):
+        """Fail for nonexistant db"""
         loc = 'test/create_fail.sqlite'
         try:
             os.remove(loc)
@@ -38,6 +41,7 @@ class TestSqlite(TestCase):
             sqlite.Sqlite(loc, create=False)
 
     def test_add_identical_nuggets(self):
+        """Add identical nuggets"""
         loc = 'test/add_identical_nuggets.sqlite'
         try:
             os.remove(loc)
@@ -51,6 +55,7 @@ class TestSqlite(TestCase):
             backend.add_nugget(ngt1)
 
     def test_add_multiple_nuggets(self):
+        """Add multiple nuggets"""
         loc = 'test/add_multiple_nuggets.sqlite'
         try:
             os.remove(loc)
@@ -66,6 +71,7 @@ class TestSqlite(TestCase):
 
 
     def test_persistence(self):
+        """Test db persistence"""
         loc = 'test/test_create.sqlite'
         try:
             os.remove(loc)
@@ -81,6 +87,7 @@ class TestSqlite(TestCase):
         os.remove(loc)
 
     def test_search_single(self):
+        """search for single keyword"""
         loc = 'test/test_create.sqlite'
         try:
             os.remove(loc)
@@ -108,6 +115,7 @@ class TestSqlite(TestCase):
         os.remove(loc)
 
     def test_search_noresults(self):
+        """Search with no results"""
         loc = 'test/test_create.sqlite'
         try:
             os.remove(loc)
@@ -132,6 +140,7 @@ class TestSqlite(TestCase):
         os.remove(loc)
 
     def test_search_multiple(self):
+        """Search with multiple results"""
         loc = 'test/test_create.sqlite'
         try:
             os.remove(loc)

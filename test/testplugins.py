@@ -8,6 +8,7 @@ from hactar.sqlite import Sqlite
 class TestPlugins(TestCase):
 
     def test_initialise(self):
+        """Initialise plugins"""
         plugins = Plugins()
         self.assertEqual(len(plugins.nugget['create']), 1 )
         self.assertEqual(len(plugins.nugget['update']), 1 )
@@ -23,6 +24,7 @@ class TestPlugins(TestCase):
         self.assertEqual(len(plugins.user['delete']), 0 )
 
     def test_nugget_create(self):
+        """Create a nugget and check scraping."""
         loc = 'test/basic_add_nugget.sqlite'
         try:
             os.remove(loc)
