@@ -87,7 +87,7 @@ class Nugget():
             validate_uri(uri)
             self.uri = uri
         if len(desc.split()) < 2:
-            raise ValueError('description must be more than one word')
+            raise ValueError('Description must be more than one word.')
         self.keywords = set()
 
         self.desc = desc
@@ -129,9 +129,9 @@ def validate_uri(uri):
     """ Check that the given URI is valid. Raise an exception if it is not."""
     parts = uri.split(':')
     if len(parts) < 2:
-        raise ValueError('URI:%s does not specify a scheme' % uri)
+        raise ValueError('URI:%s does not specify a scheme.' % uri)
     elif parts[0] not in URI_SCHEMES and parts[0] != 'urn':
-        raise ValueError('URI:%s is not a recognised scheme' % parts[0])
+        raise ValueError('URI:%s is not a recognised scheme.' % parts[0])
 
 class Task():
     """ A task, something that the user needs to do."""
