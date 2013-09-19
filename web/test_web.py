@@ -8,7 +8,7 @@
     :license: BSD, see LICENSE for more details.
 """
 import os
-import hactarweb as web
+import web
 import unittest
 import tempfile
 
