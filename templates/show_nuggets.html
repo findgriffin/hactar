@@ -13,10 +13,12 @@
   {% endif %}
   <ul class=nuggets>
   {% for nugget in nuggets %}
-  <li><h2>{{ nugget.uri }}</h2>{{ nugget.text|safe }} 
-  <br> keywords:{{ nugget.keywords}}
-  <br> added:{{ nugget.added}}
-  <br> modified:{{ nugget.modified}}
+  <li><h2>{{ nugget.uri }}</h2>
+      <h5>
+      modified:{{ nugget.modified|datetime }} 
+      added:{{ nugget.added|datetime }} 
+      </h5>
+  <br>{{ nugget.text|safe }}
   {% else %}
     <li><em>Unbelievable.  No nuggets here so far</em>
   {% endfor %}
