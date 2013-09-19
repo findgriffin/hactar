@@ -10,6 +10,7 @@ from sqlite3 import dbapi2 as sqlite3
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
 
+from hactar import core
 
 # create our little application :)
 app = Flask(__name__)
@@ -70,10 +71,17 @@ def add_nugget():
     if not session.get('logged_in'):
         abort(401)
     db = get_db()
-    db.execute('insert into nuggets (uri, text) values (?, ?)',
-                 [request.form['uri'], request.form['desc']])
-    db.commit()
-    flash('New nugget was successfully added')
+    uri = request.form['uri']
+    text = request.form['desc']
+    try:
+        ngt = core.Nugget(text, uri)
+        db.execute('insert into nuggets (id, uri, text, added, modified, keywords)\
+                values (?, ?, ?, ?, ?, ?)', [ngt.id, ngt.uri, text, ngt.added,
+                    ngt.modified, ','.join(ngt.keywords)])
+        db.commit()
+        flash('New nugget was successfully added')
+    except ValueError as err:
+        flash(err.message)
     return redirect(url_for('show_nuggets'))
 
 
