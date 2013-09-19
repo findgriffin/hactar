@@ -42,6 +42,7 @@ class TestNugget(TestCase):
         """Create a nugget"""
         ngt = Nugget('Google, a great search engine.', 'http://www.google.com')
         self.assertEqual(ngt.sha1, '738ddf35b3a85a7a6ba7b232bd3d5f1e4d284ad1')
+        self.assertEqual(ngt.id, 520409794238645671L)
 
     def test_bad_uri(self):
         """Add nugget with bad URI"""
