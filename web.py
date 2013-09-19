@@ -50,6 +50,7 @@ class Nugget(db.Model):
     added = db.Column(db.Integer())
     modified = db.Column(db.Integer())
     keywords = db.Column(db.String())
+    _hash = None
 
     def __init__(self, text, uri=None, plugins=None):
 #       self.plugins = Plugins() if plugins is None else Plugins(plugins)
@@ -63,6 +64,7 @@ class Nugget(db.Model):
         self.text = text
         self.added = int(time.time())
         self.modified = self.added
+        self.id = self.getid()
 
     @property
     def sha1(self):
@@ -76,11 +78,10 @@ class Nugget(db.Model):
             self._hash = sha.hexdigest()
         return self._hash
 
-#   @property
-#   def id(self):
-#       """ Return the (first 15 digits) sha1 hash of this nugget as an
-#       integer."""
-#       return int(self.sha1[:15], 16)
+    def getid(self):
+        """ Return the (first 15 digits) sha1 hash of this nugget as an
+        integer."""
+        return int(self.sha1[:15], 16)
 
     
     def create(self):
