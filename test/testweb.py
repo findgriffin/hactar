@@ -66,7 +66,8 @@ class TestWeb(unittest.TestCase):
         rv = self.app.post('/add', data=dict( uri=uri, desc=desc,
         ), follow_redirects=True)
         self.assertEqual(rv.status_code, 200)
-        self.assertIn('<li><h2>%s</h2>%s' % (uri, desc), rv.data)
+        self.assertIn('<li><h2>%s</h2>' % uri, rv.data)
+        self.assertIn('<br>%s' % desc, rv.data)
 
     def test_add_nuggets(self):
         """Test adding some nuggets with flask"""
@@ -85,9 +86,12 @@ class TestWeb(unittest.TestCase):
         rv2 = self.app.post('/add', data=dict( uri=uri2, desc=desc2,
         ), follow_redirects=True)
         self.assertEqual(rv1.status_code, 200)
-        self.assertIn('<li><h2>%s</h2>%s' % (uri0, desc0), rv2.data)
-        self.assertIn('<li><h2>%s</h2>%s' % (uri1, desc1), rv2.data)
-        self.assertIn('<li><h2>%s</h2>%s' % (uri2, desc2), rv2.data)
+        self.assertIn('<li><h2>%s</h2>' % uri0, rv2.data)
+        self.assertIn('<br>%s' % desc0, rv2.data)
+        self.assertIn('<li><h2>%s</h2>' % uri1, rv2.data)
+        self.assertIn('<br>%s' % desc1, rv2.data)
+        self.assertIn('<li><h2>%s</h2>' % uri2, rv2.data)
+        self.assertIn('<br>%s' % desc2, rv2.data)
 
     def test_dup_nuggets(self):
         """Test attempting to add duplicate nuggets"""
@@ -104,8 +108,9 @@ class TestWeb(unittest.TestCase):
         self.assertEqual(rv1.status_code, 200)
         errstr = 'Nugget with that URI or description already exists'
         self.assertIn('<div class=flash>%s</div>' % errstr, rv1.data)
-        self.assertIn('<li><h2>%s</h2>%s' % (uri0, desc0), rv1.data)
-        self.assertNotIn('<li><h2>%s</h2>%s' % (uri1, desc1), rv1.data)
+        self.assertIn('<li><h2>%s</h2>' % uri0, rv1.data)
+        self.assertIn('<br>%s' % desc0, rv1.data)
+        self.assertNotIn('<br>%s' % desc1, rv1.data)
 
 if __name__ == '__main__':
     unittest.main()
