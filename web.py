@@ -75,6 +75,7 @@ def add_nugget():
     text = request.form['desc']
     try:
         ngt = core.Nugget(text, uri)
+        ngt.create_index()
         db.execute('insert into nuggets (id, uri, text, added, modified, keywords)\
                 values (?, ?, ?, ?, ?, ?)', [ngt.id, ngt.uri, text, ngt.added,
                     ngt.modified, ','.join(ngt.keywords)])
