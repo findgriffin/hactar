@@ -83,7 +83,8 @@ class Nugget():
     modified = None
     keywords = None
     
-    def __init__(self, desc, uri=None):
+    def __init__(self, desc, uri=None, plugins=None):
+        self.plugins = Plugins() if plugins is None else Plugins(plugins)
         if uri is not None:
             validate_uri(uri)
             self.uri = uri
@@ -114,11 +115,15 @@ class Nugget():
         return int(self.sha1[:15], 16)
 
     
-    def create_index(self):
+    def create(self):
         for word in self.desc.split():
             cleaned = word.lower().strip("""~`!$%^&*(){}[];':",.?""")
             logging.debug('adding %s to keywords' % cleaned)
             self.keywords.add(cleaned)
+        self.plugins.run(self, 'create')
+
+    def update(self):
+        pass
 
     def __str__(self):
         return 'nugget: %s|%s|%s|%s|%s' % (self.desc, self.uri, self.keywords,
@@ -188,8 +193,7 @@ class User():
         """ Add a nugget to this users collection."""
         # plugin hooks go here
         ngt = Nugget(desc, uri)
-        ngt.create_index()
-        self.plugins.run(ngt, 'create')
+        ngt.create()
         self.last_nugget = ngt
         logging.debug('about to add '+str(ngt))
         self.backend.add_nugget(ngt)

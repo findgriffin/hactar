@@ -64,7 +64,7 @@ class TestNugget(TestCase):
     def test_index(self):
         """Add nugget, check keywords."""
         ngt = Nugget('Cricket is not cool.')
-        ngt.create_index()
+        ngt.create()
         keywords = ngt.keywords
         self.assertEqual(len(keywords), 4)
         self.assertIn('cricket', keywords)
