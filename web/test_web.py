@@ -1,31 +1,31 @@
 # -*- coding: utf-8 -*-
 """
-    Hactarweb Tests
+    web Tests
     ~~~~~~~~~~~~
 
-    Tests the Hactarweb application based on hactarweb_tests.py by Armin Ronacher.
+    Tests the web application based on web_tests.py by Armin Ronacher.
 
     :license: BSD, see LICENSE for more details.
 """
 import os
-import hactarweb
+import hactarweb as web
 import unittest
 import tempfile
 
 
-class hactarwebTestCase(unittest.TestCase):
+class webTestCase(unittest.TestCase):
 
     def setUp(self):
         """Before each test, set up a blank database"""
-        self.db_fd, hactarweb.app.config['DATABASE'] = tempfile.mkstemp()
-        hactarweb.app.config['TESTING'] = True
-        self.app = hactarweb.app.test_client()
-        hactarweb.init_db()
+        self.db_fd, web.app.config['DATABASE'] = tempfile.mkstemp()
+        web.app.config['TESTING'] = True
+        self.app = web.app.test_client()
+        web.init_db()
 
     def tearDown(self):
         """Get rid of the database again after each test."""
         os.close(self.db_fd)
-        os.unlink(hactarweb.app.config['DATABASE'])
+        os.unlink(web.app.config['DATABASE'])
 
     def login(self, username, password):
         return self.app.post('/login', data=dict(
@@ -41,33 +41,33 @@ class hactarwebTestCase(unittest.TestCase):
     def test_empty_db(self):
         """Start with a blank database."""
         rv = self.app.get('/')
-        assert b'No entries here so far' in rv.data
+        self.assertIn('No nuggets here so far', rv.data)
 
     def test_login_logout(self):
         """Make sure login and logout works"""
-        rv = self.login(hactarweb.app.config['USERNAME'],
-                        hactarweb.app.config['PASSWORD'])
+        rv = self.login(web.app.config['USERNAME'],
+                        web.app.config['PASSWORD'])
         assert b'You were logged in' in rv.data
         rv = self.logout()
         assert b'You were logged out' in rv.data
-        rv = self.login(hactarweb.app.config['USERNAME'] + 'x',
-                        hactarweb.app.config['PASSWORD'])
+        rv = self.login(web.app.config['USERNAME'] + 'x',
+                        web.app.config['PASSWORD'])
         assert b'Invalid username' in rv.data
-        rv = self.login(hactarweb.app.config['USERNAME'],
-                        hactarweb.app.config['PASSWORD'] + 'x')
+        rv = self.login(web.app.config['USERNAME'],
+                        web.app.config['PASSWORD'] + 'x')
         assert b'Invalid password' in rv.data
 
     def test_messages(self):
         """Test that messages work"""
-        self.login(hactarweb.app.config['USERNAME'],
-                   hactarweb.app.config['PASSWORD'])
+        self.login(web.app.config['USERNAME'],
+                   web.app.config['PASSWORD'])
         rv = self.app.post('/add', data=dict(
             title='<Hello>',
             text='<strong>HTML</strong> allowed here'
         ), follow_redirects=True)
-        assert b'No entries here so far' not in rv.data
-        assert b'&lt;Hello&gt;' in rv.data
-        assert b'<strong>HTML</strong> allowed here' in rv.data
+        self.assertNotIn('No nuggets here so far', rv.data)
+        self.assertNotIn('&lt;Hello&gt;', rv.data)
+        self.assertNotIn('<strong>HTML</strong> allowed here', rv.data)
 
 
 if __name__ == '__main__':
