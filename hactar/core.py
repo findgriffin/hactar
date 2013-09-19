@@ -116,7 +116,7 @@ class Nugget():
     
     def create_index(self):
         for word in self.desc.split():
-            cleaned = word.strip("""~`!$%^&*(){}[];':",.?""")
+            cleaned = word.lower().strip("""~`!$%^&*(){}[];':",.?""")
             logging.debug('adding %s to keywords' % cleaned)
             self.keywords.add(cleaned)
 
