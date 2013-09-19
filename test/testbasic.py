@@ -47,7 +47,7 @@ class TestNugget(TestCase):
     def test_bad_description(self):
         with self.assertRaises(ValueError) as err:
             Nugget('Google,', 'http://www.google.com')
-        self.assertTrue(err.exception.message.startswith('description'))
+        self.assertTrue(err.exception.message.startswith('Description'))
 
     def test_desc_only(self):
         ngt = Nugget('Cricket is not cool.')
