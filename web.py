@@ -5,7 +5,7 @@
     Using flask framework, based on flaskr example app by Armin Ronacher
     :license: BSD, see LICENSE for more details.
 """
-
+import datetime
 from sqlite3 import dbapi2 as sqlite3
 from sqlite3 import IntegrityError
 from flask import Flask, request, session, g, redirect, url_for, abort, \
@@ -112,6 +112,14 @@ def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('show_nuggets'))
+
+@app.template_filter('datetime')
+def _jinja2_filter_datetime(date, fmt=None):
+    dtime = datetime.datetime.fromtimestamp(date)
+    if not fmt:
+        fmt = '%H:%M %d/%m/%Y'
+    return dtime.strftime(fmt)
+
 
 
 if __name__ == '__main__':
