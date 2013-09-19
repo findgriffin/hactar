@@ -172,6 +172,13 @@ def _jinja2_filter_datetime(date, fmt=None):
         fmt = '%H:%M %d/%m/%Y'
     return dtime.strftime(fmt)
 
+def init_db():
+    """ Delete the existing database and create new database from scratch."""
+    db_path = app.config['SQLALCHEMY_DATABASE_URI']
+    import os
+    if os.path.exists(db_path):
+        os.remove(db_path)
+    db.create_all()
 
 
 if __name__ == '__main__':

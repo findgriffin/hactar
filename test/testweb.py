@@ -17,7 +17,8 @@ class TestWeb(unittest.TestCase):
 
     def setUp(self):
         """Before each test, set up a blank database"""
-        self.db_fd, web.app.config['DATABASE'] = tempfile.mkstemp()
+        self.db_fd, self.db_path  = tempfile.mkstemp()
+        web.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+self.db_path
         web.app.config['TESTING'] = True
         self.app = web.app.test_client()
         web.init_db()
@@ -25,7 +26,7 @@ class TestWeb(unittest.TestCase):
     def tearDown(self):
         """Get rid of the database again after each test."""
         os.close(self.db_fd)
-        os.unlink(web.app.config['DATABASE'])
+        os.unlink(self.db_path)
 
     def login(self, username, password):
         return self.app.post('/login', data=dict(
