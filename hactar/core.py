@@ -5,6 +5,7 @@ import string
 import hactar.sqlite
 import logging
 import os
+import re
 
 BACKEND_DEFAULT = hactar.sqlite.Sqlite
 
@@ -115,8 +116,7 @@ class Nugget():
     
     def create_index(self):
         for word in self.desc.split():
-            cleaned = word.lower().translate(string.maketrans("",""), 
-                    string.punctuation)
+            cleaned = word.strip("""~`!$%^&*(){}[];':",.?""")
             logging.debug('adding %s to keywords' % cleaned)
             self.keywords.add(cleaned)
 
