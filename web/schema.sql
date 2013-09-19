@@ -11,7 +11,7 @@ create table tasks (
 );
 drop table if exists nuggets;
 create table nuggets (
-    id integer primary key autoincrement,
+    id integer primary key,
     uri text, 
     text text not null, 
     added integer, 
