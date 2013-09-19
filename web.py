@@ -62,7 +62,9 @@ def close_db(error):
 @app.route('/')
 def show_nuggets():
     db = get_db()
-    cur = db.execute('select uri, text from nuggets order by uri, text')
+    fields = 'uri, text, keywords, added, modified'
+    order  = 'modified desc'
+    cur = db.execute('select %s from nuggets order by %s' % (fields, order))
     nuggets = cur.fetchall()
     return render_template('show_nuggets.html', nuggets=nuggets)
 
