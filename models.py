@@ -84,3 +84,25 @@ def validate_uri(uri):
         raise ValueError('URI:%s does not specify a scheme.' % uri)
     elif parts[0] not in URI_SCHEMES and parts[0] != 'urn':
         raise ValueError('URI:%s is not a recognised scheme.' % parts[0])
+
+class Task(db.Model):
+    """ A task, something that the user needs to do."""
+    id=db.Column(db.Integer, primary_key=True, autoincrement=True)
+    text = db.Column(db.String())
+    added = db.Column(db.Integer())
+    modified = db.Column(db.Integer())
+    due = db.Column(db.Integer())
+    start_time = db.Column(db.Integer())
+    finish_time = db.Column(db.Integer())
+    priority = db.Column(db.Integer())
+    
+    def __init__(self, text, due=None, start_time=None, finish_time=None):
+        self.text = text
+        if due is not None:
+            self.due = int(due)
+        if start_time is not None:
+            self.start_time = int(start_time)
+        if finish_time is not None:
+            self.finish_time = int(finish_time)
+        self.added = time.time()
+        self.modified = self.added
