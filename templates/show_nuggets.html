@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
 {% block body %}
-  {% if session.logged_in %}
+  {% if session.logged_in and add %}
     <form action="{{ url_for('add_nugget') }}" method=post class=add-nugget>
       <dl>
         <dt>Url:
-        <dd><input type=text size=60 name=uri>
+        <dd><input type=text size=40 name=uri>
         <dt>Description:
-        <dd><textarea name=desc rows=10 cols=50></textarea>
+        <dd><textarea name=desc rows=10 cols=40></textarea>
         <dd><input type=submit value=Add>
       </dl>
     </form>

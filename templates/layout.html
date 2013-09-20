@@ -1,8 +1,30 @@
 <!doctype html>
+<head>
+<script type="text/javascript">
+window.onload = function(){
+    // get submit button
+    var submitbutton = document.getElementById("tfq");
+    // add listener to button
+    if(submitbutton.addEventListener){
+        submitbutton.addEventListener("click", function() {
+            if (submitbutton.value == 'search nuggets'){
+                submitbutton.value = '';
+            }
+        });
+    }
+}
+</script>
 <title>Hactar</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+</head>
 <div class=page>
+  <div id="tfheader">
   <h1>Hactar</h1>
+    <form id="tfnewsearch" method="get" action="http://google.com">
+        <input type="text" id="tfq" class="tftextinput3" name="q" size="21"
+        maxlength="120" value="search nuggets">
+    </form>
+  </div>
   <div class=metanav>
   {% if not session.logged_in %}
     <a href="{{ url_for('login') }}">log in</a>

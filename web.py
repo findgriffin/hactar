@@ -37,7 +37,7 @@ def close_db(error):
 @app.route('/')
 def show_nuggets():
     nuggets = Nugget.query.all() # can filter or pageinate
-    return render_template('show_nuggets.html', nuggets=nuggets)
+    return render_template('show_nuggets.html', nuggets=nuggets, add=True)
 
 
 @app.route('/add', methods=['POST'])
@@ -59,6 +59,11 @@ def add_nugget():
             flash('Nugget with that URI or description already exists')
     return redirect(url_for('show_nuggets'))
 
+@app.route('/find', methods=['POST'])
+def find_nugget():
+    terms = request.form['terms']
+    nuggets = Nugget.query.all()
+    return render_template('show_nuggets.html', nuggets=nuggets, add=False)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
