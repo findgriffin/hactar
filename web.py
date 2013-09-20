@@ -9,12 +9,12 @@ import datetime
 from sqlalchemy.exc import IntegrityError
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
-from flask.ext.sqlalchemy import SQLAlchemy
+from models import Nugget, db
 
 
 # create our little application :)
 app = Flask(__name__)
-db = SQLAlchemy(app)
+db.init_app(app)
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
@@ -26,90 +26,6 @@ app.config.update(dict(
 ))
 app.config.from_envvar('HACTAR_SETTINGS', silent=True)
 
-###############################################################################
-# All this should be moved to models/ or hactar when I can figure out db issue
-###############################################################################
-from hashlib import sha1
-import time
-URI_SCHEMES = [
-    'aaa', 'aaas', 'about', 'acap', 'cap', 'cid', 'crid', 'data', 'dav',
-    'dict', 'dns', 'fax', 'file', 'ftp', 'geo', 'go', 'gopher', 'h323', 'http',
-    'https', 'iax', 'im', 'imap', 'info', 'ldap', 'mailto', 'mid', 'news',
-    'nfs', 'nntp', 'pop', 'rsync', 'pres', 'rtsp', 'sip', 'S-HTTP', 'sips',
-    'snmp', 'tag', 'tel', 'telnet', 'tftp', 'urn', 'view-source', 'wais', 'ws',
-    'wss', 'xmpp', 'afp', 'aim', 'apt', 'bolo', 'bzr', 'callto', 'coffee',
-    'cvs', 'daap', 'dsnp', 'ed2k', 'feed', 'fish', 'gg', 'git', 'gizmoproject',
-    'irc', 'ircs', 'itms', 'javascript', 'ldaps', 'magnet', 'mms', 'msnim',
-    'postal2', 'secondlife', 'skype', 'spotify', 'ssh', 'svn', 'sftp', 'smb',
-    'sms', 'steam', 'webcal', 'winamp', 'wyciwyg', 'xfire', 'ymsgr',
-]
-class Nugget(db.Model):
-    id=db.Column(db.Integer, primary_key=True)
-    uri = db.Column(db.String())
-    text = db.Column(db.String())
-    added = db.Column(db.Integer())
-    modified = db.Column(db.Integer())
-    keywords = db.Column(db.String())
-    _hash = None
-
-    def __init__(self, text, uri=None, plugins=None):
-#       self.plugins = Plugins() if plugins is None else Plugins(plugins)
-        if uri is not None:
-            validate_uri(uri)
-            self.uri = uri
-        if len(text.split()) < 2:
-            raise ValueError('Description must be more than one word.')
-        self.keywords = ''
-
-        self.text = text
-        self.added = int(time.time())
-        self.modified = self.added
-        self.id = self.getid()
-
-    @property
-    def sha1(self):
-        """ Return the sha1 hash of this nugget. Use the URL if it exists or
-        the description if this nugget has no URI."""
-        if self._hash is None:
-            if self.uri is not None:
-                sha = sha1(self.uri)
-            else:
-                sha = sha1(self.text)
-            self._hash = sha.hexdigest()
-        return self._hash
-
-    def getid(self):
-        """ Return the (first 15 digits) sha1 hash of this nugget as an
-        integer."""
-        return int(self.sha1[:15], 16)
-
-    
-    def create(self):
-        for word in self.text.split():
-            cleaned = word.lower().strip("""~`!$%^&*(){}[];':",.?""")
-            app.logger.debug('adding %s to keywords' % cleaned)
-            self.keywords.add(cleaned)
-#       self.plugins.run(self, 'create')
-
-    def update(self):
-        pass
-
-    def __str__(self):
-        return 'nugget: %s|%s|%s|%s|%s' % (self.text, self.uri, self.keywords,
-                self.added, self.modified)
-
-    def __repr__(self):
-        return '<Nugget %s>' % self.uri if self.uri else self.id
-
-def validate_uri(uri):
-    """ Check that the given URI is valid. Raise an exception if it is not."""
-    parts = uri.split(':')
-    if len(parts) < 2:
-        raise ValueError('URI:%s does not specify a scheme.' % uri)
-    elif parts[0] not in URI_SCHEMES and parts[0] != 'urn':
-        raise ValueError('URI:%s is not a recognised scheme.' % parts[0])
-
-###############################################################################
 
 @app.teardown_appcontext
 def close_db(error):
@@ -178,12 +94,14 @@ def init_db():
     import os
     if os.path.exists(db_path):
         os.remove(db_path)
-    db.create_all()
+    with app.test_request_context():
+        db.create_all()
 
 
 if __name__ == '__main__':
     try:
         open(app.config['SQLALCHEMY_DATABASE_URI'], 'rb')
     except IOError:
-        db.create_all()
+        with app.test_request_context():
+            db.create_all()
     app.run()
