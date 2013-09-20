@@ -6,7 +6,7 @@
     :license: BSD, see LICENSE for more details.
 """
 import datetime
-from sqlite3 import IntegrityError
+from sqlalchemy.exc import IntegrityError
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
 from flask.ext.sqlalchemy import SQLAlchemy
