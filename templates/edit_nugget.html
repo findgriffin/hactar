@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block body %}
+  {% if session.logged_in %}
+  <form action="{{ url_for('update_nugget', nugget=nugget.id) }}" method=post class=add-nugget>
+      <dl>
+        <dt>URL:{{ nugget.uri }}
+        <dt>Description:
+        <dd><textarea name=text rows=10 cols=40>{{ nugget.text }}</textarea>
+        <dd><input type=submit value=Update>
+      </dl>
+    </form>
+  {% endif %}
+{% endblock %}

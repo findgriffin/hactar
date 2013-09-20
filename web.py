@@ -71,6 +71,44 @@ def find_nugget():
     nuggets = filtered.order_by(Nugget.modified.desc())
     return render_template('show_nuggets.html', nuggets=nuggets, add=False)
 
+@app.route('/edit/<int:nugget>', methods=['GET'])
+def edit_nugget(nugget):
+    try:
+        int(nugget)
+    except ValueError:
+        abort(400)
+    nuggets = Nugget.query.filter(Nugget.id == int(nugget)).all()
+    if not nuggets:
+        abort(404)
+    if len(nuggets) > 1:
+        abort(500)
+    app.logger.debug('found: %s' % nuggets)
+    return render_template('edit_nugget.html', nugget=nuggets[0])
+
+@app.route('/update/<int:nugget>', methods=['GET', 'POST'])
+def update_nugget(nugget):
+    try:
+        int(nugget)
+    except ValueError:
+        abort(400)
+    if not session.get('logged_in'):
+        abort(401)
+    app.logger.debug('updating nugget: %s' % nugget)
+    text = request.form['text']
+    try:
+        ngt = Nugget.query.filter(Nugget.id == int(nugget)).update({'text':
+            text})
+        app.logger.debug('created ngt: %s' % ngt)
+#       ngt.create()
+        db.session.commit()
+        flash('Nugget successfully modified')
+    except ValueError as err:
+        flash(err.message)
+    except IntegrityError as err:
+        if 'primary key must be unique' in err.message.lower():
+            flash('Nugget with that URI or description already exists')
+    return redirect(url_for('show_nuggets'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
