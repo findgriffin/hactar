@@ -57,3 +57,10 @@ TODO and action items are represented by a **task**, this consists of:
  * finish datetime
  * subtasks
  * nuggets
+
+Feature Priority
+----------------
+ 1. search nuggets
+ 2. basic plugin architecture (scraping etc.)
+ 3. delete nuggets
+ 4. update nuggets
