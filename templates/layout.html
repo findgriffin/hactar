@@ -20,7 +20,7 @@ window.onload = function(){
 <div class=page>
   <div id="tfheader">
   <h1>Hactar</h1>
-    <form id="tfnewsearch" method="get" action="http://google.com">
+  <form id="tfnewsearch" method="post" action="{{ url_for('find_nugget') }}">
         <input type="text" id="tfq" class="tftextinput3" name="q" size="21"
         maxlength="120" value="search nuggets">
     </form>

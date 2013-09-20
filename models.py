@@ -41,6 +41,7 @@ class Nugget(db.Model):
         self.added = int(time.time())
         self.modified = self.added
         self.id = self.getid()
+        self.update_index()
 
     @property
     def sha1(self):
@@ -60,11 +61,14 @@ class Nugget(db.Model):
         return int(self.sha1[:15], 16)
 
     
-    def create(self):
+    def update_index(self):
+        words = set()
         for word in self.text.split():
             cleaned = word.lower().strip("""~`!$%^&*(){}[];':",.?""")
 #           app.logger.debug('adding %s to keywords' % cleaned)
-            self.keywords.add(cleaned)
+            words.add(cleaned)
+        existing = set(self.keywords.split('; '))
+        self.keywords = ', '.join(existing.union(words))
 #       self.plugins.run(self, 'create')
 
     def update(self):

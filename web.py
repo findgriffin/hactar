@@ -36,7 +36,7 @@ def close_db(error):
 
 @app.route('/')
 def show_nuggets():
-    nuggets = Nugget.query.all() # can filter or pageinate
+    nuggets = Nugget.query.order_by(Nugget.modified.desc())
     return render_template('show_nuggets.html', nuggets=nuggets, add=True)
 
 
@@ -61,8 +61,14 @@ def add_nugget():
 
 @app.route('/find', methods=['POST'])
 def find_nugget():
-    terms = request.form['terms']
-    nuggets = Nugget.query.all()
+    terms = request.form['q']
+    try:
+        term = terms.split()[0]
+    except IndexError:
+        term = ''
+    app.logger.debug('looking for search term: %s' % term)
+    filtered = Nugget.query.filter(Nugget.keywords.like('%%%s%%' % term))
+    nuggets = filtered.order_by(Nugget.modified.desc())
     return render_template('show_nuggets.html', nuggets=nuggets, add=False)
 
 @app.route('/login', methods=['GET', 'POST'])
