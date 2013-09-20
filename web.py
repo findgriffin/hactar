@@ -109,6 +109,27 @@ def update_nugget(nugget):
             flash('Nugget with that URI or description already exists')
     return redirect(url_for('show_nuggets'))
 
+@app.route('/delete/<int:nugget>', methods=['GET', 'POST'])
+def delete_nugget(nugget):
+    try:
+        int(nugget)
+    except ValueError:
+        abort(400)
+    if not session.get('logged_in'):
+        abort(401)
+    app.logger.debug('deleting nugget: %s' % nugget)
+    try:
+        ngt = Nugget.query.filter(Nugget.id == int(nugget)).delete()
+#       ngt.create()
+        db.session.commit()
+        flash('Nugget successfully deleted')
+    except ValueError as err:
+        flash(err.message)
+    except IntegrityError as err:
+        if 'primary key must be unique' in err.message.lower():
+            flash('Nugget with that URI or description already exists')
+    return redirect(url_for('show_nuggets'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
