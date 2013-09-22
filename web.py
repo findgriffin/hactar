@@ -104,9 +104,12 @@ def update_nugget(nugget):
     app.logger.debug('updating nugget: %s' % nugget)
     text = request.form['text']
     try:
-        ngt = Nugget.query.filter(Nugget.id == int(nugget)).update({'text':
-            text})
-        app.logger.debug('created ngt: %s' % ngt)
+        ngt = Nugget.query.filter(Nugget.id == int(nugget))
+        app.logger.debug('ngt: %s' % ngt[0])
+        ngt.update({'text': text})
+        app.logger.debug('dir(ngt): %s' % dir(ngt))
+        ngt[0].update()
+        app.logger.debug('updated ngt: %s' % ngt)
 #       ngt.create()
         db.session.commit()
         flash('Nugget successfully modified')

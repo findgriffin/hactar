@@ -2,6 +2,7 @@
 # All this should be moved to models/ or hactar when I can figure out db issue
 ###############################################################################
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.sqlalchemy import listen
 from hashlib import sha1
 import time
 import datetime
@@ -66,14 +67,14 @@ class Nugget(db.Model):
         words = set()
         for word in self.text.split():
             cleaned = word.lower().strip("""~`!$%^&*(){}[];':",.?""")
-#           app.logger.debug('adding %s to keywords' % cleaned)
             words.add(cleaned)
         existing = set(self.keywords.split('; '))
         self.keywords = ', '.join(existing.union(words))
 #       self.plugins.run(self, 'create')
 
     def update(self):
-        pass
+        self.update_index()
+        self.modified = datetime.datetime.now()
 
     def __str__(self):
         return 'nugget: %s|%s|%s|%s|%s' % (self.text, self.uri, self.keywords,
