@@ -67,7 +67,7 @@ class TestWeb(unittest.TestCase):
         rv = self.app.post('/add', data=dict( uri=uri, desc=desc,
         ), follow_redirects=True)
         self.assertEqual(rv.status_code, 200)
-        self.assertIn('<li><h2>%s</h2>' % uri, rv.data)
+        self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri, uri), rv.data)
         self.assertIn('<br>%s' % desc, rv.data)
 
     def test_add_nuggets(self):
@@ -87,11 +87,11 @@ class TestWeb(unittest.TestCase):
         rv2 = self.app.post('/add', data=dict( uri=uri2, desc=desc2,
         ), follow_redirects=True)
         self.assertEqual(rv1.status_code, 200)
-        self.assertIn('<li><h2>%s</h2>' % uri0, rv2.data)
+        self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri0, uri0), rv2.data)
         self.assertIn('<br>%s' % desc0, rv2.data)
-        self.assertIn('<li><h2>%s</h2>' % uri1, rv2.data)
+        self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri1, uri1), rv2.data)
         self.assertIn('<br>%s' % desc1, rv2.data)
-        self.assertIn('<li><h2>%s</h2>' % uri2, rv2.data)
+        self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri2, uri2), rv2.data)
         self.assertIn('<br>%s' % desc2, rv2.data)
 
     def test_dup_nuggets(self):
@@ -109,9 +109,23 @@ class TestWeb(unittest.TestCase):
         self.assertEqual(rv1.status_code, 200)
         errstr = 'Nugget with that URI or description already exists'
         self.assertIn('<div class=flash>%s</div>' % errstr, rv1.data)
-        self.assertIn('<li><h2>%s</h2>' % uri0, rv1.data)
+        self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri0, uri0), rv1.data)
         self.assertIn('<br>%s' % desc0, rv1.data)
         self.assertNotIn('<br>%s' % desc1, rv1.data)
+
+    def test_update_nugget(self):
+        self.login(web.app.config['USERNAME'],
+                   web.app.config['PASSWORD'])
+        uri0 = 'http://foobar.com'
+        desc0 = 'a description of foobar'
+        desc1 = 'a description of foobar/stuff'
+        rv0 = self.app.post('/add', data=dict( uri=uri0, desc=desc0),
+            follow_redirects=True)
+        self.assertEqual(rv0.status_code, 200)
+        self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri0, uri0), rv1.data)
+        # get link for edit
+        # update nugget
+        # check updated nugget
 
 if __name__ == '__main__':
     unittest.main()
