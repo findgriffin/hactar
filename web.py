@@ -107,7 +107,6 @@ def update_nugget(nugget):
         ngt = Nugget.query.filter(Nugget.id == int(nugget))
         app.logger.debug('ngt: %s' % ngt[0])
         ngt.update({'text': text})
-        app.logger.debug('dir(ngt): %s' % dir(ngt))
         ngt[0].update()
         app.logger.debug('updated ngt: %s' % ngt)
 #       ngt.create()
