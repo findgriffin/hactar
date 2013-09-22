@@ -165,7 +165,10 @@ def logout():
 @app.template_filter('datetime')
 def _jinja2_filter_datetime(date, fmt=None):
     """Application wide datetime filter."""
-    dtime = datetime.datetime.fromtimestamp(date)
+    if type(date) == datetime.datetime:
+        dtime = date
+    else:
+        dtime = datetime.datetime.fromtimestamp(date)
     if not fmt:
         fmt = '%H:%M %d/%m/%Y'
     return dtime.strftime(fmt)

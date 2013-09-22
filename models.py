@@ -4,6 +4,7 @@
 from flask.ext.sqlalchemy import SQLAlchemy
 from hashlib import sha1
 import time
+import datetime
 URI_SCHEMES = [
     'aaa', 'aaas', 'about', 'acap', 'cap', 'cid', 'crid', 'data', 'dav',
     'dict', 'dns', 'fax', 'file', 'ftp', 'geo', 'go', 'gopher', 'h323', 'http',
@@ -23,8 +24,8 @@ class Nugget(db.Model):
     id=db.Column(db.Integer, primary_key=True)
     uri = db.Column(db.String())
     text = db.Column(db.String())
-    added = db.Column(db.Integer())
-    modified = db.Column(db.Integer())
+    added = db.Column(db.DateTime())
+    modified = db.Column(db.DateTime())
     keywords = db.Column(db.String())
     _hash = None
 
@@ -38,7 +39,7 @@ class Nugget(db.Model):
         self.keywords = ''
 
         self.text = text
-        self.added = int(time.time())
+        self.added = datetime.datetime.now()
         self.modified = self.added
         self.id = self.getid()
         self.update_index()
@@ -93,11 +94,11 @@ class Task(db.Model):
     """ A task, something that the user needs to do."""
     id=db.Column(db.Integer, primary_key=True, autoincrement=True)
     text = db.Column(db.String())
-    added = db.Column(db.Integer())
-    modified = db.Column(db.Integer())
-    due = db.Column(db.Integer())
-    start_time = db.Column(db.Integer())
-    finish_time = db.Column(db.Integer())
+    added = db.Column(db.DateTime())
+    modified = db.Column(db.DateTime())
+    due = db.Column(db.DateTime())
+    start_time = db.Column(db.DateTime())
+    finish_time = db.Column(db.DateTime())
     priority = db.Column(db.Integer())
     
     def __init__(self, text, due=None, start_time=None, finish_time=None):
