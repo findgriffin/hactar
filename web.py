@@ -26,6 +26,15 @@ app.config.update(dict(
 ))
 app.config.from_envvar('HACTAR_SETTINGS', silent=True)
 
+@app.errorhandler(404)
+def not_found(exc):
+    """Handle HTTP not found error."""
+    return render_template('error.html', exc=exc), 404
+
+@app.errorhandler(500)
+def internal_server_error(exc):
+    """Handle internal server error."""
+    return render_template('error.html', exc=exc), 500
 
 @app.teardown_appcontext
 def close_db(error):
@@ -36,12 +45,14 @@ def close_db(error):
 
 @app.route('/')
 def show_nuggets():
+    """This is actually kind of the home page."""
     nuggets = Nugget.query.order_by(Nugget.modified.desc())
     return render_template('show_nuggets.html', nuggets=nuggets, add=True)
 
 
 @app.route('/add', methods=['POST'])
 def add_nugget():
+    """Add a nugget to the database. (by handling a POST request)"""
     if not session.get('logged_in'):
         abort(401)
     uri = request.form['uri']
@@ -61,6 +72,7 @@ def add_nugget():
 
 @app.route('/find', methods=['POST'])
 def find_nugget():
+    """Search for nuggets."""
     terms = request.form['q']
     try:
         term = terms.split()[0]
@@ -73,20 +85,16 @@ def find_nugget():
 
 @app.route('/edit/<int:nugget>', methods=['GET'])
 def edit_nugget(nugget):
-    try:
-        int(nugget)
-    except ValueError:
-        abort(400)
+    """Edit (or delete) a nugget."""
     nuggets = Nugget.query.filter(Nugget.id == int(nugget)).all()
     if not nuggets:
         abort(404)
-    if len(nuggets) > 1:
-        abort(500)
     app.logger.debug('found: %s' % nuggets)
     return render_template('edit_nugget.html', nugget=nuggets[0])
 
 @app.route('/update/<int:nugget>', methods=['GET', 'POST'])
 def update_nugget(nugget):
+    """Update a nugget (i.e. implement an edit to a nugget)"""
     try:
         int(nugget)
     except ValueError:
@@ -111,6 +119,7 @@ def update_nugget(nugget):
 
 @app.route('/delete/<int:nugget>', methods=['GET', 'POST'])
 def delete_nugget(nugget):
+    """Remove a nugget from the db."""
     try:
         int(nugget)
     except ValueError:
@@ -132,6 +141,7 @@ def delete_nugget(nugget):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """Handle logins."""
     error = None
     if request.method == 'POST':
         if request.form['username'] != app.config['USERNAME']:
@@ -147,16 +157,19 @@ def login():
 
 @app.route('/logout')
 def logout():
+    """Handle logging out."""
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('show_nuggets'))
 
 @app.template_filter('datetime')
 def _jinja2_filter_datetime(date, fmt=None):
+    """Application wide datetime filter."""
     dtime = datetime.datetime.fromtimestamp(date)
     if not fmt:
         fmt = '%H:%M %d/%m/%Y'
     return dtime.strftime(fmt)
+
 
 def init_db():
     """ Delete the existing database and create new database from scratch."""
