@@ -105,11 +105,8 @@ def update_nugget(nugget):
     text = request.form['text']
     try:
         ngt = Nugget.query.filter(Nugget.id == int(nugget))
-        app.logger.debug('ngt: %s' % ngt[0])
         ngt.update({'text': text})
         ngt[0].update()
-        app.logger.debug('updated ngt: %s' % ngt)
-#       ngt.create()
         db.session.commit()
         flash('Nugget successfully modified')
     except ValueError as err:
