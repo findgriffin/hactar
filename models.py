@@ -1,10 +1,11 @@
-""" models.py
+""" models.py 
 Database models (using SQLAlchemy) for the hactar application.
 """
 from flask.ext.sqlalchemy import SQLAlchemy
 from hashlib import sha1
 import time
 import datetime
+import requests
 URI_SCHEMES = [
     'aaa', 'aaas', 'about', 'acap', 'cap', 'cid', 'crid', 'data', 'dav',
     'dict', 'dns', 'fax', 'file', 'ftp', 'geo', 'go', 'gopher', 'h323', 'http',
@@ -26,6 +27,9 @@ class Nugget(db.Model):
     text = db.Column(db.String())
     added = db.Column(db.DateTime())
     modified = db.Column(db.DateTime())
+    checked = db.Column(db.DateTime())
+    status_code = db.Column(db.Integer())
+    content = db.Column(db.Text())
     keywords = db.Column(db.String())
     _hash = None
 
@@ -43,6 +47,7 @@ class Nugget(db.Model):
         self.modified = self.added
         self.id = self.getid()
         self.update_index()
+        self.check()
 
     @property
     def sha1(self):
@@ -70,6 +75,11 @@ class Nugget(db.Model):
         existing = set(self.keywords.split('; '))
         self.keywords = ', '.join(existing.union(words))
 #       self.plugins.run(self, 'create')
+
+    def check(self):
+        resp = requests.get(self.uri)
+        self.status_code = resp.status_code
+        self.content = resp.content
 
     def update(self):
         self.update_index()
