@@ -1,8 +1,7 @@
-###############################################################################
-# All this should be moved to models/ or hactar when I can figure out db issue
-###############################################################################
+""" models.py
+Database models (using SQLAlchemy) for the hactar application.
+"""
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.sqlalchemy import listen
 from hashlib import sha1
 import time
 import datetime
