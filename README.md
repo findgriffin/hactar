@@ -60,5 +60,7 @@ TODO and action items are represented by a **task**, this consists of:
 
 Feature Priority
 ----------------
- 1. basic plugin architecture (scraping etc.)
- 2. Authentication / cookies
+ 1. Make tests pass
+ 2. Use in memory sqlite for tests
+ 3. Implement skeleton
+ 4. Implement deployment / release management
