@@ -1,11 +1,14 @@
 """ models.py 
 Database models (using SQLAlchemy) for the hactar application.
 """
-from flask.ext.sqlalchemy import SQLAlchemy
 from hashlib import sha1
 import time
 import datetime
+
+from flask.ext.sqlalchemy import SQLAlchemy
+import flask.ext.whooshalchemy
 import requests
+
 URI_SCHEMES = [
     'aaa', 'aaas', 'about', 'acap', 'cap', 'cid', 'crid', 'data', 'dav',
     'dict', 'dns', 'fax', 'file', 'ftp', 'geo', 'go', 'gopher', 'h323', 'http',
@@ -32,6 +35,7 @@ class Nugget(db.Model):
     content = db.Column(db.Text())
     keywords = db.Column(db.String())
     _hash = None
+    __searchable__ = ['uri', 'text', 'content']
 
     def __init__(self, text, uri=None, plugins=None):
 #       self.plugins = Plugins() if plugins is None else Plugins(plugins)
