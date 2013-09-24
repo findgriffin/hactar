@@ -3,6 +3,7 @@ Database models (using SQLAlchemy) for the hactar application.
 """
 from hashlib import sha1
 import time
+import re
 import datetime
 
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -27,30 +28,28 @@ db = SQLAlchemy()
 class Nugget(db.Model):
     id=db.Column(db.Integer, primary_key=True)
     uri = db.Column(db.String())
+    title = db.Column(db.String())
     text = db.Column(db.String())
     added = db.Column(db.DateTime())
     modified = db.Column(db.DateTime())
     checked = db.Column(db.DateTime())
     status_code = db.Column(db.Integer())
-    content = db.Column(db.Text())
-    keywords = db.Column(db.String())
+    content = db.Column(db.Text(), default='')
     _hash = None
     __searchable__ = ['uri', 'text', 'content']
 
     def __init__(self, text, uri=None, plugins=None):
 #       self.plugins = Plugins() if plugins is None else Plugins(plugins)
-        if uri is not None:
+        if uri:
             validate_uri(uri)
             self.uri = uri
         if len(text.split()) < 2:
             raise ValueError('Description must be more than one word.')
-        self.keywords = ''
 
         self.text = text
         self.added = datetime.datetime.now()
         self.modified = self.added
         self.id = self.getid()
-        self.update_index()
         self.check()
 
     @property
@@ -70,27 +69,23 @@ class Nugget(db.Model):
         integer."""
         return int(self.sha1[:15], 16)
 
-    
-    def update_index(self):
-        words = set()
-        for word in self.text.split():
-            cleaned = word.lower().strip("""~`!$%^&*(){}[];':",.?""")
-            words.add(cleaned)
-        existing = set(self.keywords.split('; '))
-        self.keywords = ', '.join(existing.union(words))
-#       self.plugins.run(self, 'create')
 
     def check(self):
-        resp = requests.get(self.uri)
-        self.status_code = resp.status_code
-        self.content = resp.content
+        if self.uri:
+            resp = requests.get(self.uri)
+            self.status_code = resp.status_code
+            title = re.search('<title>(.*)</title>', resp.content)# just title for now
+            if title:
+                self.title = title.group()
+            else:
+                self.title = 'unknown'
 
     def update(self):
-        self.update_index()
+        self.check()
         self.modified = datetime.datetime.now()
 
     def __str__(self):
-        return 'nugget: %s|%s|%s|%s|%s' % (self.text, self.uri, self.keywords,
+        return 'nugget: %s|%s|%s|%s' % (self.text, self.uri, 
                 self.added, self.modified)
 
     def __repr__(self):
