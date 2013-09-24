@@ -15,14 +15,13 @@ from hashlib import sha1
 from flask import Flask
 from flask.ext.testing import TestCase
 
-from models import db
+from web import db
 import web
 
 class TestWeb(TestCase):
+
     def create_app(self):
-        app = Flask(__name__)
-        app.config['TESTING'] = True
-        return app
+        return web.app
 
     def setUp(self):
         """Before each test, set up a blank database"""
@@ -34,19 +33,19 @@ class TestWeb(TestCase):
         db.drop_all()
 
     def login(self, username, password):
-        return self.app.post('/login', data=dict(
+        return self.client.post('/login', data=dict(
             username=username,
             password=password
         ), follow_redirects=True)
 
     def logout(self):
-        return self.app.get('/logout', follow_redirects=True)
+        return self.client.get('/logout', follow_redirects=True)
 
     # testing functions
 
     def test_empty_db(self):
         """Start with a blank database."""
-        rv = self.app.get('/')
+        rv = self.client.get('/')
         self.assertIn('No nuggets here so far', rv.data)
 
     def test_login_logout(self):
@@ -69,7 +68,7 @@ class TestWeb(TestCase):
                    web.app.config['PASSWORD'])
         uri = 'http://foobar.com'
         desc = 'a description of foobar'
-        rv = self.app.post('/add', data=dict( uri=uri, desc=desc,
+        rv = self.client.post('/add', data=dict( uri=uri, desc=desc,
         ), follow_redirects=True)
         self.assertEqual(rv.status_code, 200)
         self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri, uri), rv.data)
@@ -85,11 +84,11 @@ class TestWeb(TestCase):
         desc1 = 'a description of foobar/stuff'
         uri2 = 'http://foobar.com/stuff/more'
         desc2 = 'a description of foobar/stuff/more'
-        rv0 = self.app.post('/add', data=dict( uri=uri0, desc=desc0,
+        rv0 = self.client.post('/add', data=dict( uri=uri0, desc=desc0,
         ), follow_redirects=True)
-        rv1 = self.app.post('/add', data=dict( uri=uri1, desc=desc1,
+        rv1 = self.client.post('/add', data=dict( uri=uri1, desc=desc1,
         ), follow_redirects=True)
-        rv2 = self.app.post('/add', data=dict( uri=uri2, desc=desc2,
+        rv2 = self.client.post('/add', data=dict( uri=uri2, desc=desc2,
         ), follow_redirects=True)
         self.assertEqual(rv1.status_code, 200)
         self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri0, uri0), rv2.data)
@@ -107,9 +106,9 @@ class TestWeb(TestCase):
         desc0 = 'a description of foobar'
         uri1 = uri0
         desc1 = 'a description of foobar/stuff'
-        rv0 = self.app.post('/add', data=dict( uri=uri0, desc=desc0,
+        rv0 = self.client.post('/add', data=dict( uri=uri0, desc=desc0,
         ), follow_redirects=True)
-        rv1 = self.app.post('/add', data=dict( uri=uri1, desc=desc1,
+        rv1 = self.client.post('/add', data=dict( uri=uri1, desc=desc1,
         ), follow_redirects=True)
         self.assertEqual(rv1.status_code, 200)
         errstr = 'Nugget with that URI or description already exists'
@@ -124,7 +123,7 @@ class TestWeb(TestCase):
         uri0 = 'http://foobar.com'
         desc0 = 'a description of foobar'
         desc1 = 'a description of stuff'
-        rv0 = self.app.post('/add', data=dict( uri=uri0, desc=desc0),
+        rv0 = self.client.post('/add', data=dict( uri=uri0, desc=desc0),
             follow_redirects=True)
         self.assertEqual(rv0.status_code, 200)
         self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri0, uri0), rv0.data)
@@ -132,7 +131,7 @@ class TestWeb(TestCase):
         self.assertNotIn('<br>%s' % desc1, rv0.data)
         nugget_id = int(sha1(uri0).hexdigest()[:15], 16)
         self.assertIn('<a href="/edit/%s">edit</a>' % nugget_id, rv0.data)
-        rv1 = self.app.post('/update/%s' % nugget_id, data=dict(text=desc1),
+        rv1 = self.client.post('/update/%s' % nugget_id, data=dict(text=desc1),
                 follow_redirects=True)
         self.assertEqual(rv1.status_code, 200)
         self.assertIn('<br>%s' % desc1, rv1.data)

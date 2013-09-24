@@ -182,6 +182,10 @@ def init_db():
     with app.test_request_context():
         db.create_all()
 
+def create_app():
+    return app
+
+
 
 if __name__ == '__main__':
     try:
