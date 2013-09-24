@@ -8,26 +8,30 @@
     :license: BSD, see LICENSE for more details.
 """
 import os
-import web
 import unittest
 import tempfile
 from hashlib import sha1
 
+from flask import Flask
+from flask.ext.testing import TestCase
 
-class TestWeb(unittest.TestCase):
+from models import db
+import web
+
+class TestWeb(TestCase):
+    def create_app(self):
+        app = Flask(__name__)
+        app.config['TESTING'] = True
+        return app
 
     def setUp(self):
         """Before each test, set up a blank database"""
-        self.db_fd, self.db_path  = tempfile.mkstemp()
-        web.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+self.db_path
-        web.app.config['TESTING'] = True
-        self.app = web.app.test_client()
-        web.init_db()
+        db.create_all()
 
     def tearDown(self):
         """Get rid of the database again after each test."""
-        os.close(self.db_fd)
-        os.unlink(self.db_path)
+        db.session.remove()
+        db.drop_all()
 
     def login(self, username, password):
         return self.app.post('/login', data=dict(
