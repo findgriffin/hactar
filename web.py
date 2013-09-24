@@ -20,6 +20,7 @@ db.init_app(app)
 # Load default config and override config from an environment variable
 app.config.update(dict(
     SQLALCHEMY_DATABASE_URI='sqlite:////tmp/hactar.db',
+    WHOOSH_BASE='/tmp/hactar_whoosh',
     DEBUG=True,
     SECRET_KEY='cricket is a stupid sport',
     USERNAME='admin',
