@@ -11,7 +11,9 @@ import os
 import web
 import unittest
 import tempfile
+import shutil
 from hashlib import sha1
+import logging
 
 
 class TestWeb(unittest.TestCase):
@@ -19,13 +21,20 @@ class TestWeb(unittest.TestCase):
     def setUp(self):
         """Before each test, set up a blank database"""
         self.db_fd, self.db_path  = tempfile.mkstemp()
+        self.w_path = tempfile.mkdtemp()
         web.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+self.db_path
+        web.app.config['WHOOSH_BASE'] = self.w_path
+        logging.debug(self.db_path)
         web.app.config['TESTING'] = True
         self.app = web.app.test_client()
         web.init_db()
 
     def tearDown(self):
         """Get rid of the database again after each test."""
+        try:
+            shutil.rmtree(self.w_path)
+        except OSError:
+            pass
         os.close(self.db_fd)
         os.unlink(self.db_path)
 
