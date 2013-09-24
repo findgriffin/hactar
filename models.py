@@ -28,7 +28,7 @@ db = SQLAlchemy()
 class Nugget(db.Model):
     id=db.Column(db.Integer, primary_key=True)
     uri = db.Column(db.String())
-    title = db.Column(db.String())
+    title = db.Column(db.String(), default='')
     text = db.Column(db.String())
     added = db.Column(db.DateTime())
     modified = db.Column(db.DateTime())
@@ -36,7 +36,7 @@ class Nugget(db.Model):
     status_code = db.Column(db.Integer())
     content = db.Column(db.Text(), default='')
     _hash = None
-    __searchable__ = ['uri', 'text', 'title']
+    __searchable__ = ['uri', 'text']
 
     def __init__(self, text, uri=None, plugins=None):
 #       self.plugins = Plugins() if plugins is None else Plugins(plugins)
@@ -50,7 +50,6 @@ class Nugget(db.Model):
         self.added = datetime.datetime.now()
         self.modified = self.added
         self.id = self.getid()
-        self.check()
 
     @property
     def sha1(self):
