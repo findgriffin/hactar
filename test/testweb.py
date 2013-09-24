@@ -51,7 +51,7 @@ class TestWeb(unittest.TestCase):
 
     def test_login_logout(self):
         """Make sure login and logout works"""
-        rv0 = self.login()
+        rv = self.login()
         self.assertIn(b'You were logged in', rv.data)
         rv = self.logout()
         self.assertIn(b'You were logged out', rv.data)
