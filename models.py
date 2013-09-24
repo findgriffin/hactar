@@ -33,7 +33,7 @@ class Nugget(db.Model):
     added = db.Column(db.DateTime())
     modified = db.Column(db.DateTime())
     checked = db.Column(db.DateTime())
-    status_code = db.Column(db.Integer())
+    status_code = db.Column(db.Integer(), default=-1)
     content = db.Column(db.Text(), default='')
     _hash = None
     __searchable__ = ['uri', 'text']
@@ -80,7 +80,7 @@ class Nugget(db.Model):
                 self.title = 'unknown'
 
     def update(self):
-        self.check()
+#       self.check()
         self.modified = datetime.datetime.now()
 
     def __str__(self):
