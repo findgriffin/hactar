@@ -89,6 +89,9 @@ class TestWeb(unittest.TestCase):
         rv2 = self.app.post('/add', data=dict( uri=uri2, desc=desc2,
         ), follow_redirects=True)
         self.assertEqual(rv1.status_code, 200)
+        self.assertIn('New nugget was successfully added', rv0.data)
+        self.assertIn('New nugget was successfully added', rv1.data)
+        self.assertIn('New nugget was successfully added', rv2.data)
         self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri0, uri0), rv2.data)
         self.assertIn('<br>%s' % desc0, rv2.data)
         self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri1, uri1), rv2.data)
