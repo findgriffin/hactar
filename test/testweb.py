@@ -29,7 +29,11 @@ class TestWeb(unittest.TestCase):
         os.close(self.db_fd)
         os.unlink(self.db_path)
 
-    def login(self, username, password):
+    def login(self, username=None, password=None):
+        if not username:
+            username = web.app.config['USERNAME']
+        if not password:
+            password = web.app.config['PASSWORD']
         return self.app.post('/login', data=dict(
             username=username,
             password=password
@@ -47,8 +51,7 @@ class TestWeb(unittest.TestCase):
 
     def test_login_logout(self):
         """Make sure login and logout works"""
-        rv = self.login(web.app.config['USERNAME'],
-                        web.app.config['PASSWORD'])
+        rv0 = self.login()
         self.assertIn(b'You were logged in', rv.data)
         rv = self.logout()
         self.assertIn(b'You were logged out', rv.data)
@@ -61,8 +64,7 @@ class TestWeb(unittest.TestCase):
 
     def test_add_nugget(self):
         """Test adding a nugget with flask"""
-        self.login(web.app.config['USERNAME'],
-                   web.app.config['PASSWORD'])
+        self.login()
         uri = 'http://foobar.com'
         desc = 'a description of foobar'
         rv = self.app.post('/add', data=dict( uri=uri, desc=desc,
@@ -73,8 +75,7 @@ class TestWeb(unittest.TestCase):
 
     def test_add_nuggets(self):
         """Test adding some nuggets with flask"""
-        self.login(web.app.config['USERNAME'],
-                   web.app.config['PASSWORD'])
+        self.login()
         uri0 = 'http://foobar.com'
         desc0 = 'a description of foobar'
         uri1 = 'http://foobar.com/stuff'
@@ -97,8 +98,7 @@ class TestWeb(unittest.TestCase):
 
     def test_dup_nuggets(self):
         """Test attempting to add duplicate nuggets"""
-        self.login(web.app.config['USERNAME'],
-                   web.app.config['PASSWORD'])
+        self.login()
         uri0 = 'http://foobar.com'
         desc0 = 'a description of foobar'
         uri1 = uri0
@@ -115,8 +115,7 @@ class TestWeb(unittest.TestCase):
         self.assertNotIn('<br>%s' % desc1, rv1.data)
 
     def test_update_nugget(self):
-        self.login(web.app.config['USERNAME'],
-                   web.app.config['PASSWORD'])
+        self.login()
         uri0 = 'http://foobar.com'
         desc0 = 'a description of foobar'
         desc1 = 'a description of stuff'
