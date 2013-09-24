@@ -36,7 +36,7 @@ class Nugget(db.Model):
     status_code = db.Column(db.Integer())
     content = db.Column(db.Text(), default='')
     _hash = None
-    __searchable__ = ['uri', 'text', 'content']
+    __searchable__ = ['uri', 'text', 'title']
 
     def __init__(self, text, uri=None, plugins=None):
 #       self.plugins = Plugins() if plugins is None else Plugins(plugins)
