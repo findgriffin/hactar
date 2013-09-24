@@ -89,7 +89,7 @@ def edit_nugget(nugget):
     nuggets = Nugget.query.filter(Nugget.id == int(nugget)).all()
     if not nuggets:
         abort(404)
-    app.logger.debug('found: %s' % nuggets)
+    app.logger.debug('nuggets: %s' % type(nuggets))
     return render_template('edit_nugget.html', nugget=nuggets[0])
 
 @app.route('/update/<int:nugget>', methods=['GET', 'POST'])
@@ -102,7 +102,7 @@ def update_nugget(nugget):
     if not session.get('logged_in'):
         abort(401)
     app.logger.debug('updating nugget: %s' % nugget)
-    text = request.form['text']
+    text = unicode(request.form['text'])
     try:
         ngt = Nugget.query.filter(Nugget.id == int(nugget))
         ngt.update({'text': text})
