@@ -20,11 +20,12 @@ class TestWeb(unittest.TestCase):
 
     def setUp(self):
         """Before each test, set up a blank database"""
-        self.db_fd, self.db_path  = tempfile.mkstemp()
-        self.w_path = tempfile.mkdtemp()
+        self.db_fd, self.db_path  = tempfile.mkstemp(prefix='hactar_test.db.')
+        self.w_path = tempfile.mkdtemp(prefix='hactar_whoosh_test.')
         web.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+self.db_path
         web.app.config['WHOOSH_BASE'] = self.w_path
-        logging.debug(self.db_path)
+        logging.debug('db path: %s whoosh path: %s' % (self.db_path,
+            self.w_path))
         web.app.config['TESTING'] = True
         self.app = web.app.test_client()
         web.init_db()
