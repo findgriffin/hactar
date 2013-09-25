@@ -1,9 +1,47 @@
-<!doctype html>
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
 <head>
+	<!-- Basic Page Needs
+  ================================================== -->
+	<meta charset="utf-8">
+	<title>Your Page Title Here :)</title>
+	<meta name="Your personal AI" content="">
+	<meta name="David Griffin" content="">
+
+	<!-- Mobile Specific Metas
+  ================================================== -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- CSS
+  ================================================== -->
+  <link rel="stylesheet" 
+  href="{{ url_for('static', filename='stylesheets/base.css') }}">
+  <link rel="stylesheet" 
+  href="{{ url_for('static', filename='stylesheets/skeleton.css') }}">
+  <link rel="stylesheet" 
+  href="{{ url_for('static', filename='stylesheets/layout.css') }}">
+
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<!-- Favicons
+	================================================== -->
+    <link rel="shortcut icon" 
+    href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="apple-touch-icon" 
+    href="{{ url_for('static', filename='images/apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon" sizes="72x72" 
+    href="{{ url_for('static', filename='images/apple-touch-icon-72x72.png') }}">
+    <link rel="apple-touch-icon" sizes="114x114" 
+    href="{{ url_for('static', filename='images/apple-touch-icon-114x114.png') }}">
 <script type="text/javascript">
 window.onload = function(){
     // get submit button
-    var submitbutton = document.getElementById("tfq");
+    var submitbutton = document.getElementById("searchq");
     // add listener to button
     if(submitbutton.addEventListener){
         submitbutton.addEventListener("click", function() {
@@ -34,27 +72,27 @@ window.onload = function(){
     }
 }
 </script>
-<title>Hactar</title>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
-<div class=page>
-  <div id="tfheader">
-  <h1>Hactar</h1>
-  <form id="tfnewsearch" method="get" action="{{ url_for('memes') }}">
-        <input type="text" id="tfq" class="tftextinput3" name="q" size="21"
-        maxlength="120" value="search memes">
-    </form>
+<body>
+<div class="container">
+  <div class="three columns sidebar">
+    <nav>
+    <h3>Hactar</h3>
+    <form id="newsearch" method="get" action="{{ url_for('memes') }}">
+          <input type="text" id="searchq" name="q" value="search memes">
+      </form>
+    {% if not session.logged_in %}
+      <a href="{{ url_for('login') }}">log in</a>
+    {% else %}
+      <a href="{{ url_for('logout') }}">log out</a>
+    {% endif %}
+    </nav>
   </div>
-  <div class=metanav>
-  {% if not session.logged_in %}
-    <a href="{{ url_for('login') }}">log in</a>
-  {% else %}
-    <a href="{{ url_for('logout') }}">log out</a>
-  {% endif %}
+  <div class="twelve columns offset-by-one content">
+    {% for message in get_flashed_messages() %}
+      <div class=flash>{{ message }}</div>
+    {% endfor %}
+        {% block body %}{% endblock %}
   </div>
-  {% for message in get_flashed_messages() %}
-    <div class=flash>{{ message }}</div>
-  {% endfor %}
-  {% block body %}{% endblock %}
 </div>
+</body>

@@ -3,16 +3,16 @@
   {% if session.logged_in %}
   <form action="{{ url_for('meme', meme=meme.id) }}" method="post" class=add-meme>
       <dl>
-        <dt>{{ meme.heading }}
+        <dt><h4>{{ meme.heading }}</h4>
         <dt>Description:
-        <dd><textarea name=text rows=10 cols=40>{{ meme.text }}</textarea>
+        <dd><textarea name=text rows=20 style="width: 100%;">{{ meme.text }}</textarea>
         <dd><input type="checkbox" name="delete" value="Delete">delete</input>
         <dd><input type=submit value=Update>
       </dl>
   </form>
   {% else %}
     {% if meme.uri %}
-      <h2><a href="{{ meme.uri }}">{{ meme.heading }}</a></h2>
+      <h4><a href="{{ meme.uri }}">{{ meme.heading }}</a></h4>
     {% else %}
       <h2>{{ meme.title }}</h2>
     {% endif %}

@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
   {% if session.logged_in and add %}
-    <form action="{{ url_for('memes') }}" method=post class=add-meme>
+    <form action="{{ url_for('memes') }}" method=post>
       <dl>
-        <dd><input type=text id="urltitle" size=40 name=uri value="URL or title">
-        <dd><textarea name=desc id="description" rows=10 cols=40>description</textarea>
+        <dd><input type=text id="urltitle" name=uri style="width: 100%;" value="URL or title">
+        <dd><textarea name=desc id="description" rows=5 style="width: 100%;">description</textarea>
         <dd><input type=submit value=Add>
       </dl>
     </form>
@@ -12,9 +12,9 @@
   <ul class=memes>
   {% for meme in memes %}
     {% if meme.uri %}
-      <li><h2><a href="{{ meme.uri }}">{{ meme.heading }}</a></h2>
+      <li><h4><a href="{{ meme.uri }}">{{ meme.heading }}</a></h4>
     {% else %}
-      <li><h2>{{ meme.title }}</h2>
+      <li><h4>{{ meme.title }}</h4>
     {% endif %}
       <h5>
           <a href="{{ url_for('meme', meme=meme.id) }}">edit</a>
