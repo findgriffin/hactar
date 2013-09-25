@@ -6,6 +6,8 @@
     :license: BSD, see LICENSE for more details.
 """
 import datetime
+import traceback
+
 from sqlalchemy.exc import IntegrityError
 import flask.ext.whooshalchemy
 from flask import Flask, request, session, g, redirect, url_for, abort, \
@@ -30,11 +32,13 @@ app.config.from_envvar('HACTAR_SETTINGS', silent=True)
 @app.errorhandler(404)
 def not_found(exc):
     """Handle HTTP not found error."""
+    app.logger.debug('returning 404 error for: ' % exc.message)
     return render_template('error.html', exc=exc), 404
 
 @app.errorhandler(500)
 def internal_server_error(exc):
     """Handle internal server error."""
+    app.logger.error('Unhandled error:\n' % traceback.format_exc())
     return render_template('error.html', exc=exc), 500
 
 @app.teardown_appcontext
@@ -62,12 +66,16 @@ def memes():
             db.session.commit()
             flash('New meme was successfully added')
         except ValueError as err:
+            app.logger.error('got error: %s' % err.message)
             db.session.rollback()
             flash(err.message)
         except IntegrityError as err:
             db.session.rollback()
             if 'primary key must be unique' in err.message.lower():
+                app.logger.debug("can't add duplicate meme: %s" % uri )
                 flash('Meme with that URI or description already exists')
+            else:
+                abort(500)
     else:
         terms = request.args.get('q')
         if terms:
@@ -119,10 +127,6 @@ def update_meme(meme):
 
 def delete_meme(meme):
     """Remove a meme from the db."""
-    try:
-        int(meme)
-    except ValueError:
-        abort(400)
     if not session.get('logged_in'):
         abort(401)
     try:
@@ -130,10 +134,14 @@ def delete_meme(meme):
         db.session.commit()
         flash('Meme successfully deleted')
     except ValueError as err:
+        db.session.rollback()
         flash(err.message)
     except IntegrityError as err:
+        db.session.rollback()
         if 'primary key must be unique' in err.message.lower():
             flash('Meme with that URI or description already exists')
+        else:
+            abort(500)
     return redirect(url_for('memes'))
 
 @app.route('/login', methods=['GET', 'POST'])

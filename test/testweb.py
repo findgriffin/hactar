@@ -28,6 +28,7 @@ class TestWeb(TestCase):
         app.config.update(dict(
             SQLALCHEMY_DATABASE_URI='sqlite:///')
             )
+        app.logger.setLevel(30)
         return app
 
     def setUp(self):
@@ -137,6 +138,7 @@ class TestWeb(TestCase):
         self.assertNotIn('<br>%s' % self.desc1, rv1.data)
 
     def test_update_meme(self):
+        """Test updating a meme"""
         self.login()
         rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
             follow_redirects=True)
@@ -150,6 +152,7 @@ class TestWeb(TestCase):
         self.assertNotIn('<br>%s' % self.desc0, rv1.data)
     
     def test_delete_meme(self):
+        """Test deleting a meme"""
         self.login()
         rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
             follow_redirects=True)
@@ -174,6 +177,7 @@ class TestWeb(TestCase):
         self.assertNotIn('<br>%s' % self.desc0, rv3.data)
 
     def test_search_memes(self):
+        """Test basic meme searching"""
         self.login()
         # add 3 memes to get us started
         rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
@@ -200,10 +204,25 @@ class TestWeb(TestCase):
         self.assertNotIn(self.desc0, rv5.data)
 
     def test_title_memes(self):
-        pass
+        """Test adding memes with title (no URL)"""
+        self.skipTest(True)
 
     def test_logged_out_views(self):
-        pass
+        """Test page appearance when logged out"""
+        self.skipTest(True)
+
+    def test_delete_fail(self):
+        """Test attempting to delete a nonexistant meme"""
+        self.skipTest(True)
+
+    def test_update_fail(self):
+        """Test updating a nonexistant meme"""
+        self.skipTest(True)
+
+    def test_add_no_uri(self):
+        """Test adding a meme with no uri"""
+        self.skipTest(True)
+
 
 if __name__ == '__main__':
     unittest.main()
