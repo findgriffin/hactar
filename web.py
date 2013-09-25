@@ -80,16 +80,23 @@ def nuggets():
     nuggets = Nugget.query.order_by(Nugget.modified.desc())
     return render_template('show_nuggets.html', nuggets=nuggets, add=True)
 
-@app.route('/edit/<int:nugget>', methods=['GET'])
-def edit_nugget(nugget):
+@app.route('/nuggets/<int:nugget>', methods=['GET', 'POST'])
+def nugget(nugget):
+    if request.method == 'GET':
+        return get_nugget(nugget)
+    elif 'delete' in request.form and request.form['delete'] == 'Delete':
+        return delete_nugget(nugget)
+    else:
+        return update_nugget(nugget)
+
+
+def get_nugget(nugget):
     """Edit (or delete) a nugget."""
     nuggets = Nugget.query.filter(Nugget.id == int(nugget)).all()
     if not nuggets:
         abort(404)
-    app.logger.debug('nuggets: %s' % type(nuggets))
     return render_template('edit_nugget.html', nugget=nuggets[0])
 
-@app.route('/update/<int:nugget>', methods=['GET', 'POST'])
 def update_nugget(nugget):
     """Update a nugget (i.e. implement an edit to a nugget)"""
     try:
@@ -109,13 +116,8 @@ def update_nugget(nugget):
     except ValueError as err:
         db.session.rollback()
         flash(err.message)
-    except IntegrityError as err:
-        db.session.rollback()
-        if 'primary key must be unique' in err.message.lower():
-            flash('Nugget with that URI or description already exists')
     return redirect(url_for('nuggets'))
 
-@app.route('/delete/<int:nugget>', methods=['GET', 'POST'])
 def delete_nugget(nugget):
     """Remove a nugget from the db."""
     try:
@@ -124,10 +126,8 @@ def delete_nugget(nugget):
         abort(400)
     if not session.get('logged_in'):
         abort(401)
-    app.logger.debug('deleting nugget: %s' % nugget)
     try:
-        ngt = Nugget.query.filter(Nugget.id == int(nugget)).delete()
-#       ngt.create()
+        Nugget.query.filter(Nugget.id == int(nugget)).delete()
         db.session.commit()
         flash('Nugget successfully deleted')
     except ValueError as err:

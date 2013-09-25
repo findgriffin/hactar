@@ -15,7 +15,7 @@
   {% for nugget in nuggets %}
   <li><h2><a href="{{ nugget.uri }}">{{ nugget.uri }}</a></h2>
       <h5>
-          <a href="{{ url_for('edit_nugget', nugget=nugget.id) }}">edit</a>
+          <a href="{{ url_for('nugget', nugget=nugget.id) }}">edit</a>
       modified:{{ nugget.modified|datetime }} 
       added:{{ nugget.added|datetime }} 
       </h5>

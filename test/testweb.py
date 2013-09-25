@@ -144,8 +144,8 @@ class TestWeb(TestCase):
             follow_redirects=True)
         self.check_nugget(rv0, self.uri0, self.desc0, new=True)
         nugget_id = int(sha1(self.uri0).hexdigest()[:15], 16)
-        self.assertIn('<a href="/edit/%s">edit</a>' % nugget_id, rv0.data)
-        rv1 = self.client.post('/update/%s' % nugget_id, data=dict(text=self.desc1),
+        self.assertIn('<a href="/nuggets/%s">edit</a>' % nugget_id, rv0.data)
+        rv1 = self.client.post('/nuggets/%s' % nugget_id, data=dict(text=self.desc1),
                 follow_redirects=True)
         self.check_nugget(rv1, self.uri0, self.desc1, new=False,
             flash='Nugget successfully modified')
@@ -162,12 +162,15 @@ class TestWeb(TestCase):
 
         # delete nugget 0
         nugget_id = int(sha1(self.uri0).hexdigest()[:15], 16)
-        self.assertIn('<a href="/edit/%s">edit</a>' % nugget_id, rv0.data)
-        rv2 = self.client.get('/edit/%s' % nugget_id,
+        self.assertIn('<a href="/nuggets/%s">edit</a>' % nugget_id, rv0.data)
+        rv2 = self.client.get('/nuggets/%s' % nugget_id,
                 follow_redirects=True)
-        self.assertIn('<form action="/delete/%s" method=post' % nugget_id, rv2.data)
-        self.assertIn('<input type=submit value=Delete', rv2.data)
-        rv3 = self.client.post('/delete/%s' % nugget_id, follow_redirects=True)
+        formstr = '<form action="/nuggets/%s" method="post"' 
+        self.assertIn(formstr % nugget_id, rv2.data)
+        dl='<input type="checkbox" name="delete" value="Delete">delete</input>'
+        self.assertIn(dl, rv2.data)
+        rv3 = self.client.post('/nuggets/%s' % nugget_id, data=dict(
+            delete='Delete'), follow_redirects=True)
         self.check_nugget(rv3, self.uri1, self.desc1, new=False, 
                     flash='Nugget successfully deleted')
         self.assertNotIn('<br>%s' % self.desc0, rv3.data)
