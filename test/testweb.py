@@ -7,14 +7,9 @@
 
     :license: BSD, see LICENSE for more details.
 """
-import os
 import unittest
-import tempfile
-import shutil
 from hashlib import sha1
-import logging
 
-from flask import Flask
 from flask.ext.testing import TestCase
 
 from web import db
