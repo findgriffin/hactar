@@ -53,40 +53,48 @@ window.onload = function(){
     // get description field
     var descfield = document.getElementById("description");
     // add listener to descfield field
-    if(descfield.addEventListener){
-        descfield.addEventListener("click", function() {
-            if (descfield.value == 'description'){
-                descfield.value = '';
-            }
-        });
+    if(descfield){
+        if(descfield.addEventListener){
+            descfield.addEventListener("click", function() {
+                if (descfield.value == 'description'){
+                    descfield.value = '';
+                }
+            });
+        };
     };
     // get description field
     var urlfield = document.getElementById("urltitle");
     // add listener to urlfield field
-    if(urlfield.addEventListener){
-        urlfield.addEventListener("click", function() {
-            if (urlfield.value == 'URL or title'){
-                urlfield.value = '';
-            }
-        });
+    if(urlfield){
+        if(urlfield.addEventListener){
+            urlfield.addEventListener("click", function() {
+                if (urlfield.value == 'URL or title'){
+                    urlfield.value = '';
+                }
+            });
+        };
     };
     // get description field
     var userfield = document.getElementById("username");
-    if(userfield.addEventListener){
-        userfield.addEventListener("click", function() {
-            if (userfield.value == 'username'){
-                userfield.value = '';
-            }
-        });
-    };
+    if(userfield){
+        if(userfield.addEventListener){
+            userfield.addEventListener("click", function() {
+                if (userfield.value == 'username'){
+                    userfield.value = '';
+                }
+            });
+        };
+    }; 
     // get description field
     var passfield = document.getElementById("password");
-    if(passfield.addEventListener){
-        passfield.addEventListener("click", function() {
-            if (passfield.value == 'password'){
-                passfield.value = '';
-            }
-        });
+    if(passfield){
+        if(passfield.addEventListener){
+            passfield.addEventListener("click", function() {
+                if (passfield.value == 'password'){
+                    passfield.value = '';
+                }
+            });
+        };
     };
 }
 </script>
