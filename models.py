@@ -39,10 +39,11 @@ class Meme(db.Model):
     __searchable__ = ['uri', 'text']
 
     def __init__(self, text, uri=None, plugins=None):
-#       self.plugins = Plugins() if plugins is None else Plugins(plugins)
-        if uri:
-            validate_uri(uri)
+        if is_uri(uri):
             self.uri = uri
+        else:
+            self.uri = None
+            self.title = uri
         if len(text.split()) < 2:
             raise ValueError('Description must be more than one word.')
 
@@ -54,12 +55,12 @@ class Meme(db.Model):
     @property
     def sha1(self):
         """ Return the sha1 hash of this meme. Use the URL if it exists or
-        the description if this meme has no URI."""
+        the title if this meme has no URI. (it must have one or the other)"""
         if self._hash is None:
             if self.uri is not None:
                 sha = sha1(self.uri)
             else:
-                sha = sha1(self.text)
+                sha = sha1(self.title)
             self._hash = sha.hexdigest()
         return self._hash
 
@@ -67,6 +68,12 @@ class Meme(db.Model):
         """ Return the (first 15 digits) sha1 hash of this meme as an
         integer."""
         return int(self.sha1[:15], 16)
+    @property
+    def heading(self):
+        if self.title:
+            return self.title
+        else:
+            return self.uri
 
 
     def check(self):
@@ -90,13 +97,14 @@ class Meme(db.Model):
     def __repr__(self):
         return '<Meme %s>' % self.uri if self.uri else self.id
 
-def validate_uri(uri):
+def is_uri(uri):
     """ Check that the given URI is valid. Raise an exception if it is not."""
     parts = uri.split(':')
     if len(parts) < 2:
-        raise ValueError('URI:%s does not specify a scheme.' % uri)
+        return False
     elif parts[0] not in URI_SCHEMES and parts[0] != 'urn':
-        raise ValueError('URI:%s is not a recognised scheme.' % parts[0])
+        return False
+    return True
 
 class Task(db.Model):
     """ A task, something that the user needs to do."""

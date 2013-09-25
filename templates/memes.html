@@ -3,17 +3,19 @@
   {% if session.logged_in and add %}
     <form action="{{ url_for('memes') }}" method=post class=add-meme>
       <dl>
-        <dt>Url:
-        <dd><input type=text size=40 name=uri>
-        <dt>Description:
-        <dd><textarea name=desc rows=10 cols=40></textarea>
+        <dd><input type=text size=40 name=uri value="URI or title">
+        <dd><textarea name=desc rows=10 cols=40>description</textarea>
         <dd><input type=submit value=Add>
       </dl>
     </form>
   {% endif %}
   <ul class=memes>
   {% for meme in memes %}
-  <li><h2><a href="{{ meme.uri }}">{{ meme.uri }}</a></h2>
+    {% if meme.uri %}
+      <li><h2><a href="{{ meme.uri }}">{{ meme.heading }}</a></h2>
+    {% else %}
+      <li><h2>{{ meme.title }}</h2>
+    {% endif %}
       <h5>
           <a href="{{ url_for('meme', meme=meme.id) }}">edit</a>
       modified:{{ meme.modified|datetime }} 
