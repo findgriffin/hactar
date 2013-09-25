@@ -3,8 +3,8 @@
   {% if session.logged_in and add %}
     <form action="{{ url_for('memes') }}" method=post class=add-meme>
       <dl>
-        <dd><input type=text size=40 name=uri value="URI or title">
-        <dd><textarea name=desc rows=10 cols=40>description</textarea>
+        <dd><input type=text id="urltitle" size=40 name=uri value="URL or title">
+        <dd><textarea name=desc id="description" rows=10 cols=40>description</textarea>
         <dd><input type=submit value=Add>
       </dl>
     </form>

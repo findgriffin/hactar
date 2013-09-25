@@ -11,6 +11,26 @@ window.onload = function(){
                 submitbutton.value = '';
             }
         });
+    };
+    // get description field
+    var description = document.getElementById("description");
+    // add listener to description field
+    if(description.addEventListener){
+        description.addEventListener("click", function() {
+            if (description.value == 'description'){
+                description.value = '';
+            }
+        });
+    }
+    // get description field
+    var urltitle = document.getElementById("urltitle");
+    // add listener to urltitle field
+    if(urltitle.addEventListener){
+        urltitle.addEventListener("click", function() {
+            if (urltitle.value == 'URL or title'){
+                urltitle.value = '';
+            }
+        });
     }
 }
 </script>
