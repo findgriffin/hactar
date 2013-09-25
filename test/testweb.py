@@ -13,8 +13,7 @@ import datetime
 
 from flask.ext.testing import TestCase
 
-from web import db
-import web
+from app import db, app
 
 class TestWeb(TestCase):
 
@@ -26,7 +25,6 @@ class TestWeb(TestCase):
     desc2 = 'a description of more'
 
     def create_app(self):
-        app = web.app
         app.config.update(dict(
             SQLALCHEMY_DATABASE_URI='sqlite:///')
             )
@@ -43,9 +41,9 @@ class TestWeb(TestCase):
 
     def login(self, username=None, password=None):
         if not username:
-            username = web.app.config['USERNAME']
+            username = app.config['USERNAME']
         if not password:
-            password = web.app.config['PASSWORD']
+            password = app.config['PASSWORD']
         return self.client.post('/login', data=dict(
             username=username,
             password=password
@@ -95,11 +93,11 @@ class TestWeb(TestCase):
         self.assertIn(b'You were logged in', rv.data)
         rv = self.logout()
         self.assertIn(b'You were logged out', rv.data)
-        rv = self.login(web.app.config['USERNAME'] + 'x',
-                        web.app.config['PASSWORD'])
+        rv = self.login(app.config['USERNAME'] + 'x',
+                        app.config['PASSWORD'])
         self.assertIn(b'Invalid username', rv.data)
-        rv = self.login(web.app.config['USERNAME'],
-                        web.app.config['PASSWORD'] + 'x')
+        rv = self.login(app.config['USERNAME'],
+                        app.config['PASSWORD'] + 'x')
         self.assertIn(b'Invalid password', rv.data)
 
     def test_add_meme(self):
