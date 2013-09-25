@@ -18,7 +18,11 @@ import web
 class TestWeb(TestCase):
 
     def create_app(self):
-        return web.app
+        app = web.app
+        app.config.update(dict(
+            SQLALCHEMY_DATABASE_URI='sqlite:///')
+            )
+        return app
 
     def setUp(self):
         """Before each test, set up a blank database"""
