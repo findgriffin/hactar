@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
   {% if session.logged_in and add %}
-    <form action="{{ url_for('nuggets') }}" method=post class=add-nugget>
+    <form action="{{ url_for('memes') }}" method=post class=add-meme>
       <dl>
         <dt>Url:
         <dd><input type=text size=40 name=uri>
@@ -11,17 +11,17 @@
       </dl>
     </form>
   {% endif %}
-  <ul class=nuggets>
-  {% for nugget in nuggets %}
-  <li><h2><a href="{{ nugget.uri }}">{{ nugget.uri }}</a></h2>
+  <ul class=memes>
+  {% for meme in memes %}
+  <li><h2><a href="{{ meme.uri }}">{{ meme.uri }}</a></h2>
       <h5>
-          <a href="{{ url_for('nugget', nugget=nugget.id) }}">edit</a>
-      modified:{{ nugget.modified|datetime }} 
-      added:{{ nugget.added|datetime }} 
+          <a href="{{ url_for('meme', meme=meme.id) }}">edit</a>
+      modified:{{ meme.modified|datetime }} 
+      added:{{ meme.added|datetime }} 
       </h5>
-  <br>{{ nugget.text|safe }}
+  <br>{{ meme.text|safe }}
   {% else %}
-    <li><em>Unbelievable.  No nuggets here so far</em>
+    <li><em>Unbelievable.  No memes here so far</em>
   {% endfor %}
   </ul>
 {% endblock %}
