@@ -4,16 +4,10 @@ hactar
 Hactar is a personal todo list, diary and knowledge management system. Your
 personal AI (not really).
 
-
-Hactar is made up of three components that are designed to be modular:
-
- * **backend** - Stores data (sqlite?)
- * **core** - Contains logic and connects frontend to backend
- * **frontend** - Displays information and enables user interaction.
-
 Hactar may also support plugins that add extra functionality such as scraping
 websites and intelligent searching. These plugins should only mainly interact
-with the core (not the front or back ends).
+with the core (not the front or back ends). Hactar uses the flask
+microframwork, sqlalchemy as it's orm and sqlite as it's backend.
 
 Planned plugins (in planned implementation order):
  1. scraper - scrape linked urls for information that can later be searched
@@ -62,5 +56,7 @@ Feature Priority
 ----------------
  1. make RESTful
  1. rename nuggets to memes
- 1. Implement skeleton
+ 1. rename tasks to events
+ 1. Implement skeleton (make it look pretty)
  1. Implement deployment / release management
+ 1. Implement tasks
