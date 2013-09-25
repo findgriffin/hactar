@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block body %}
+  {% if session.logged_in %}
+  <form action="{{ url_for('meme', meme=meme.id) }}" method="post" class=add-meme>
+      <dl>
+        <dt>URL:{{ meme.uri }}
+        <dt>Description:
+        <dd><textarea name=text rows=10 cols=40>{{ meme.text }}</textarea>
+        <dd><input type="checkbox" name="delete" value="Delete">delete</input>
+        <dd><input type=submit value=Update>
+      </dl>
+  </form>
+  {% else %}
+    <h2><a href="{{ meme.uri }}">{{ meme.uri }}</a></h2>
+      <h5>
+      modified:{{ meme.modified|datetime }} 
+      added:{{ meme.added|datetime }} 
+      </h5>
+    <br>{{ meme.text|safe }}
+
+  {% endif %}
+{% endblock %}

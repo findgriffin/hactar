@@ -7,7 +7,7 @@ window.onload = function(){
     // add listener to button
     if(submitbutton.addEventListener){
         submitbutton.addEventListener("click", function() {
-            if (submitbutton.value == 'search nuggets'){
+            if (submitbutton.value == 'search memes'){
                 submitbutton.value = '';
             }
         });
@@ -21,9 +21,9 @@ window.onload = function(){
 <div class=page>
   <div id="tfheader">
   <h1>Hactar</h1>
-  <form id="tfnewsearch" method="get" action="{{ url_for('nuggets') }}">
+  <form id="tfnewsearch" method="get" action="{{ url_for('memes') }}">
         <input type="text" id="tfq" class="tftextinput3" name="q" size="21"
-        maxlength="120" value="search nuggets">
+        maxlength="120" value="search memes">
     </form>
   </div>
   <div class=metanav>

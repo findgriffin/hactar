@@ -25,7 +25,7 @@ URI_SCHEMES = [
 
 db = SQLAlchemy()
 
-class Nugget(db.Model):
+class Meme(db.Model):
     id=db.Column(db.Integer, primary_key=True)
     uri = db.Column(db.String())
     title = db.Column(db.String(), default='')
@@ -53,8 +53,8 @@ class Nugget(db.Model):
 
     @property
     def sha1(self):
-        """ Return the sha1 hash of this nugget. Use the URL if it exists or
-        the description if this nugget has no URI."""
+        """ Return the sha1 hash of this meme. Use the URL if it exists or
+        the description if this meme has no URI."""
         if self._hash is None:
             if self.uri is not None:
                 sha = sha1(self.uri)
@@ -64,7 +64,7 @@ class Nugget(db.Model):
         return self._hash
 
     def getid(self):
-        """ Return the (first 15 digits) sha1 hash of this nugget as an
+        """ Return the (first 15 digits) sha1 hash of this meme as an
         integer."""
         return int(self.sha1[:15], 16)
 
@@ -84,11 +84,11 @@ class Nugget(db.Model):
         self.modified = datetime.datetime.now()
 
     def __str__(self):
-        return 'nugget: %s|%s|%s|%s' % (self.text, self.uri, 
+        return 'meme: %s|%s|%s|%s' % (self.text, self.uri, 
                 self.added, self.modified)
 
     def __repr__(self):
-        return '<Nugget %s>' % self.uri if self.uri else self.id
+        return '<Meme %s>' % self.uri if self.uri else self.id
 
 def validate_uri(uri):
     """ Check that the given URI is valid. Raise an exception if it is not."""

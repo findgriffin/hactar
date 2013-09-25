@@ -55,11 +55,11 @@ class TestWeb(TestCase):
         return self.client.get('/logout', follow_redirects=True)
 
 
-    def check_nugget(self, resp, uri, desc, new=True, flash=None):
+    def check_meme(self, resp, uri, desc, new=True, flash=None):
         if flash:
             self.assertIn(flash, resp.data)
         elif new:
-            msg = 'New nugget was successfully added'
+            msg = 'New meme was successfully added'
             self.assertIn(msg, resp.data)
         now = datetime.datetime.now()
         then = now - datetime.timedelta(minutes=1)
@@ -86,8 +86,8 @@ class TestWeb(TestCase):
 
     def test_empty_db(self):
         """Start with a blank database."""
-        rv = self.client.get('/nuggets')
-        self.assertIn('No nuggets here so far', rv.data)
+        rv = self.client.get('/memes')
+        self.assertIn('No memes here so far', rv.data)
 
     def test_login_logout(self):
         """Make sure login and logout works"""
@@ -102,103 +102,103 @@ class TestWeb(TestCase):
                         web.app.config['PASSWORD'] + 'x')
         self.assertIn(b'Invalid password', rv.data)
 
-    def test_add_nugget(self):
-        """Test adding a nugget with flask"""
+    def test_add_meme(self):
+        """Test adding a meme with flask"""
         self.login()
-        rv = self.client.post('/nuggets', data=dict( uri=self.uri0, desc=self.desc0,
+        rv = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0,
         ), follow_redirects=True)
-        self.check_nugget(rv, self.uri0, self.desc0)
+        self.check_meme(rv, self.uri0, self.desc0)
 
-    def test_add_nuggets(self):
-        """Test adding some nuggets with flask"""
+    def test_add_memes(self):
+        """Test adding some memes with flask"""
         self.login()
-        rv0 = self.client.post('/nuggets', data=dict( uri=self.uri0, desc=self.desc0,
+        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0,
         ), follow_redirects=True)
-        self.check_nugget(rv0, self.uri0, self.desc0)
-        rv1 = self.client.post('/nuggets', data=dict( uri=self.uri1, desc=self.desc1,
+        self.check_meme(rv0, self.uri0, self.desc0)
+        rv1 = self.client.post('/memes', data=dict( uri=self.uri1, desc=self.desc1,
         ), follow_redirects=True)
-        self.check_nugget(rv1, self.uri0, self.desc0)
-        self.check_nugget(rv1, self.uri1, self.desc1)
-        rv2 = self.client.post('/nuggets', data=dict( uri=self.uri2, desc=self.desc2,
+        self.check_meme(rv1, self.uri0, self.desc0)
+        self.check_meme(rv1, self.uri1, self.desc1)
+        rv2 = self.client.post('/memes', data=dict( uri=self.uri2, desc=self.desc2,
         ), follow_redirects=True)
-        self.check_nugget(rv2, self.uri0, self.desc0)
-        self.check_nugget(rv2, self.uri1, self.desc1)
-        self.check_nugget(rv2, self.uri2, self.desc2)
+        self.check_meme(rv2, self.uri0, self.desc0)
+        self.check_meme(rv2, self.uri1, self.desc1)
+        self.check_meme(rv2, self.uri2, self.desc2)
 
-    def test_dup_nuggets(self):
-        """Test attempting to add duplicate nuggets"""
+    def test_dup_memes(self):
+        """Test attempting to add duplicate memes"""
         self.login()
-        rv0 = self.client.post('/nuggets', data=dict( uri=self.uri0, desc=self.desc0,
+        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0,
         ), follow_redirects=True)
-        self.check_nugget(rv0, self.uri0, self.desc0)
-        rv1 = self.client.post('/nuggets', data=dict( uri=self.uri0, desc=self.desc1,
+        self.check_meme(rv0, self.uri0, self.desc0)
+        rv1 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc1,
         ), follow_redirects=True)
         self.assertEqual(rv1.status_code, 200)
-        errstr = 'Nugget with that URI or description already exists'
-        self.check_nugget(rv1, self.uri0, self.desc0, flash=errstr)
+        errstr = 'Meme with that URI or description already exists'
+        self.check_meme(rv1, self.uri0, self.desc0, flash=errstr)
         self.assertNotIn('<br>%s' % self.desc1, rv1.data)
 
-    def test_update_nugget(self):
+    def test_update_meme(self):
         self.login()
-        rv0 = self.client.post('/nuggets', data=dict( uri=self.uri0, desc=self.desc0),
+        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
             follow_redirects=True)
-        self.check_nugget(rv0, self.uri0, self.desc0, new=True)
-        nugget_id = int(sha1(self.uri0).hexdigest()[:15], 16)
-        self.assertIn('<a href="/nuggets/%s">edit</a>' % nugget_id, rv0.data)
-        rv1 = self.client.post('/nuggets/%s' % nugget_id, data=dict(text=self.desc1),
+        self.check_meme(rv0, self.uri0, self.desc0, new=True)
+        meme_id = int(sha1(self.uri0).hexdigest()[:15], 16)
+        self.assertIn('<a href="/memes/%s">edit</a>' % meme_id, rv0.data)
+        rv1 = self.client.post('/memes/%s' % meme_id, data=dict(text=self.desc1),
                 follow_redirects=True)
-        self.check_nugget(rv1, self.uri0, self.desc1, new=False,
-            flash='Nugget successfully modified')
+        self.check_meme(rv1, self.uri0, self.desc1, new=False,
+            flash='Meme successfully modified')
         self.assertNotIn('<br>%s' % self.desc0, rv1.data)
     
-    def test_delete_nugget(self):
+    def test_delete_meme(self):
         self.login()
-        rv0 = self.client.post('/nuggets', data=dict( uri=self.uri0, desc=self.desc0),
+        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
             follow_redirects=True)
-        self.check_nugget(rv0, self.uri0, self.desc0, new=True)
-        rv1 = self.client.post('/nuggets', data=dict( uri=self.uri1, desc=self.desc1),
+        self.check_meme(rv0, self.uri0, self.desc0, new=True)
+        rv1 = self.client.post('/memes', data=dict( uri=self.uri1, desc=self.desc1),
             follow_redirects=True)
-        self.check_nugget(rv1, self.uri1, self.desc1, new=True)
+        self.check_meme(rv1, self.uri1, self.desc1, new=True)
 
-        # delete nugget 0
-        nugget_id = int(sha1(self.uri0).hexdigest()[:15], 16)
-        self.assertIn('<a href="/nuggets/%s">edit</a>' % nugget_id, rv0.data)
-        rv2 = self.client.get('/nuggets/%s' % nugget_id,
+        # delete meme 0
+        meme_id = int(sha1(self.uri0).hexdigest()[:15], 16)
+        self.assertIn('<a href="/memes/%s">edit</a>' % meme_id, rv0.data)
+        rv2 = self.client.get('/memes/%s' % meme_id,
                 follow_redirects=True)
-        formstr = '<form action="/nuggets/%s" method="post"' 
-        self.assertIn(formstr % nugget_id, rv2.data)
+        formstr = '<form action="/memes/%s" method="post"' 
+        self.assertIn(formstr % meme_id, rv2.data)
         dl='<input type="checkbox" name="delete" value="Delete">delete</input>'
         self.assertIn(dl, rv2.data)
-        rv3 = self.client.post('/nuggets/%s' % nugget_id, data=dict(
+        rv3 = self.client.post('/memes/%s' % meme_id, data=dict(
             delete='Delete'), follow_redirects=True)
-        self.check_nugget(rv3, self.uri1, self.desc1, new=False, 
-                    flash='Nugget successfully deleted')
+        self.check_meme(rv3, self.uri1, self.desc1, new=False, 
+                    flash='Meme successfully deleted')
         self.assertNotIn('<br>%s' % self.desc0, rv3.data)
 
-    def test_search_nuggets(self):
+    def test_search_memes(self):
         self.login()
-        # add 3 nuggets to get us started
-        rv0 = self.client.post('/nuggets', data=dict( uri=self.uri0, desc=self.desc0),
+        # add 3 memes to get us started
+        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
             follow_redirects=True)
-        rv1 = self.client.post('/nuggets', data=dict( uri=self.uri1, desc=self.desc1),
+        rv1 = self.client.post('/memes', data=dict( uri=self.uri1, desc=self.desc1),
             follow_redirects=True)
-        rv2 = self.client.post('/nuggets', data=dict( uri=self.uri2, desc=self.desc2),
+        rv2 = self.client.post('/memes', data=dict( uri=self.uri2, desc=self.desc2),
             follow_redirects=True)
-        rv3 = self.client.get('/nuggets?q=description', follow_redirects=True)
-        self.check_nugget(rv3, self.uri0, self.desc0, new=False)
-        self.check_nugget(rv3, self.uri1, self.desc1, new=False)
-        self.check_nugget(rv3, self.uri2, self.desc2, new=False)
-        rv4 = self.client.get('/nuggets?q=stuff', follow_redirects=True)
-        self.check_nugget(rv4, self.uri1, self.desc1, new=False)
+        rv3 = self.client.get('/memes?q=description', follow_redirects=True)
+        self.check_meme(rv3, self.uri0, self.desc0, new=False)
+        self.check_meme(rv3, self.uri1, self.desc1, new=False)
+        self.check_meme(rv3, self.uri2, self.desc2, new=False)
+        rv4 = self.client.get('/memes?q=stuff', follow_redirects=True)
+        self.check_meme(rv4, self.uri1, self.desc1, new=False)
         self.assertNotIn(self.desc0, rv4.data)
         self.assertNotIn(self.desc2, rv4.data)
-        rv5 = self.client.get('/nuggets?q=more', follow_redirects=True)
-        self.check_nugget(rv5, self.uri2, self.desc2, new=False)
+        rv5 = self.client.get('/memes?q=more', follow_redirects=True)
+        self.check_meme(rv5, self.uri2, self.desc2, new=False)
         self.assertNotIn(self.desc0, rv5.data)
         self.assertNotIn(self.desc1, rv5.data)
-        rv6 = self.client.get('/nuggets?q=somewhere', follow_redirects=True)
-        self.check_nugget(rv6, self.uri1, self.desc1, new=False)
-        self.check_nugget(rv6, self.uri2, self.desc2, new=False)
+        rv6 = self.client.get('/memes?q=somewhere', follow_redirects=True)
+        self.check_meme(rv6, self.uri1, self.desc1, new=False)
+        self.check_meme(rv6, self.uri2, self.desc2, new=False)
         self.assertNotIn(self.desc0, rv5.data)
 
 

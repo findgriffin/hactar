@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 import flask.ext.whooshalchemy
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
-from models import Nugget, db
+from models import Meme, db
 
 
 # create our little application :)
@@ -47,10 +47,10 @@ def close_db(error):
 
 @app.route('/')
 def home():
-    return redirect(url_for('nuggets'))
+    return redirect(url_for('memes'))
 
-@app.route('/nuggets', methods=['GET', 'POST'])
-def nuggets():
+@app.route('/memes', methods=['GET', 'POST'])
+def memes():
     """This is actually kind of the home page."""
     if request.method == 'POST':
         if not session.get('logged_in'):
@@ -58,84 +58,84 @@ def nuggets():
         uri = unicode(request.form['uri'])
         text = unicode(request.form['desc'])
         try:
-            ngt = Nugget(text=text, uri=uri)
+            ngt = Meme(text=text, uri=uri)
             db.session.add(ngt)
             db.session.commit()
-            flash('New nugget was successfully added')
+            flash('New meme was successfully added')
         except ValueError as err:
             db.session.rollback()
             flash(err.message)
         except IntegrityError as err:
             db.session.rollback()
             if 'primary key must be unique' in err.message.lower():
-                flash('Nugget with that URI or description already exists')
+                flash('Meme with that URI or description already exists')
     else:
         terms = request.args.get('q')
         if terms:
-            app.logger.debug('looking for nuggets with terms: %s' % terms)
-            filtered = Nugget.query.whoosh_search(terms)
-            nuggets = filtered.order_by(Nugget.modified.desc())
-            return render_template('show_nuggets.html', nuggets=nuggets,
+            app.logger.debug('looking for memes with terms: %s' % terms)
+            filtered = Meme.query.whoosh_search(terms)
+            memes = filtered.order_by(Meme.modified.desc())
+            return render_template('memes.html', memes=memes,
                     add=False)
-    nuggets = Nugget.query.order_by(Nugget.modified.desc())
-    return render_template('show_nuggets.html', nuggets=nuggets, add=True)
+    memes = Meme.query.order_by(Meme.modified.desc())
+    return render_template('memes.html', memes=memes, add=True)
 
-@app.route('/nuggets/<int:nugget>', methods=['GET', 'POST'])
-def nugget(nugget):
+@app.route('/memes/<int:meme>', methods=['GET', 'POST'])
+def meme(meme):
     if request.method == 'GET':
-        return get_nugget(nugget)
+        return get_meme(meme)
     elif 'delete' in request.form and request.form['delete'] == 'Delete':
-        return delete_nugget(nugget)
+        return delete_meme(meme)
     else:
-        return update_nugget(nugget)
+        return update_meme(meme)
 
 
-def get_nugget(nugget):
-    """Edit (or delete) a nugget."""
-    nuggets = Nugget.query.filter(Nugget.id == int(nugget)).all()
-    if not nuggets:
+def get_meme(meme):
+    """Edit (or delete) a meme."""
+    memes = Meme.query.filter(Meme.id == int(meme)).all()
+    if not memes:
         abort(404)
-    return render_template('edit_nugget.html', nugget=nuggets[0])
+    return render_template('meme.html', meme=memes[0])
 
-def update_nugget(nugget):
-    """Update a nugget (i.e. implement an edit to a nugget)"""
+def update_meme(meme):
+    """Update a meme (i.e. implement an edit to a meme)"""
     try:
-        int(nugget)
+        int(meme)
     except ValueError:
         abort(400)
     if not session.get('logged_in'):
         abort(401)
-    app.logger.debug('updating nugget: %s' % nugget)
+    app.logger.debug('updating meme: %s' % meme)
     text = unicode(request.form['text'])
     try:
-        ngt = Nugget.query.filter(Nugget.id == int(nugget))
+        ngt = Meme.query.filter(Meme.id == int(meme))
         ngt.update({'text': text})
         ngt[0].update()
         db.session.commit()
-        flash('Nugget successfully modified')
+        flash('Meme successfully modified')
     except ValueError as err:
         db.session.rollback()
         flash(err.message)
-    return redirect(url_for('nuggets'))
+    return redirect(url_for('memes'))
 
-def delete_nugget(nugget):
-    """Remove a nugget from the db."""
+def delete_meme(meme):
+    """Remove a meme from the db."""
     try:
-        int(nugget)
+        int(meme)
     except ValueError:
         abort(400)
     if not session.get('logged_in'):
         abort(401)
     try:
-        Nugget.query.filter(Nugget.id == int(nugget)).delete()
+        Meme.query.filter(Meme.id == int(meme)).delete()
         db.session.commit()
-        flash('Nugget successfully deleted')
+        flash('Meme successfully deleted')
     except ValueError as err:
         flash(err.message)
     except IntegrityError as err:
         if 'primary key must be unique' in err.message.lower():
-            flash('Nugget with that URI or description already exists')
-    return redirect(url_for('nuggets'))
+            flash('Meme with that URI or description already exists')
+    return redirect(url_for('memes'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
