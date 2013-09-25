@@ -152,6 +152,27 @@ class TestWeb(TestCase):
                 follow_redirects=True)
         self.check_nugget(rv1, self.uri0, self.desc1, new=False)
         self.assertNotIn('<br>%s' % self.desc0, rv1.data)
+    
+    def test_delete_nugget(self):
+        self.login()
+        rv0 = self.client.post('/add', data=dict( uri=self.uri0, desc=self.desc0),
+            follow_redirects=True)
+        self.check_nugget(rv0, self.uri0, self.desc0, new=True)
+        rv1 = self.client.post('/add', data=dict( uri=self.uri1, desc=self.desc1),
+            follow_redirects=True)
+        self.check_nugget(rv1, self.uri1, self.desc1, new=True)
+
+        # delete nugget 0
+        nugget_id = int(sha1(self.uri0).hexdigest()[:15], 16)
+        self.assertIn('<a href="/edit/%s">edit</a>' % nugget_id, rv0.data)
+        rv2 = self.client.get('/edit/%s' % nugget_id,
+                follow_redirects=True)
+        self.assertIn('<form action="/delete/%s" method=post' % nugget_id, rv2.data)
+        self.assertIn('<input type=submit value=Delete', rv2.data)
+        rv3 = self.client.post('/delete/%s' % nugget_id, follow_redirects=True)
+        self.check_nugget(rv3, self.uri1, self.desc1, new=False, 
+                    flash='Nugget successfully deleted')
+        self.assertNotIn('<br>%s' % self.desc0, rv3.data)
 
 
 if __name__ == '__main__':
