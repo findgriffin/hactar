@@ -65,6 +65,7 @@ def add_nugget():
         db.session.commit()
         flash('New nugget was successfully added')
     except ValueError as err:
+        db.session.rollback()
         flash(err.message)
     except IntegrityError as err:
         db.session.rollback()
@@ -112,8 +113,10 @@ def update_nugget(nugget):
         db.session.commit()
         flash('Nugget successfully modified')
     except ValueError as err:
+        db.session.rollback()
         flash(err.message)
     except IntegrityError as err:
+        db.session.rollback()
         if 'primary key must be unique' in err.message.lower():
             flash('Nugget with that URI or description already exists')
     return redirect(url_for('show_nuggets'))
