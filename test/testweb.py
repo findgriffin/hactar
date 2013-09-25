@@ -18,6 +18,13 @@ import web
 
 class TestWeb(TestCase):
 
+    uri0 = 'http://foobar.com'
+    desc0 = 'a description of foobar'
+    uri1 = 'http://foobar.com/stuff'
+    desc1 = 'a description of stuff'
+    uri2 = 'http://foobar.com/stuff/more'
+    desc2 = 'a description of foobar/stuff/more'
+
     def create_app(self):
         app = web.app
         app.config.update(dict(
@@ -101,65 +108,51 @@ class TestWeb(TestCase):
     def test_add_nugget(self):
         """Test adding a nugget with flask"""
         self.login()
-        uri = 'http://foobar.com'
-        desc = 'a description of foobar'
-        rv = self.client.post('/add', data=dict( uri=uri, desc=desc,
+        rv = self.client.post('/add', data=dict( uri=self.uri0, desc=self.desc0,
         ), follow_redirects=True)
-        self.check_nugget(rv, uri, desc)
+        self.check_nugget(rv, self.uri0, self.desc0)
 
     def test_add_nuggets(self):
         """Test adding some nuggets with flask"""
         self.login()
-        uri0 = 'http://foobar.com'
-        desc0 = 'a description of foobar'
-        uri1 = 'http://foobar.com/stuff'
-        desc1 = 'a description of foobar/stuff'
-        uri2 = 'http://foobar.com/stuff/more'
-        desc2 = 'a description of foobar/stuff/more'
-        rv0 = self.client.post('/add', data=dict( uri=uri0, desc=desc0,
+        rv0 = self.client.post('/add', data=dict( uri=self.uri0, desc=self.desc0,
         ), follow_redirects=True)
-        self.check_nugget(rv0, uri0, desc0)
-        rv1 = self.client.post('/add', data=dict( uri=uri1, desc=desc1,
+        self.check_nugget(rv0, self.uri0, self.desc0)
+        rv1 = self.client.post('/add', data=dict( uri=self.uri1, desc=self.desc1,
         ), follow_redirects=True)
-        self.check_nugget(rv1, uri0, desc0)
-        self.check_nugget(rv1, uri1, desc1)
-        rv2 = self.client.post('/add', data=dict( uri=uri2, desc=desc2,
+        self.check_nugget(rv1, self.uri0, self.desc0)
+        self.check_nugget(rv1, self.uri1, self.desc1)
+        rv2 = self.client.post('/add', data=dict( uri=self.uri2, desc=self.desc2,
         ), follow_redirects=True)
-        self.check_nugget(rv2, uri0, desc0)
-        self.check_nugget(rv2, uri1, desc1)
-        self.check_nugget(rv2, uri2, desc2)
+        self.check_nugget(rv2, self.uri0, self.desc0)
+        self.check_nugget(rv2, self.uri1, self.desc1)
+        self.check_nugget(rv2, self.uri2, self.desc2)
 
     def test_dup_nuggets(self):
         """Test attempting to add duplicate nuggets"""
         self.login()
-        uri0 = 'http://foobar.com'
-        desc0 = 'a description of foobar'
-        uri1 = uri0
-        desc1 = 'a description of foobar/stuff'
-        rv0 = self.client.post('/add', data=dict( uri=uri0, desc=desc0,
+        rv0 = self.client.post('/add', data=dict( uri=self.uri0, desc=self.desc0,
         ), follow_redirects=True)
-        self.check_nugget(rv0, uri0, desc0)
-        rv1 = self.client.post('/add', data=dict( uri=uri1, desc=desc1,
+        self.check_nugget(rv0, self.uri0, self.desc0)
+        rv1 = self.client.post('/add', data=dict( uri=self.uri0, desc=self.desc1,
         ), follow_redirects=True)
         self.assertEqual(rv1.status_code, 200)
         errstr = 'Nugget with that URI or description already exists'
-        self.check_nugget(rv1, uri0, desc0, flash=errstr)
-        self.assertNotIn('<br>%s' % desc1, rv1.data)
+        self.check_nugget(rv1, self.uri0, self.desc0, flash=errstr)
+        self.assertNotIn('<br>%s' % self.desc1, rv1.data)
 
     def test_update_nugget(self):
         self.login()
-        uri0 = 'http://foobar.com'
-        desc0 = 'a description of foobar'
-        desc1 = 'a description of stuff'
-        rv0 = self.client.post('/add', data=dict( uri=uri0, desc=desc0),
+        rv0 = self.client.post('/add', data=dict( uri=self.uri0, desc=self.desc0),
             follow_redirects=True)
-        self.check_nugget(rv0, uri0, desc0, new=True)
-        nugget_id = int(sha1(uri0).hexdigest()[:15], 16)
+        self.check_nugget(rv0, self.uri0, self.desc0, new=True)
+        nugget_id = int(sha1(self.uri0).hexdigest()[:15], 16)
         self.assertIn('<a href="/edit/%s">edit</a>' % nugget_id, rv0.data)
-        rv1 = self.client.post('/update/%s' % nugget_id, data=dict(text=desc1),
+        rv1 = self.client.post('/update/%s' % nugget_id, data=dict(text=self.desc1),
                 follow_redirects=True)
-        self.check_nugget(rv1, uri0, desc1, new=False)
-        self.assertNotIn('<br>%s' % desc0, rv1.data)
+        self.check_nugget(rv1, self.uri0, self.desc1, new=False)
+        self.assertNotIn('<br>%s' % self.desc0, rv1.data)
+
 
 if __name__ == '__main__':
     unittest.main()
