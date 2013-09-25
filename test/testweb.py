@@ -9,6 +9,7 @@
 """
 import unittest
 from hashlib import sha1
+import datetime
 
 from flask.ext.testing import TestCase
 
@@ -46,6 +47,37 @@ class TestWeb(TestCase):
     def logout(self):
         return self.client.get('/logout', follow_redirects=True)
 
+
+    def check_nugget(self, resp, uri, desc, new=True, flash=None):
+        if flash:
+            msg = flash
+        elif new:
+            msg = 'New nugget was successfully added'
+        else:
+            msg = 'Nugget successfully modified'
+        now = datetime.datetime.now()
+        then = now - datetime.timedelta(minutes=1)
+        now = now.strftime('%H:%M %d/%m/%Y')
+        then = then.strftime('%H:%M %d/%m/%Y')
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri, uri), resp.data)
+        self.assertIn('<br>%s' % desc, resp.data)
+        try:
+            self.assertIn('modified:%s' % now, resp.data)
+        except AssertionError:
+            self.assertIn('modified:%s' % now, resp.data)
+        if new:
+            self.assertIn(msg, resp.data)
+            try:
+                self.assertIn('added:%s' % now, resp.data)
+            except AssertionError:
+                self.assertIn('added:%s' % then, resp.data)
+        else:
+            self.assertIn(msg, resp.data)
+            try:
+                self.assertNotIn('added:%s' % now, resp.data)
+            except AssertionError:
+                self.assertNotIn('added:%s' % then, resp.data)
     # testing functions
 
     def test_empty_db(self):
@@ -73,9 +105,7 @@ class TestWeb(TestCase):
         desc = 'a description of foobar'
         rv = self.client.post('/add', data=dict( uri=uri, desc=desc,
         ), follow_redirects=True)
-        self.assertEqual(rv.status_code, 200)
-        self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri, uri), rv.data)
-        self.assertIn('<br>%s' % desc, rv.data)
+        self.check_nugget(rv, uri, desc)
 
     def test_add_nuggets(self):
         """Test adding some nuggets with flask"""
@@ -88,20 +118,16 @@ class TestWeb(TestCase):
         desc2 = 'a description of foobar/stuff/more'
         rv0 = self.client.post('/add', data=dict( uri=uri0, desc=desc0,
         ), follow_redirects=True)
+        self.check_nugget(rv0, uri0, desc0)
         rv1 = self.client.post('/add', data=dict( uri=uri1, desc=desc1,
         ), follow_redirects=True)
+        self.check_nugget(rv1, uri0, desc0)
+        self.check_nugget(rv1, uri1, desc1)
         rv2 = self.client.post('/add', data=dict( uri=uri2, desc=desc2,
         ), follow_redirects=True)
-        self.assertEqual(rv1.status_code, 200)
-        self.assertIn('New nugget was successfully added', rv0.data)
-        self.assertIn('New nugget was successfully added', rv1.data)
-        self.assertIn('New nugget was successfully added', rv2.data)
-        self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri0, uri0), rv2.data)
-        self.assertIn('<br>%s' % desc0, rv2.data)
-        self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri1, uri1), rv2.data)
-        self.assertIn('<br>%s' % desc1, rv2.data)
-        self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri2, uri2), rv2.data)
-        self.assertIn('<br>%s' % desc2, rv2.data)
+        self.check_nugget(rv2, uri0, desc0)
+        self.check_nugget(rv2, uri1, desc1)
+        self.check_nugget(rv2, uri2, desc2)
 
     def test_dup_nuggets(self):
         """Test attempting to add duplicate nuggets"""
@@ -112,13 +138,12 @@ class TestWeb(TestCase):
         desc1 = 'a description of foobar/stuff'
         rv0 = self.client.post('/add', data=dict( uri=uri0, desc=desc0,
         ), follow_redirects=True)
+        self.check_nugget(rv0, uri0, desc0)
         rv1 = self.client.post('/add', data=dict( uri=uri1, desc=desc1,
         ), follow_redirects=True)
         self.assertEqual(rv1.status_code, 200)
         errstr = 'Nugget with that URI or description already exists'
-        self.assertIn('<div class=flash>%s</div>' % errstr, rv1.data)
-        self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri0, uri0), rv1.data)
-        self.assertIn('<br>%s' % desc0, rv1.data)
+        self.check_nugget(rv1, uri0, desc0, flash=errstr)
         self.assertNotIn('<br>%s' % desc1, rv1.data)
 
     def test_update_nugget(self):
@@ -128,16 +153,12 @@ class TestWeb(TestCase):
         desc1 = 'a description of stuff'
         rv0 = self.client.post('/add', data=dict( uri=uri0, desc=desc0),
             follow_redirects=True)
-        self.assertEqual(rv0.status_code, 200)
-        self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri0, uri0), rv0.data)
-        self.assertIn('<br>%s' % desc0, rv0.data)
-        self.assertNotIn('<br>%s' % desc1, rv0.data)
+        self.check_nugget(rv0, uri0, desc0, new=True)
         nugget_id = int(sha1(uri0).hexdigest()[:15], 16)
         self.assertIn('<a href="/edit/%s">edit</a>' % nugget_id, rv0.data)
         rv1 = self.client.post('/update/%s' % nugget_id, data=dict(text=desc1),
                 follow_redirects=True)
-        self.assertEqual(rv1.status_code, 200)
-        self.assertIn('<br>%s' % desc1, rv1.data)
+        self.check_nugget(rv1, uri0, desc1, new=False)
         self.assertNotIn('<br>%s' % desc0, rv1.data)
 
 if __name__ == '__main__':
