@@ -2,3 +2,4 @@ flask
 requests
 Flask-Testing
 flask_whooshalchemy
+BeautifulSoup
