@@ -89,7 +89,7 @@ class TestWeb(TestCase):
 
     def test_empty_db(self):
         """Start with a blank database."""
-        rv = self.client.get('/')
+        rv = self.client.get('/nuggets')
         self.assertIn('No nuggets here so far', rv.data)
 
     def test_login_logout(self):
@@ -108,21 +108,21 @@ class TestWeb(TestCase):
     def test_add_nugget(self):
         """Test adding a nugget with flask"""
         self.login()
-        rv = self.client.post('/add', data=dict( uri=self.uri0, desc=self.desc0,
+        rv = self.client.post('/nuggets', data=dict( uri=self.uri0, desc=self.desc0,
         ), follow_redirects=True)
         self.check_nugget(rv, self.uri0, self.desc0)
 
     def test_add_nuggets(self):
         """Test adding some nuggets with flask"""
         self.login()
-        rv0 = self.client.post('/add', data=dict( uri=self.uri0, desc=self.desc0,
+        rv0 = self.client.post('/nuggets', data=dict( uri=self.uri0, desc=self.desc0,
         ), follow_redirects=True)
         self.check_nugget(rv0, self.uri0, self.desc0)
-        rv1 = self.client.post('/add', data=dict( uri=self.uri1, desc=self.desc1,
+        rv1 = self.client.post('/nuggets', data=dict( uri=self.uri1, desc=self.desc1,
         ), follow_redirects=True)
         self.check_nugget(rv1, self.uri0, self.desc0)
         self.check_nugget(rv1, self.uri1, self.desc1)
-        rv2 = self.client.post('/add', data=dict( uri=self.uri2, desc=self.desc2,
+        rv2 = self.client.post('/nuggets', data=dict( uri=self.uri2, desc=self.desc2,
         ), follow_redirects=True)
         self.check_nugget(rv2, self.uri0, self.desc0)
         self.check_nugget(rv2, self.uri1, self.desc1)
@@ -131,10 +131,10 @@ class TestWeb(TestCase):
     def test_dup_nuggets(self):
         """Test attempting to add duplicate nuggets"""
         self.login()
-        rv0 = self.client.post('/add', data=dict( uri=self.uri0, desc=self.desc0,
+        rv0 = self.client.post('/nuggets', data=dict( uri=self.uri0, desc=self.desc0,
         ), follow_redirects=True)
         self.check_nugget(rv0, self.uri0, self.desc0)
-        rv1 = self.client.post('/add', data=dict( uri=self.uri0, desc=self.desc1,
+        rv1 = self.client.post('/nuggets', data=dict( uri=self.uri0, desc=self.desc1,
         ), follow_redirects=True)
         self.assertEqual(rv1.status_code, 200)
         errstr = 'Nugget with that URI or description already exists'
@@ -143,7 +143,7 @@ class TestWeb(TestCase):
 
     def test_update_nugget(self):
         self.login()
-        rv0 = self.client.post('/add', data=dict( uri=self.uri0, desc=self.desc0),
+        rv0 = self.client.post('/nuggets', data=dict( uri=self.uri0, desc=self.desc0),
             follow_redirects=True)
         self.check_nugget(rv0, self.uri0, self.desc0, new=True)
         nugget_id = int(sha1(self.uri0).hexdigest()[:15], 16)
@@ -155,10 +155,10 @@ class TestWeb(TestCase):
     
     def test_delete_nugget(self):
         self.login()
-        rv0 = self.client.post('/add', data=dict( uri=self.uri0, desc=self.desc0),
+        rv0 = self.client.post('/nuggets', data=dict( uri=self.uri0, desc=self.desc0),
             follow_redirects=True)
         self.check_nugget(rv0, self.uri0, self.desc0, new=True)
-        rv1 = self.client.post('/add', data=dict( uri=self.uri1, desc=self.desc1),
+        rv1 = self.client.post('/nuggets', data=dict( uri=self.uri1, desc=self.desc1),
             follow_redirects=True)
         self.check_nugget(rv1, self.uri1, self.desc1, new=True)
 

@@ -46,32 +46,31 @@ def close_db(error):
 
 
 @app.route('/')
-def show_nuggets():
+def home():
+    return redirect(url_for('nuggets'))
+
+@app.route('/nuggets', methods=['GET', 'POST'])
+def nuggets():
     """This is actually kind of the home page."""
+    if request.method == 'POST':
+        if not session.get('logged_in'):
+            abort(401)
+        uri = unicode(request.form['uri'])
+        text = unicode(request.form['desc'])
+        try:
+            ngt = Nugget(text=text, uri=uri)
+            db.session.add(ngt)
+            db.session.commit()
+            flash('New nugget was successfully added')
+        except ValueError as err:
+            db.session.rollback()
+            flash(err.message)
+        except IntegrityError as err:
+            db.session.rollback()
+            if 'primary key must be unique' in err.message.lower():
+                flash('Nugget with that URI or description already exists')
     nuggets = Nugget.query.order_by(Nugget.modified.desc())
     return render_template('show_nuggets.html', nuggets=nuggets, add=True)
-
-
-@app.route('/add', methods=['POST'])
-def add_nugget():
-    """Add a nugget to the database. (by handling a POST request)"""
-    if not session.get('logged_in'):
-        abort(401)
-    uri = unicode(request.form['uri'])
-    text = unicode(request.form['desc'])
-    try:
-        ngt = Nugget(text=text, uri=uri)
-        db.session.add(ngt)
-        db.session.commit()
-        flash('New nugget was successfully added')
-    except ValueError as err:
-        db.session.rollback()
-        flash(err.message)
-    except IntegrityError as err:
-        db.session.rollback()
-        if 'primary key must be unique' in err.message.lower():
-            flash('Nugget with that URI or description already exists')
-    return redirect(url_for('show_nuggets'))
 
 @app.route('/find', methods=['POST'])
 def find_nugget():
@@ -119,7 +118,7 @@ def update_nugget(nugget):
         db.session.rollback()
         if 'primary key must be unique' in err.message.lower():
             flash('Nugget with that URI or description already exists')
-    return redirect(url_for('show_nuggets'))
+    return redirect(url_for('nuggets'))
 
 @app.route('/delete/<int:nugget>', methods=['GET', 'POST'])
 def delete_nugget(nugget):
@@ -141,7 +140,7 @@ def delete_nugget(nugget):
     except IntegrityError as err:
         if 'primary key must be unique' in err.message.lower():
             flash('Nugget with that URI or description already exists')
-    return redirect(url_for('show_nuggets'))
+    return redirect(url_for('nuggets'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -155,7 +154,7 @@ def login():
         else:
             session['logged_in'] = True
             flash('You were logged in')
-            return redirect(url_for('show_nuggets'))
+            return redirect(url_for('home'))
     return render_template('login.html', error=error)
 
 
@@ -164,7 +163,7 @@ def logout():
     """Handle logging out."""
     session.pop('logged_in', None)
     flash('You were logged out')
-    return redirect(url_for('show_nuggets'))
+    return redirect(url_for('home'))
 
 @app.template_filter('datetime')
 def _jinja2_filter_datetime(date, fmt=None):
