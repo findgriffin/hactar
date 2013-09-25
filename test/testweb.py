@@ -10,7 +10,9 @@
 import os
 import unittest
 import tempfile
+import shutil
 from hashlib import sha1
+import logging
 
 from flask import Flask
 from flask.ext.testing import TestCase
@@ -32,7 +34,11 @@ class TestWeb(TestCase):
         db.session.remove()
         db.drop_all()
 
-    def login(self, username, password):
+    def login(self, username=None, password=None):
+        if not username:
+            username = web.app.config['USERNAME']
+        if not password:
+            password = web.app.config['PASSWORD']
         return self.client.post('/login', data=dict(
             username=username,
             password=password
@@ -50,8 +56,7 @@ class TestWeb(TestCase):
 
     def test_login_logout(self):
         """Make sure login and logout works"""
-        rv = self.login(web.app.config['USERNAME'],
-                        web.app.config['PASSWORD'])
+        rv = self.login()
         self.assertIn(b'You were logged in', rv.data)
         rv = self.logout()
         self.assertIn(b'You were logged out', rv.data)
@@ -64,8 +69,7 @@ class TestWeb(TestCase):
 
     def test_add_nugget(self):
         """Test adding a nugget with flask"""
-        self.login(web.app.config['USERNAME'],
-                   web.app.config['PASSWORD'])
+        self.login()
         uri = 'http://foobar.com'
         desc = 'a description of foobar'
         rv = self.client.post('/add', data=dict( uri=uri, desc=desc,
@@ -76,8 +80,7 @@ class TestWeb(TestCase):
 
     def test_add_nuggets(self):
         """Test adding some nuggets with flask"""
-        self.login(web.app.config['USERNAME'],
-                   web.app.config['PASSWORD'])
+        self.login()
         uri0 = 'http://foobar.com'
         desc0 = 'a description of foobar'
         uri1 = 'http://foobar.com/stuff'
@@ -91,6 +94,9 @@ class TestWeb(TestCase):
         rv2 = self.client.post('/add', data=dict( uri=uri2, desc=desc2,
         ), follow_redirects=True)
         self.assertEqual(rv1.status_code, 200)
+        self.assertIn('New nugget was successfully added', rv0.data)
+        self.assertIn('New nugget was successfully added', rv1.data)
+        self.assertIn('New nugget was successfully added', rv2.data)
         self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri0, uri0), rv2.data)
         self.assertIn('<br>%s' % desc0, rv2.data)
         self.assertIn('<li><h2><a href="%s">%s</a></h2>' % (uri1, uri1), rv2.data)
@@ -100,8 +106,7 @@ class TestWeb(TestCase):
 
     def test_dup_nuggets(self):
         """Test attempting to add duplicate nuggets"""
-        self.login(web.app.config['USERNAME'],
-                   web.app.config['PASSWORD'])
+        self.login()
         uri0 = 'http://foobar.com'
         desc0 = 'a description of foobar'
         uri1 = uri0
@@ -118,8 +123,7 @@ class TestWeb(TestCase):
         self.assertNotIn('<br>%s' % desc1, rv1.data)
 
     def test_update_nugget(self):
-        self.login(web.app.config['USERNAME'],
-                   web.app.config['PASSWORD'])
+        self.login()
         uri0 = 'http://foobar.com'
         desc0 = 'a description of foobar'
         desc1 = 'a description of stuff'

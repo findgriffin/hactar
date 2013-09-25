@@ -7,6 +7,7 @@
 """
 import datetime
 from sqlalchemy.exc import IntegrityError
+import flask.ext.whooshalchemy
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
 from models import Nugget, db
@@ -19,6 +20,7 @@ db.init_app(app)
 # Load default config and override config from an environment variable
 app.config.update(dict(
     SQLALCHEMY_DATABASE_URI='sqlite:////tmp/hactar.db',
+    WHOOSH_BASE='/tmp/hactar_whoosh',
     DEBUG=True,
     SECRET_KEY='cricket is a stupid sport',
     USERNAME='admin',
@@ -55,11 +57,10 @@ def add_nugget():
     """Add a nugget to the database. (by handling a POST request)"""
     if not session.get('logged_in'):
         abort(401)
-    uri = request.form['uri']
-    text = request.form['desc']
+    uri = unicode(request.form['uri'])
+    text = unicode(request.form['desc'])
     try:
         ngt = Nugget(text=text, uri=uri)
-#       ngt.create()
         db.session.add(ngt)
         db.session.commit()
         flash('New nugget was successfully added')
@@ -80,7 +81,7 @@ def find_nugget():
     except IndexError:
         term = ''
     app.logger.debug('looking for search term: %s' % term)
-    filtered = Nugget.query.filter(Nugget.keywords.like('%%%s%%' % term))
+    filtered = Nugget.query.whoosh_search(terms)
     nuggets = filtered.order_by(Nugget.modified.desc())
     return render_template('show_nuggets.html', nuggets=nuggets, add=False)
 
@@ -90,7 +91,7 @@ def edit_nugget(nugget):
     nuggets = Nugget.query.filter(Nugget.id == int(nugget)).all()
     if not nuggets:
         abort(404)
-    app.logger.debug('found: %s' % nuggets)
+    app.logger.debug('nuggets: %s' % type(nuggets))
     return render_template('edit_nugget.html', nugget=nuggets[0])
 
 @app.route('/update/<int:nugget>', methods=['GET', 'POST'])
@@ -103,7 +104,7 @@ def update_nugget(nugget):
     if not session.get('logged_in'):
         abort(401)
     app.logger.debug('updating nugget: %s' % nugget)
-    text = request.form['text']
+    text = unicode(request.form['text'])
     try:
         ngt = Nugget.query.filter(Nugget.id == int(nugget))
         ngt.update({'text': text})
