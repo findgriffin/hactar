@@ -60,9 +60,7 @@ TODO and action items are represented by a **task**, this consists of:
 
 Feature Priority
 ----------------
- 1. Make tests pass
- 1. Use in memory sqlite for tests
- 1. Implement skeleton
- 1. Implement deployment / release management
  1. make RESTful
  1. rename nuggets to memes
+ 1. Implement skeleton
+ 1. Implement deployment / release management
