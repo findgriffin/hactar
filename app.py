@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 import flask.ext.whooshalchemy
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
-from models import Meme, db 
+from hactar.models import Meme, db 
 
 # create our little application :)
 app = Flask(__name__)
