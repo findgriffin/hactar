@@ -23,40 +23,29 @@ critical documentation and other information that she may need in the future.
 Later alice can search for related terms, eg. 'multithreading in python' to
 find previously bookmarked information.
 The tasks that alice needs to complete are:
- 1. add nugget/bookmark with text/description
- 2. search nuggets by topic/keywords
+ 1. add meme/bookmark with text/description
+ 2. search meme by topic/keywords
 
-Betty likes to keep to-do lists. Hactar will accept various tasks and
-attempt to prioritise them for betty. Tasks can have information attached to
-them, due dates and contain subtasks.
+Betty likes to keep to-do lists. Hactar will accept various events and
+attempt to prioritise them for betty. Events can have information attached to
+them, due dates and contain subevents.
 
 Data model
 ----------
 
-Information is stored in a **nugget**. A nugget consists of:
- * description (markdown)
- * keywords
- * added date
- * modified date
- * uri (optional)
- * id (hash of url or blob)
+Information is stored in a **meme**. A meme is defined by a title OR URL a meme
+also MUST have a description (in markdown). Data must be unique, i.e. each url
+or title may only exist once.
 
-Data must be unique, i.e. each uri may only exist once.
+TODO and action items are represented by a **event**. Events can have due
+dates, start times finish times etc.
 
-TODO and action items are represented by a **task**, this consists of:
- * text (markdown, should be one line)
- * priority
- * due datetime (optional)
- * start datetime
- * finish datetime
- * subtasks
- * nuggets
+In the future **memes** and **events** may be linked (eg. events may have
+sub-events).
 
 Feature Priority
 ----------------
- 1. make RESTful
- 1. rename nuggets to memes
- 1. rename tasks to events
  1. Implement skeleton (make it look pretty)
  1. Implement deployment / release management
  1. Implement tasks
+ 1. Impement markdown.

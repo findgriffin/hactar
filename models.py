@@ -106,8 +106,8 @@ def is_uri(uri):
         return False
     return True
 
-class Task(db.Model):
-    """ A task, something that the user needs to do."""
+class Event(db.Model):
+    """ A event, something that the user may do or has done."""
     id=db.Column(db.Integer, primary_key=True, autoincrement=True)
     text = db.Column(db.String())
     added = db.Column(db.DateTime())
