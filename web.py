@@ -80,7 +80,7 @@ def memes():
     return render_template('memes.html', memes=memes, add=True)
 
 @app.route('/memes/<int:meme>', methods=['GET', 'POST'])
-def meme(meme):
+def meme_handler(meme):
     if request.method == 'GET':
         return get_meme(meme)
     elif 'delete' in request.form and request.form['delete'] == 'Delete':

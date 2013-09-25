@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
   {% if session.logged_in %}
-  <form action="{{ url_for('meme', meme=meme.id) }}" method="post" class=add-meme>
+  <form action="{{ url_for('meme_handler', meme=meme.id) }}" method="post" class=add-meme>
       <dl>
         <dt><h4>{{ meme.heading }}</h4>
         <dt>Description:
