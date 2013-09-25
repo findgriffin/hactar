@@ -69,21 +69,16 @@ def nuggets():
             db.session.rollback()
             if 'primary key must be unique' in err.message.lower():
                 flash('Nugget with that URI or description already exists')
+    else:
+        terms = request.args.get('q')
+        if terms:
+            app.logger.debug('looking for nuggets with terms: %s' % terms)
+            filtered = Nugget.query.whoosh_search(terms)
+            nuggets = filtered.order_by(Nugget.modified.desc())
+            return render_template('show_nuggets.html', nuggets=nuggets,
+                    add=False)
     nuggets = Nugget.query.order_by(Nugget.modified.desc())
     return render_template('show_nuggets.html', nuggets=nuggets, add=True)
-
-@app.route('/find', methods=['POST'])
-def find_nugget():
-    """Search for nuggets."""
-    terms = request.form['q']
-    try:
-        term = terms.split()[0]
-    except IndexError:
-        term = ''
-    app.logger.debug('looking for search term: %s' % term)
-    filtered = Nugget.query.whoosh_search(terms)
-    nuggets = filtered.order_by(Nugget.modified.desc())
-    return render_template('show_nuggets.html', nuggets=nuggets, add=False)
 
 @app.route('/edit/<int:nugget>', methods=['GET'])
 def edit_nugget(nugget):
