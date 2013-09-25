@@ -66,6 +66,7 @@ def add_nugget():
     except ValueError as err:
         flash(err.message)
     except IntegrityError as err:
+        db.session.rollback()
         if 'primary key must be unique' in err.message.lower():
             flash('Nugget with that URI or description already exists')
     return redirect(url_for('show_nuggets'))
@@ -181,6 +182,10 @@ def init_db():
         os.remove(db_path)
     with app.test_request_context():
         db.create_all()
+
+def create_app():
+    return app
+
 
 
 if __name__ == '__main__':
