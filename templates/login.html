@@ -4,10 +4,8 @@
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
   <form action="{{ url_for('login') }}" method=post>
     <dl>
-      <dt>Username:
-      <dd><input type=text name=username>
-      <dt>Password:
-      <dd><input type=password name=password>
+      <dd><input type=text name=username id="username" value="username">
+      <dd><input type=password name=password id="password" value="password">
       <dd><input type=submit value=Login>
     </dl>
   </form>

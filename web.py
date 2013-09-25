@@ -10,8 +10,7 @@ from sqlalchemy.exc import IntegrityError
 import flask.ext.whooshalchemy
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
-from models import Meme, db
-
+from models import Meme, db 
 
 # create our little application :)
 app = Flask(__name__)
@@ -140,17 +139,15 @@ def delete_meme(meme):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """Handle logins."""
-    error = None
     if request.method == 'POST':
         if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
+            flash('Invalid username')
         elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
+            flash('Invalid password')
         else:
             session['logged_in'] = True
             flash('You were logged in')
-            return redirect(url_for('home'))
-    return render_template('login.html', error=error)
+    return redirect(url_for('home'))
 
 
 @app.route('/logout')
