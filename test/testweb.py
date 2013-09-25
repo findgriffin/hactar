@@ -201,6 +201,11 @@ class TestWeb(TestCase):
         self.check_meme(rv6, self.uri2, self.desc2, new=False)
         self.assertNotIn(self.desc0, rv5.data)
 
+    def test_title_memes(self):
+        pass
+
+    def test_logged_out_views(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()
