@@ -91,6 +91,9 @@
 
 	hr { border: solid #ddd; border-width: 1px 0 0; clear: both; margin: 10px 0 30px; height: 0; }
 
+    pre {margin: 0 0 20px; padding: 9px 20px 9px 19px; border: 1px solid #ddd;
+        font-family: "Monospace", "Courier New", "Courier"; background: #eee;
+    }
 
 /* #Links
 ================================================== */
