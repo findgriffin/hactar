@@ -10,18 +10,20 @@
     </form>
   {% endif %}
   <ul class=memes>
-  {% for meme in memes %}
-    {% if meme.uri %}
-      <li><h4><a href="{{ meme.uri }}">{{ meme.heading }}</a></h4>
-    {% else %}
-      <li><h4>{{ meme.title }}</h4>
-    {% endif %}
-      <h5>
-          <a href="{{ url_for('meme_handler', meme=meme.id) }}">edit</a>
-      modified:{{ meme.modified|reldatetime }} 
-      added:{{ meme.added|reldatetime }} 
-      </h5>
-  {{ meme.markup|safe }}
+      {% for meme in memes %}
+      <li>
+      
+        {% if meme.uri %}
+       <h4><a href="{{ meme.uri }}" target="_blank">{{ meme.heading }}</a>
+        {% else %}
+       <h4>{{ meme.title }}
+        {% endif %} 
+        {% if session.logged_in %} 
+            <a href="{{ url_for('meme_handler', meme=meme.id) }}">(edit)</a>
+        {% endif %}
+        <small style="text-align:right;float:right">
+            {{ meme.modified|reldatetime }}</small></h4>
+    {{ meme.markup|safe }}
   {% else %}
     <li><em>Unbelievable.  No memes here so far</em>
   {% endfor %}

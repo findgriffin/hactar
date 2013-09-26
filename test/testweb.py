@@ -65,22 +65,12 @@ class TestWeb(TestCase):
         now = 'just now'
         then = then.strftime('%H:%M %d/%m/%Y')
         self.assertEqual(resp.status_code, 200)
-        self.assertIn('<li><h4><a href="%s">%s</a></h4>' % (uri, uri), resp.data)
+        self.assertIn('<h4><a href="%s" target="_blank">%s</a>' % (uri, uri), resp.data)
         self.assertIn('<p>%s</p>' % desc, resp.data)
         try:
-            self.assertIn('modified:%s' % now, resp.data)
+            self.assertIn('%s</small></h4>' % now, resp.data)
         except AssertionError:
-            self.assertIn('modified:%s' % now, resp.data)
-        if new:
-            try:
-                self.assertIn('added:%s' % now, resp.data)
-            except AssertionError:
-                self.assertIn('added:%s' % then, resp.data)
-        else:
-            try:
-                self.assertNotIn('added:%s' % now, resp.data)
-            except AssertionError:
-                self.assertNotIn('added:%s' % then, resp.data)
+            self.assertIn('%s</small></h4>' % now, resp.data)
     # testing functions
 
     def test_empty_db(self):
@@ -144,7 +134,7 @@ class TestWeb(TestCase):
             follow_redirects=True)
         self.check_meme(rv0, self.uri0, self.desc0, new=True)
         meme_id = int(sha1(self.uri0).hexdigest()[:15], 16)
-        self.assertIn('<a href="/memes/%s">edit</a>' % meme_id, rv0.data)
+        self.assertIn('<a href="/memes/%s">(edit)</a>' % meme_id, rv0.data)
         rv1 = self.client.post('/memes/%s' % meme_id, data=dict(text=self.desc1),
                 follow_redirects=True)
         self.check_meme(rv1, self.uri0, self.desc1, new=False,
@@ -163,7 +153,7 @@ class TestWeb(TestCase):
 
         # delete meme 0
         meme_id = int(sha1(self.uri0).hexdigest()[:15], 16)
-        self.assertIn('<a href="/memes/%s">edit</a>' % meme_id, rv0.data)
+        self.assertIn('<a href="/memes/%s">(edit)</a>' % meme_id, rv0.data)
         rv2 = self.client.get('/memes/%s' % meme_id,
                 follow_redirects=True)
         formstr = '<form action="/memes/%s" method="post"' 

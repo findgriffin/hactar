@@ -16,10 +16,10 @@
     {% else %}
       <h2>{{ meme.title }}</h2>
     {% endif %}
-      <h5>
-      modified:{{ meme.modified|reldatetime }} 
-      added:{{ meme.added|reldatetime }} 
-      </h5>
     {{ meme.markup|safe }}
+      <small>
+      modified:{{ meme.modified|reldatetime }} &nbsp
+      added:{{ meme.added|reldatetime }} 
+      </small>
   {% endif %}
 {% endblock %}
