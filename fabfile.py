@@ -6,6 +6,7 @@ from fabric.api import cd, env
 env.hosts = ['auroraborealis.com.au']
 LOCATION = 'hactar'
 GIT = 'https://github.com/findgriffin/hactar.git'
+PASS = 'string that shows we passed the tests'
 
 def setup_host():
     """ Setup a host to the point where it can run hactar."""
@@ -25,6 +26,15 @@ def update_hactar():
     origin/master)"""
     with cd(LOCATION):
         cuisine.run('git pull')
+        cuisine.run('git clean')
+        if PASS in cuisine.run('nosetests'):
+            # complete rollout
+            pass
+        else:
+            pass
+            # abort
+
+
 
 
 
