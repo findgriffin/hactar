@@ -60,17 +60,11 @@ class TestWeb(TestCase):
         elif new:
             msg = 'New meme was successfully added'
             self.assertIn(msg, resp.data)
-        now = datetime.datetime.now()
-        then = now - datetime.timedelta(minutes=1)
         now = 'just now'
-        then = then.strftime('%H:%M %d/%m/%Y')
         self.assertEqual(resp.status_code, 200)
         self.assertIn('<h4><a href="%s" target="_blank">%s</a>' % (uri, uri), resp.data)
         self.assertIn('<p>%s</p>' % desc, resp.data)
-        try:
-            self.assertIn('%s</small></h4>' % now, resp.data)
-        except AssertionError:
-            self.assertIn('%s</small></h4>' % now, resp.data)
+        self.assertIn('%s</small></h4>' % now, resp.data)
     # testing functions
 
     def test_empty_db(self):
@@ -212,7 +206,8 @@ class TestWeb(TestCase):
     def test_add_no_uri(self):
         """Test adding a meme with no uri"""
         self.skipTest(True)
-
+    def test_code_snippet(self):
+        self.skipTest(True)
 
 if __name__ == '__main__':
     unittest.main()
