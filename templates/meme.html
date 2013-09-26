@@ -17,10 +17,9 @@
       <h2>{{ meme.title }}</h2>
     {% endif %}
       <h5>
-      modified:{{ meme.modified|datetime }} 
-      added:{{ meme.added|datetime }} 
+      modified:{{ meme.modified|reldatetime }} 
+      added:{{ meme.added|reldatetime }} 
       </h5>
     {{ meme.markup|safe }}
-
   {% endif %}
 {% endblock %}

@@ -62,7 +62,7 @@ class TestWeb(TestCase):
             self.assertIn(msg, resp.data)
         now = datetime.datetime.now()
         then = now - datetime.timedelta(minutes=1)
-        now = now.strftime('%H:%M %d/%m/%Y')
+        now = 'just now'
         then = then.strftime('%H:%M %d/%m/%Y')
         self.assertEqual(resp.status_code, 200)
         self.assertIn('<li><h4><a href="%s">%s</a></h4>' % (uri, uri), resp.data)

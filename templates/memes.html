@@ -18,8 +18,8 @@
     {% endif %}
       <h5>
           <a href="{{ url_for('meme_handler', meme=meme.id) }}">edit</a>
-      modified:{{ meme.modified|datetime }} 
-      added:{{ meme.added|datetime }} 
+      modified:{{ meme.modified|reldatetime }} 
+      added:{{ meme.added|reldatetime }} 
       </h5>
   {{ meme.markup|safe }}
   {% else %}

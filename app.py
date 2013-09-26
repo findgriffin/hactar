@@ -176,6 +176,30 @@ def _jinja2_filter_datetime(date, fmt=None):
         fmt = '%H:%M %d/%m/%Y'
     return dtime.strftime(fmt)
 
+@app.template_filter('reldatetime')
+def _jinja2_filter_reldatetime(date):
+    """Application wide datetime filter."""
+    now = datetime.datetime.now()
+    if type(date) == datetime.datetime:
+        dtime = date
+    else:
+        dtime = datetime.datetime.fromtimestamp(date)
+    delta = now - dtime
+    if delta.days > 1:
+        return '%s days ago' % delta.days
+    elif delta.days == 1:
+        return 'yesterday'
+    else:
+        if delta.seconds > 7200:
+            return '%s hours ago' % int(round(float(delta.seconds)/60/60))
+        elif delta.seconds > 60:
+            return '%s minutes ago' % int(round(float(delta.seconds)/60)) 
+        elif delta.seconds > 5:
+            return '%s seconds ago' % delta.seconds
+        else:
+            return 'just now'
+    return dtime.strftime(fmt)
+
 
 def init_db():
     """ Delete the existing database and create new database from scratch."""
