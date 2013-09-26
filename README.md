@@ -47,5 +47,5 @@ Feature Priority
 ----------------
  1. Implement skeleton (make it look pretty)
  1. Implement deployment / release management
- 1. Implement tasks
+ 1. Implement tasks (or integrate into memes?)
  1. Impement markdown.
