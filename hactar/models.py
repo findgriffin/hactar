@@ -6,6 +6,7 @@ import time
 import re
 import datetime
 
+import markdown
 from flask.ext.sqlalchemy import SQLAlchemy
 import flask.ext.whooshalchemy
 import requests
@@ -68,23 +69,17 @@ class Meme(db.Model):
         """ Return the (first 15 digits) sha1 hash of this meme as an
         integer."""
         return int(self.sha1[:15], 16)
+
     @property
     def heading(self):
         if self.title:
             return self.title
         else:
             return self.uri
-
-
-    def check(self):
-        if self.uri:
-            resp = requests.get(self.uri)
-            self.status_code = resp.status_code
-            title = re.search('<title>(.*)</title>', resp.content)# just title for now
-            if title:
-                self.title = title.group()
-            else:
-                self.title = 'unknown'
+    
+    @property
+    def markup(self):
+        return markdown.markdown(self.text)
 
     def update(self):
 #       self.check()

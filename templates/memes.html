@@ -21,7 +21,7 @@
       modified:{{ meme.modified|datetime }} 
       added:{{ meme.added|datetime }} 
       </h5>
-  <br>{{ meme.text|safe }}
+  {{ meme.markup|safe }}
   {% else %}
     <li><em>Unbelievable.  No memes here so far</em>
   {% endfor %}

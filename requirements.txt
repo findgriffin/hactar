@@ -3,3 +3,4 @@ requests
 Flask-Testing
 flask_whooshalchemy
 BeautifulSoup
+markdown

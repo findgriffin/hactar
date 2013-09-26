@@ -66,7 +66,7 @@ class TestWeb(TestCase):
         then = then.strftime('%H:%M %d/%m/%Y')
         self.assertEqual(resp.status_code, 200)
         self.assertIn('<li><h4><a href="%s">%s</a></h4>' % (uri, uri), resp.data)
-        self.assertIn('<br>%s' % desc, resp.data)
+        self.assertIn('<p>%s</p>' % desc, resp.data)
         try:
             self.assertIn('modified:%s' % now, resp.data)
         except AssertionError:
