@@ -14,7 +14,7 @@ from app import app
 # apparently importing whooshalchemy and Meme is required to make whooshalchemy
 # work, this seems like too much magic
 import flask.ext.whooshalchemy
-from models import Meme, db
+from hactar.models import Meme, db
 
 
 def main(test=False):
