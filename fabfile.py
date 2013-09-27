@@ -1,17 +1,24 @@
 """ Fabfile for hactar project."""
 import os
+import json
 import re
 
 import cuisine
 from fabric.api import cd, env
 
-env.hosts = ['auroraborealis.com.au']
-LOCATION = 'hactar'
-GIT = 'https://github.com/findgriffin/hactar.git'
-MIN_TESTS = 13
-MAX_SKIP = 5
+conf = json.load(open('config.json', 'rb'))
+env.hosts = [conf['HOST']]
+
+def parent(location):
+    if location.startswith(os.path.sep):
+        start = os.path.sep
+    else:
+        start = ''
+    parts = location.split(os.path.sep)[:-1]
+    return start+os.path.join(*parts)
 
 def passed(output):
+    """ Check that the output contains evidence of tests passing."""
     ran = re.findall('Ran \d+ tests', output)
     assert len(ran) == 1
     tests = int(ran[0].split()[1])
@@ -23,38 +30,62 @@ def passed(output):
         if not output.endswith('OK'):
             return False
         skipped = 0
-    if skipped > MAX_SKIP or tests < MIN_TESTS:
+    if skipped > conf['MAX_SKIP'] or tests < conf['MIN_TESTS']:
         return False
     return True
 
+def setup_upstart():
+    """ Start upstart job running hactar."""
+    cuisine.mode_sudo()
+    source = os.path.join(conf['ROOT'], 'hactar.conf')
+    dest = '/etc/init/hactar.conf'
+    cuisine.run('rsync %s %s' % (source, dest))
 
 def setup_host():
     """ Setup a host to the point where it can run hactar."""
+    if not cuisine.user_check(conf['USER']):
+        exit(1)
+    cuisine.mode_sudo()
     cuisine.package_ensure('git')
     cuisine.package_ensure('python-pip')
-    if not cuisine.dir_exists(os.path.join([LOCATION, '.git'])):
-        cuisine.run('git clone %s  %s' % (GIT, LOCATION))
-        cuisine.dir_ensure(LOCATION)
+    # logs
+    cuisine.dir_ensure(conf['LOG_DIR'], owner=conf['USER'])
+
+    cuisine.dir_ensure(parent(conf['ROOT']), mode='744', owner=conf['USER'], 
+            group=conf['USER'])
+    # root directory with code
+    cuisine.dir_ensure(conf['ROOT'], mode='744', owner=conf['USER'], 
+            group=conf['USER'])
+    if not cuisine.dir_exists(os.path.join([conf['ROOT'], '.git'])):
+        cuisine.run('git clone %s  %s' % (conf['GIT'], conf['ROOT']))
+    cuisine.dir_ensure(conf['WHOOSH_BASE'], owner=conf['USER'])
+    setup_upstart()
 
 def update_deps():
-    with cd(LOCATION):
+    """Used for when we add a new dependancy to hactar."""
+    with cd(conf['ROOT']):
         cuisine.mode_sudo()
         cuisine.python_package_ensure_pip(r='requirements.txt')
+
+def run_hactar():
+    cuisine.mode_sudo()
+    cuisine.upstart_ensure('hactar')
 
 def update_hactar():
     """Get the latest release of hactar (assumes git pull will get
     origin/master)"""
-    with cd(LOCATION):
+    cuisine.mode_local()
+    test_out = cuisine.run('nosetests')
+    if not passed(test_out):
+        print test_out
+        exit(1)
+    cuisine.mode_remote()
+    cuisine.mode_sudo()
+    with cd(conf['ROOT']):
         cuisine.run('git pull')
+        if 'requirements.txt' in pull_output:
+            update_deps()
         cuisine.run('git clean')
-        if passed(cuisine.run('nosetests')):
-            # complete rollout
-            pass
-        else:
-            pass
-            # abort
-
-
-
+    run_hactar()
 
 

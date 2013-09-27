@@ -1,0 +1,12 @@
+{
+    "HOST": "auroraborealis.com.au",
+    "USER": "hactar",
+    "GIT": "https://github.com/findgriffin/hactar.git",
+    "LOG_DIR": "/var/log/hactar",
+    "LOG_MAIN": "main.log",
+    "SQLALCHEMY_DATABASE_URI": "sqlite:////home/hactar/hactar.db",
+    "WHOOSH_BASE": "/home/hactar/whoosh",
+    "MIN_TESTS": 13,
+    "MAX_SKIP": 5,
+    "ROOT": "/home/hactar/git/hactar"
+}
