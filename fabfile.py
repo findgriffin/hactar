@@ -110,6 +110,10 @@ def update():
         if 'hactar.conf' in pull_output:
             setup_upstart()
         cuisine.run('git clean -f')
+
+def update_run():
+    """Update and restart tornado service"""
+    update()
     run_hactar()
 
 
