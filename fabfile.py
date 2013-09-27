@@ -30,7 +30,7 @@ def passed(output):
         if not output.endswith('OK'):
             return False
         skipped = 0
-    if skipped > conf['MAX_SKIP'] or tests < conf['MIN_TESTS']:
+    if tests-skipped < conf['MIN_TESTS']:
         return False
     return True
 
