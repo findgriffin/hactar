@@ -51,13 +51,13 @@ def setup_host():
     # logs
     cuisine.dir_ensure(conf['LOG_DIR'], owner=conf['USER'])
 
-    cuisine.dir_ensure(parent(conf['ROOT']), mode='744', owner=conf['USER'], 
+    cuisine.dir_ensure(parent(conf['ROOT']), mode='764', owner=conf['USER'], 
             group=conf['USER'])
     # root directory with code
-    cuisine.dir_ensure(conf['ROOT'], mode='744', owner=conf['USER'], 
+    cuisine.dir_ensure(conf['ROOT'], mode='764', owner=conf['USER'], 
             group=conf['USER'])
     if not cuisine.dir_exists(os.path.join([conf['ROOT'], '.git'])):
-        cuisine.run('git clone %s  %s' % (conf['GIT'], conf['ROOT']))
+        cuisine.run('su hactar -c "git clone %s  %s"' % (conf['GIT'], conf['ROOT']))
     cuisine.dir_ensure(conf['WHOOSH_BASE'], owner=conf['USER'])
     setup_upstart()
 
