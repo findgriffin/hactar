@@ -2,14 +2,13 @@
 import logging
 import os
 import sys
-from logging.handlers import RotatingFileHandler
 from json import load
 
 from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 
-from app import app
+from app import app, config_app
 
 # apparently importing whooshalchemy and Meme is required to make whooshalchemy
 # work, this seems like too much magic
@@ -20,19 +19,24 @@ from hactar.models import Meme, db
 def main(test=False):
     """Start tornado running hactar."""
     conf = load(open('config.json', 'rb'))
-    secrets = load(open(conf['SECRETS'], 'rb'))
-    if not test:
+    if test:
+        config_app(app)
+    else:
+        secrets = load(open(conf['SECRETS'], 'rb'))
         conf['USERNAME'] = secrets['hactar']['username']
         conf['PASSWORD'] = secrets['hactar']['password']
         conf['SECRET_KEY'] = secrets['installed']['client_secret']
         app.config.update(conf)
-    
 
+    
     logpath = os.path.join(conf['LOG_DIR'], conf['LOG_MAIN'])
-    handler = RotatingFileHandler(logpath, maxBytes=100000,
+    handler = logging.handlers.RotatingFileHandler(logpath, maxBytes=100000,
             backupCount=4)
-    handler.setLevel(logging.INFO)
-    app.logger.addHandler(handler)
+    fmtr = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
+    handler.setFormatter(fmtr)
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    logger.addHandler(handler)
 
     with app.app_context():
         db.init_app(app)
