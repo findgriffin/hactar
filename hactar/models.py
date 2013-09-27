@@ -28,9 +28,9 @@ db = SQLAlchemy()
 
 class Meme(db.Model):
     id=db.Column(db.Integer, primary_key=True)
-    uri = db.Column(db.String())
-    title = db.Column(db.String(), default='')
-    text = db.Column(db.String())
+    uri = db.Column(db.Text())
+    title = db.Column(db.Text(), default='')
+    text = db.Column(db.Text())
     added = db.Column(db.DateTime())
     modified = db.Column(db.DateTime())
     checked = db.Column(db.DateTime())
@@ -104,7 +104,7 @@ def is_uri(uri):
 class Event(db.Model):
     """ A event, something that the user may do or has done."""
     id=db.Column(db.Integer, primary_key=True, autoincrement=True)
-    text = db.Column(db.String())
+    text = db.Column(db.Text())
     added = db.Column(db.DateTime())
     modified = db.Column(db.DateTime())
     due = db.Column(db.DateTime())
