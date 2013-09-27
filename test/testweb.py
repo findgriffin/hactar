@@ -23,6 +23,8 @@ class TestWeb(TestCase):
     desc1 = 'a description of stuff'
     uri2 = 'http://more.com/somewhere'
     desc2 = 'a description of more'
+    title0 = 'A title not a URI'
+    desc4 = 'a description of this "not-URI"'
 
     def create_app(self):
         config_app(app)
@@ -55,7 +57,7 @@ class TestWeb(TestCase):
         return self.client.get('/logout', follow_redirects=True)
 
 
-    def check_meme(self, resp, uri, desc, new=True, flash=None):
+    def check_meme(self, resp, uri, desc, new=True, flash=None, isuri=True):
         if flash:
             self.assertIn(flash, resp.data)
         elif new:
@@ -63,9 +65,15 @@ class TestWeb(TestCase):
             self.assertIn(msg, resp.data)
         now = 'just now'
         self.assertEqual(resp.status_code, 200)
-        self.assertIn('<h4><a href="%s" target="_blank">%s</a>' % (uri, uri), resp.data)
+        meme_id = int(sha1(uri).hexdigest()[:15], 16)
+        self.assertIn('<a href="/memes/%s">(edit)</a>' % meme_id, resp.data)
+        if isuri:
+            self.assertIn('<h4><a href="%s" target="_blank">%s</a>' % (uri, uri), resp.data)
+        else:
+            self.assertIn('<h4>%s' % uri, resp.data)
         self.assertIn('<p>%s</p>' % desc, resp.data)
         self.assertIn('%s</small></h4>' % now, resp.data)
+        return meme_id
     # testing functions
 
     def test_empty_db(self):
@@ -127,9 +135,7 @@ class TestWeb(TestCase):
         self.login()
         rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
             follow_redirects=True)
-        self.check_meme(rv0, self.uri0, self.desc0, new=True)
-        meme_id = int(sha1(self.uri0).hexdigest()[:15], 16)
-        self.assertIn('<a href="/memes/%s">(edit)</a>' % meme_id, rv0.data)
+        meme_id = self.check_meme(rv0, self.uri0, self.desc0, new=True)
         rv1 = self.client.post('/memes/%s' % meme_id, data=dict(text=self.desc1),
                 follow_redirects=True)
         self.check_meme(rv1, self.uri0, self.desc1, new=False,
@@ -141,14 +147,12 @@ class TestWeb(TestCase):
         self.login()
         rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
             follow_redirects=True)
-        self.check_meme(rv0, self.uri0, self.desc0, new=True)
+        meme_id = self.check_meme(rv0, self.uri0, self.desc0, new=True)
         rv1 = self.client.post('/memes', data=dict( uri=self.uri1, desc=self.desc1),
             follow_redirects=True)
         self.check_meme(rv1, self.uri1, self.desc1, new=True)
 
         # delete meme 0
-        meme_id = int(sha1(self.uri0).hexdigest()[:15], 16)
-        self.assertIn('<a href="/memes/%s">(edit)</a>' % meme_id, rv0.data)
         rv2 = self.client.get('/memes/%s' % meme_id,
                 follow_redirects=True)
         formstr = '<form action="/memes/%s" method="post"' 
@@ -190,7 +194,10 @@ class TestWeb(TestCase):
 
     def test_title_memes(self):
         """Test adding memes with title (no URL)"""
-        self.skipTest(True)
+        self.login()
+        rv = self.client.post('/memes', data=dict( uri=self.title0, desc=self.desc4,
+        ), follow_redirects=True)
+        self.check_meme(rv, self.title0, self.desc4, isuri=False)
 
     def test_logged_out_views(self):
         """Test page appearance when logged out"""
