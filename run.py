@@ -24,6 +24,7 @@ def main(test=False):
     if not test:
         conf['USERNAME'] = secrets['hactar']['username']
         conf['PASSWORD'] = secrets['hactar']['password']
+        conf['SECRET_KEY'] = secrets['installed']['client_secret']
         app.config.update(conf)
     
 
