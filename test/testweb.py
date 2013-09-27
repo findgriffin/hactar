@@ -11,7 +11,7 @@ import shutil
 from flask.ext.testing import TestCase
 
 from app import db, app, config_app
-#import hactar.models
+import hactar.models
 
 class TestWeb(TestCase):
 
@@ -30,7 +30,7 @@ class TestWeb(TestCase):
         import json
         conf = json.load(open('config.json', 'rb'))['test']
         app.config.update(conf)
-#       hactar.models.setup('test')
+        hactar.models.setup('test')
         app.logger.setLevel(30)
         return app
 

@@ -10,7 +10,7 @@ from tornado.ioloop import IOLoop
 
 from app import app, config_app
 
-from hactar.models import db
+from hactar.models import db, setup
 
 
 def main(test=False):
@@ -24,6 +24,7 @@ def main(test=False):
         conf['PASSWORD'] = secrets['hactar']['password']
         conf['SECRET_KEY'] = secrets['installed']['client_secret']
         app.config.update(conf)
+        setup('production')
 
     
     logpath = os.path.join(conf['LOG_DIR'], conf['LOG_MAIN'])

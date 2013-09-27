@@ -2,7 +2,7 @@
 
 from sqlalchemy.exc import IntegrityError
 from flask import Flask, redirect, session, g, url_for
-from hactar.models import db
+from hactar.models import db, setup
 
 # create our little application :)
 app = Flask(__name__)
@@ -45,6 +45,7 @@ def config_app(application):
 
 if __name__ == '__main__':
     config_app(app)
+    setup('develop')
     try:
         open(app.config['SQLALCHEMY_DATABASE_URI'], 'rb')
     except IOError:
