@@ -45,7 +45,6 @@ sub-events).
 
 Feature Priority
 ----------------
- 1. Implement deployment / release management
  1. Implement upgrading of db schema
  1. Implement tasks (using google calendar API)
  1. AJAXify (eg. update web page status)
