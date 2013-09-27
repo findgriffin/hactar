@@ -41,6 +41,16 @@ def setup_upstart():
     dest = '/etc/init/hactar.conf'
     cuisine.run('rsync %s %s' % (source, dest))
 
+def setup_repo():
+    cuisine.mode_sudo()
+    cuisine.dir_ensure(parent(conf['ROOT']), mode='774', owner=conf['USER'], 
+            group=conf['USER'])
+    # root directory with code
+    cuisine.dir_ensure(conf['ROOT'], mode='774', owner=conf['USER'], 
+            group=conf['USER'])
+    if not cuisine.dir_exists(os.path.join(conf['ROOT'], '.git')):
+        cuisine.run('su hactar -c "git clone %s  %s"' % (conf['GIT'], conf['ROOT']))
+
 def setup_host():
     """ Setup a host to the point where it can run hactar."""
     if not cuisine.user_check(conf['USER']):
@@ -49,16 +59,12 @@ def setup_host():
     cuisine.package_ensure('git')
     cuisine.package_ensure('python-pip')
     # logs
-    cuisine.dir_ensure(conf['LOG_DIR'], owner=conf['USER'])
+    cuisine.dir_ensure(conf['LOG_DIR'], owner=conf['USER'], 
+            group=conf['USER'])
+    cuisine.dir_ensure(conf['WHOOSH_BASE'], owner=conf['USER'],
+            group=conf['USER'])
+    setup_repo()
 
-    cuisine.dir_ensure(parent(conf['ROOT']), mode='764', owner=conf['USER'], 
-            group=conf['USER'])
-    # root directory with code
-    cuisine.dir_ensure(conf['ROOT'], mode='764', owner=conf['USER'], 
-            group=conf['USER'])
-    if not cuisine.dir_exists(os.path.join([conf['ROOT'], '.git'])):
-        cuisine.run('su hactar -c "git clone %s  %s"' % (conf['GIT'], conf['ROOT']))
-    cuisine.dir_ensure(conf['WHOOSH_BASE'], owner=conf['USER'])
     setup_upstart()
 
 def update_deps():
@@ -70,6 +76,10 @@ def update_deps():
 def run_hactar():
     cuisine.mode_sudo()
     cuisine.upstart_ensure('hactar')
+
+def pull_hactar():
+    with cd(conf['ROOT']):
+        cuisine.run('git pull')
 
 def update_hactar():
     """Get the latest release of hactar (assumes git pull will get
