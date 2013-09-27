@@ -25,9 +25,15 @@ def close_db(error):
 def home():
     return redirect(url_for('memes'))
 
-def init_db():
+def init_db(app):
     """ Delete the existing database and create new database from scratch."""
+    import shutil
     db_path = app.config['SQLALCHEMY_DATABASE_URI']
+    whoosh = app.config['WHOOSH_BASE']
+    try:
+        shutil.rmtree(whoosh)
+    except OSError:
+        pass
     import os
     if os.path.exists(db_path):
         os.remove(db_path)
@@ -45,10 +51,8 @@ def config_app(application):
 
 if __name__ == '__main__':
     config_app(app)
+    import sys
+    if sys.argv[-1] == 'clean':
+        init_db(app)
     setup('develop')
-    try:
-        open(app.config['SQLALCHEMY_DATABASE_URI'], 'rb')
-    except IOError:
-        with app.test_request_context():
-            db.create_all()
     app.run()
