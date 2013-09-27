@@ -50,6 +50,9 @@ def setup_repo():
             group=conf['USER'])
     if not cuisine.dir_exists(os.path.join(conf['ROOT'], '.git')):
         cuisine.run('su hactar -c "git clone %s  %s"' % (conf['GIT'], conf['ROOT']))
+    with cd(conf['ROOT']):
+        cuisine.run('git config core.sharedRepository group')
+        cuisine.run('chmod -R g+w .')
 
 def setup_host():
     """ Setup a host to the point where it can run hactar."""
