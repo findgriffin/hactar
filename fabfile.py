@@ -85,10 +85,12 @@ def update_hactar():
     """Get the latest release of hactar (assumes git pull will get
     origin/master)"""
     cuisine.mode_local()
+    cuisine.run('git checkout master')
     test_out = cuisine.run('nosetests')
     if not passed(test_out):
         print test_out
         exit(1)
+    cuisine.run('git push')
     cuisine.mode_remote()
     cuisine.mode_sudo()
     with cd(conf['ROOT']):
