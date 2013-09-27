@@ -217,7 +217,7 @@ def config_app(application):
     ))
 
 if __name__ == '__main__':
-    config_test(app)
+    config_app(app)
     try:
         open(app.config['SQLALCHEMY_DATABASE_URI'], 'rb')
     except IOError:
