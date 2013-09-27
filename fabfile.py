@@ -84,9 +84,9 @@ def pull_hactar():
     with cd(conf['ROOT']):
         cuisine.run('git pull')
 
-def update_hactar():
-    """Get the latest release of hactar (assumes git pull will get
-    origin/master)"""
+def update():
+    """Get the latest release of hactar (assumes local host will push to github
+    master and remote host will pull from it)"""
     cuisine.mode_local()
     cuisine.run('git checkout master')
     test_out = cuisine.run('nosetests')
