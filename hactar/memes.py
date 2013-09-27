@@ -1,7 +1,10 @@
+"""Views to handle individual and collections of memes"""
+
 from sqlalchemy.exc import IntegrityError
 import flask.ext.whooshalchemy
 from flask import current_app, request, session, redirect, url_for, abort, \
      render_template, flash
+
 from hactar.models import Meme, db 
 
 @current_app.route('/memes', methods=['GET', 'POST'])
