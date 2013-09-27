@@ -6,6 +6,7 @@
 """
 import unittest
 from hashlib import sha1
+import shutil
 
 from flask.ext.testing import TestCase
 
@@ -22,16 +23,23 @@ class TestWeb(TestCase):
     title0 = 'A title not a URI'
     desc4 = 'a description of this "not-URI"'
 
+    whoosh = '/tmp/hactar/whoosh-nosetest'
+
     def create_app(self):
         config_app(app)
         app.config.update(dict(
-            SQLALCHEMY_DATABASE_URI='sqlite:///')
-            )
+            SQLALCHEMY_DATABASE_URI='sqlite:///',
+            WHOOSH_BASE=self.whoosh
+            ))
         app.logger.setLevel(30)
         return app
 
     def setUp(self):
         """Before each test, set up a blank database"""
+        try:
+            shutil.rmtree(self.whoosh)
+        except OSError as err:
+            pass
         db.create_all()
 
     def tearDown(self):
