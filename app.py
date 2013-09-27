@@ -205,9 +205,9 @@ def create_app():
     return app
 
 
-def config_testserver():
+def config_app(application):
     # Load default config and override config from an environment variable
-    app.config.update(dict(
+    application.config.update(dict(
         SQLALCHEMY_DATABASE_URI='sqlite:////tmp/hactar/hactar.db',
         WHOOSH_BASE='/tmp/hactar/whoosh',
         DEBUG=True,
@@ -217,7 +217,7 @@ def config_testserver():
     ))
 
 if __name__ == '__main__':
-    config_testserver()
+    config_test(app)
     try:
         open(app.config['SQLALCHEMY_DATABASE_URI'], 'rb')
     except IOError:

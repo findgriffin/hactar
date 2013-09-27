@@ -13,7 +13,7 @@ import datetime
 
 from flask.ext.testing import TestCase
 
-from app import db, app
+from app import db, app, config_app
 
 class TestWeb(TestCase):
 
@@ -25,6 +25,7 @@ class TestWeb(TestCase):
     desc2 = 'a description of more'
 
     def create_app(self):
+        config_app(app)
         app.config.update(dict(
             SQLALCHEMY_DATABASE_URI='sqlite:///')
             )
