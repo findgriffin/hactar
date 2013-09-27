@@ -18,15 +18,6 @@ from hactar.models import Meme, db
 app = Flask(__name__)
 db.init_app(app)
 
-# Load default config and override config from an environment variable
-app.config.update(dict(
-    SQLALCHEMY_DATABASE_URI='sqlite:////tmp/hactar/hactar.db',
-    WHOOSH_BASE='/tmp/hactar/whoosh',
-    DEBUG=True,
-    SECRET_KEY='cricket is a stupid sport',
-    USERNAME='admin',
-    PASSWORD='cricket'
-))
 app.config.from_envvar('HACTAR_SETTINGS', silent=True)
 
 @app.errorhandler(404)
@@ -214,8 +205,19 @@ def create_app():
     return app
 
 
+def config_testserver():
+    # Load default config and override config from an environment variable
+    app.config.update(dict(
+        SQLALCHEMY_DATABASE_URI='sqlite:////tmp/hactar/hactar.db',
+        WHOOSH_BASE='/tmp/hactar/whoosh',
+        DEBUG=True,
+        SECRET_KEY='cricket is a stupid sport',
+        USERNAME='admin',
+        PASSWORD='cricket'
+    ))
 
 if __name__ == '__main__':
+    config_testserver()
     try:
         open(app.config['SQLALCHEMY_DATABASE_URI'], 'rb')
     except IOError:

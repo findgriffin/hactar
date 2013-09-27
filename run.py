@@ -20,7 +20,10 @@ from hactar.models import Meme, db
 def main(test=False):
     """Start tornado running hactar."""
     conf = load(open('config.json', 'rb'))
+    secrets = load(open(conf['SECRETS'], 'rb'))
     if not test:
+        conf['USERNAME'] = secrets['hactar']['username']
+        conf['PASSWORD'] = secrets['hactar']['password']
         app.config.update(conf)
     
 
