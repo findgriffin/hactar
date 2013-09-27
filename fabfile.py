@@ -97,7 +97,7 @@ def update_hactar():
         pull_output = cuisine.run('git pull')
         if 'requirements.txt' in pull_output:
             update_deps()
-        cuisine.run('git clean')
+        cuisine.run('git clean -f')
     run_hactar()
 
 
