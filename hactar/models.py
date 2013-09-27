@@ -3,8 +3,8 @@ Database models (using SQLAlchemy) for the hactar application.
 """
 from hashlib import sha1
 import time
-import re
 import datetime
+import json
 
 import markdown
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -123,6 +123,7 @@ class Event(db.Model):
         self.added = time.time()
         self.modified = self.added
 
-index_service = IndexService({'WHOOSH_BASE': '/tmp/hactar/whoosh'})
+conf = json.load(open('config.json', 'rb'))['test']
+index_service = IndexService(conf)
 index_service.register_class(Meme)
 

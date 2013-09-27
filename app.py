@@ -39,14 +39,9 @@ def create_app():
 
 def config_app(application):
     # Load default config and override config from an environment variable
-    application.config.update(dict(
-        SQLALCHEMY_DATABASE_URI='sqlite:////tmp/hactar/hactar.db',
-        WHOOSH_BASE='/tmp/hactar/whoosh',
-        DEBUG=True,
-        SECRET_KEY='cricket is a stupid sport',
-        USERNAME='admin',
-        PASSWORD='cricket'
-    ))
+    import json
+    conf = json.load(open('config.json', 'rb'))['develop']
+    application.config.update(conf)
 
 if __name__ == '__main__':
     config_app(app)

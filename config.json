@@ -1,12 +1,30 @@
 {
-    "HOST": "auroraborealis.com.au",
-    "USER": "hactar",
-    "GIT": "https://github.com/findgriffin/hactar.git",
-    "LOG_DIR": "/var/log/hactar",
-    "LOG_MAIN": "main.log",
-    "SQLALCHEMY_DATABASE_URI": "sqlite:////home/hactar/hactar.db",
-    "WHOOSH_BASE": "/home/hactar/whoosh",
-    "MIN_TESTS": 9,
-    "SECRETS": "/home/hactar/secrets.json",
-    "ROOT": "/home/hactar/git/hactar"
+    "production": {
+        "HOST": "auroraborealis.com.au",
+        "USER": "hactar",
+        "GIT": "https://github.com/findgriffin/hactar.git",
+        "LOG_DIR": "/var/log/hactar",
+        "LOG_MAIN": "main.log",
+        "SQLALCHEMY_DATABASE_URI": "sqlite:////home/hactar/hactar.db",
+        "WHOOSH_BASE": "/home/hactar/whoosh",
+        "MIN_TESTS": 9,
+        "SECRETS": "/home/hactar/secrets.json",
+        "ROOT": "/home/hactar/git/hactar"
+    },
+    "develop": {
+        "SQLALCHEMY_DATABASE_URI": "sqlite:////tmp/hactar/hactar.db",
+        "WHOOSH_BASE": "/tmp/hactar/whoosh",
+        "DEBUG": true,
+        "SECRET_KEY": "cricket is a stupid sport",
+        "USERNAME": "admin",
+        "PASSWORD": "cricket"
+    },
+    "test": {
+        "SQLALCHEMY_DATABASE_URI": "sqlite:////tmp/hactar/hactar.db",
+        "WHOOSH_BASE": "/tmp/hactar/whoosh-test",
+        "DEBUG": true,
+        "SECRET_KEY": "cricket is a stupid sport",
+        "USERNAME": "admin",
+        "PASSWORD": "cricket"
+    }
 }

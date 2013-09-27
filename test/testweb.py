@@ -11,6 +11,7 @@ import shutil
 from flask.ext.testing import TestCase
 
 from app import db, app, config_app
+#import hactar.models
 
 class TestWeb(TestCase):
 
@@ -26,11 +27,10 @@ class TestWeb(TestCase):
     whoosh = '/tmp/hactar/whoosh-nosetest'
 
     def create_app(self):
-        config_app(app)
-        app.config.update(dict(
-            SQLALCHEMY_DATABASE_URI='sqlite:///',
-            WHOOSH_BASE=self.whoosh
-            ))
+        import json
+        conf = json.load(open('config.json', 'rb'))['test']
+        app.config.update(conf)
+#       hactar.models.setup('test')
         app.logger.setLevel(30)
         return app
 

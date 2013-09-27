@@ -15,7 +15,7 @@ from hactar.models import db
 
 def main(test=False):
     """Start tornado running hactar."""
-    conf = load(open('config.json', 'rb'))
+    conf = load(open('config.json', 'rb'))['production']
     if test:
         config_app(app)
     else:

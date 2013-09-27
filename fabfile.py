@@ -6,7 +6,7 @@ import re
 import cuisine
 from fabric.api import cd, env
 
-CONF = json.load(open('config.json', 'rb'))
+CONF = json.load(open('config.json', 'rb'))['production']
 env.hosts = [CONF['HOST']]
 
 def parent(location):
