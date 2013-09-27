@@ -19,18 +19,8 @@ app = Flask(__name__)
 db.init_app(app)
 
 app.config.from_envvar('HACTAR_SETTINGS', silent=True)
-
-@app.errorhandler(404)
-def not_found(exc):
-    """Handle HTTP not found error."""
-    app.logger.debug('returning 404 error for: ' % exc.message)
-    return render_template('error.html', exc=exc), 404
-
-@app.errorhandler(500)
-def internal_server_error(exc):
-    """Handle internal server error."""
-    app.logger.error('Unhandled error:\n' % traceback.format_exc())
-    return render_template('error.html', exc=exc), 500
+with app.app_context():
+    import errors
 
 @app.teardown_appcontext
 def close_db(error):
