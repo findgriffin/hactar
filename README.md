@@ -45,6 +45,8 @@ sub-events).
 
 Feature Priority
 ----------------
+ 1. Demagicify whoosh integration
  1. Implement upgrading of db schema
+ 1. Implement asynchronous/background tasks
  1. Implement tasks (using google calendar API)
  1. AJAXify (eg. update web page status)
