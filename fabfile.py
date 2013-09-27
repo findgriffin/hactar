@@ -92,7 +92,7 @@ def update_hactar():
     cuisine.mode_remote()
     cuisine.mode_sudo()
     with cd(conf['ROOT']):
-        cuisine.run('git pull')
+        pull_output = cuisine.run('git pull')
         if 'requirements.txt' in pull_output:
             update_deps()
         cuisine.run('git clean')
