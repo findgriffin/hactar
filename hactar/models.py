@@ -37,7 +37,7 @@ class Meme(db.Model):
     status_code = db.Column(db.Integer(), default=-1)
     content = db.Column(db.Text(), default='')
     _hash = None
-    __searchable__ = ['uri', 'text']
+    __searchable__ = ['uri', 'text', 'content', 'title']
 
     def __init__(self, text, uri=None, plugins=None):
         if is_uri(uri):
@@ -86,11 +86,11 @@ class Meme(db.Model):
         self.modified = datetime.datetime.now()
 
     def __str__(self):
-        return 'meme: %s|%s|%s|%s' % (self.text, self.uri, 
+        return 'meme: %s|%s|%s|%s' % (self.text, self.heading, 
                 self.added, self.modified)
 
     def __repr__(self):
-        return '<Meme %s>' % self.uri if self.uri else self.id
+        return '<Meme %s>' % self.heading 
 
 def is_uri(uri):
     """ Check that the given URI is valid. Raise an exception if it is not."""
