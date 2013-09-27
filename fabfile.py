@@ -92,11 +92,12 @@ def update_hactar():
         exit(1)
     cuisine.run('git push')
     cuisine.mode_remote()
-    cuisine.mode_sudo()
     with cd(conf['ROOT']):
         pull_output = cuisine.run('git pull')
         if 'requirements.txt' in pull_output:
             update_deps()
+        if 'hactar.conf' in pull_output:
+            setup_upstart()
         cuisine.run('git clean -f')
     run_hactar()
 
