@@ -6,3 +6,4 @@ BeautifulSoup
 markdown
 tornado
 google-api-python-client
+nose
