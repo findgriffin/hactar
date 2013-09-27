@@ -1,7 +1,7 @@
 flask
 requests
 Flask-Testing
-flask_whooshalchemy
+whooshalchemy
 BeautifulSoup
 markdown
 tornado

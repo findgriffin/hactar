@@ -1,7 +1,6 @@
 """Views to handle individual and collections of memes"""
 
 from sqlalchemy.exc import IntegrityError
-import flask.ext.whooshalchemy
 from flask import current_app, request, session, redirect, url_for, abort, \
      render_template, flash
 
@@ -35,7 +34,7 @@ def memes():
         terms = request.args.get('q')
         if terms:
             current_app.logger.debug('looking for memes with terms: %s' % terms)
-            filtered = Meme.query.whoosh_search(terms)
+            filtered = Meme.search_query(terms)
             memes = filtered.order_by(Meme.modified.desc())
             return render_template('memes.html', memes=memes,
                     add=False)

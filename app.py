@@ -2,7 +2,7 @@
 
 from sqlalchemy.exc import IntegrityError
 from flask import Flask, redirect, session, g, url_for
-from hactar.models import db 
+from hactar.models import db
 
 # create our little application :)
 app = Flask(__name__)
@@ -10,7 +10,6 @@ db.init_app(app)
 
 app.config.from_envvar('HACTAR_SETTINGS', silent=True)
 with app.app_context():
-    import flask.ext.whooshalchemy
     import hactar.errors
     import hactar.memes
     import hactar.filters

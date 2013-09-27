@@ -8,8 +8,8 @@ import datetime
 
 import markdown
 from flask.ext.sqlalchemy import SQLAlchemy
-import flask.ext.whooshalchemy
-import requests
+from whooshalchemy import IndexService
+
 
 URI_SCHEMES = [
     'aaa', 'aaas', 'about', 'acap', 'cap', 'cid', 'crid', 'data', 'dav',
@@ -122,3 +122,7 @@ class Event(db.Model):
             self.finish_time = int(finish_time)
         self.added = time.time()
         self.modified = self.added
+
+index_service = IndexService({'WHOOSH_BASE': '/tmp/hactar/whoosh'})
+index_service.register_class(Meme)
+
