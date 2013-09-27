@@ -44,7 +44,7 @@ window.onload = function(){
     var submitbutton = document.getElementById("searchq");
     // add listener to button
     if(submitbutton.addEventListener){
-        submitbutton.addEventListener("click", function() {
+        submitbutton.addEventListener("focus", function() {
             if (submitbutton.value == 'search memes'){
                 submitbutton.value = '';
             }
@@ -55,7 +55,7 @@ window.onload = function(){
     // add listener to descfield field
     if(descfield){
         if(descfield.addEventListener){
-            descfield.addEventListener("click", function() {
+            descfield.addEventListener("focus", function() {
                 if (descfield.value == 'description'){
                     descfield.value = '';
                 }
@@ -67,7 +67,7 @@ window.onload = function(){
     // add listener to urlfield field
     if(urlfield){
         if(urlfield.addEventListener){
-            urlfield.addEventListener("click", function() {
+            urlfield.addEventListener("focus", function() {
                 if (urlfield.value == 'URL or title'){
                     urlfield.value = '';
                 }
@@ -78,7 +78,7 @@ window.onload = function(){
     var userfield = document.getElementById("username");
     if(userfield){
         if(userfield.addEventListener){
-            userfield.addEventListener("click", function() {
+            userfield.addEventListener("focus", function() {
                 if (userfield.value == 'username'){
                     userfield.value = '';
                 }
