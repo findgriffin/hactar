@@ -3,13 +3,9 @@
     web Tests
     ~~~~~~~~~~~~
 
-    Tests the web application based on web_tests.py by Armin Ronacher.
-
-    :license: BSD, see LICENSE for more details.
 """
 import unittest
 from hashlib import sha1
-import datetime
 
 from flask.ext.testing import TestCase
 
