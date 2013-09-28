@@ -1,19 +1,22 @@
 import re
 import json
 import datetime
+import time
 
 from requests import get
 import BeautifulSoup as bs
-from flask import Flask
+from flask import Flask, current_app
+from celery import Celery
 
 from models import Meme, db, setup
 
-app = Flask(__name__)
-db.init_app(app)
+app = current_app
 
 
 conf = json.load(open('config.json', 'rb'))['develop']
-app.config.update(conf)
+
+celery = Celery("scraper", broker=conf['BROKER_URL'])
+celery.conf.update(conf)
 
 def visible(element):
     if element.parent.name in ['style', 'script', '[document]', 'head',
@@ -47,23 +50,34 @@ def get_data(uri):
         title = 'unknown'
     return status_code, title, ' '.join(page_text)
 
-
-def scrape_page(meme_id):
-    uri = get_uri(meme_id)
-    if not uri:
-        return None
-    code, title, data = get_data(uri)
-    try:
-        setup('develop')
-        with app.test_request_context():
-            ngt = Meme.query.filter(Meme.id == int(meme_id))
+@celery.task(name='hactar.scaper.crawl')
+def crawl(meme_id):
+    start = time.time()
+    with app.app_context():
+        db.session()
+        if type(meme_id) == int:
+            uri = get_uri(meme_id)
+            if not uri:
+                return None
+        elif type(meme_id) in (str, unicode):
+            uri = meme_id
+        code, title, data = get_data(uri)
+        try:
+            setup('develop')
+            timeout = conf["BROKER_TRANSPORT_OPTIONS"]["visibility_timeout"]
+            while time.time() < start+timeout:
+                ngt = Meme.query.filter(Meme.id == int(meme_id))
+                if ngt:
+                    break
             now = datetime.datetime.now()
-            ngt.update({'checked': now, 'status_code': code, 'content': data})
+            ngt.update({'checked': now, 'status_code': code, 'content': data,
+                'title': title})
             ngt[0].update()
             db.session.commit()
-    except ValueError as err:
-        db.session.rollback()
-        print err.message
+        except ValueError as err:
+            db.session.rollback()
+            print err.message
+    return code, title, data
 
 
 

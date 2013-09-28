@@ -12,6 +12,8 @@
         "ROOT": "/home/hactar/git/hactar"
     },
     "develop": {
+        "BROKER_URL": "redis://localhost:6379/0",
+        "BROKER_TRANSPORT_OPTIONS": {"visibility_timeout": 300},
         "SQLALCHEMY_DATABASE_URI": "sqlite:////tmp/hactar/hactar.db",
         "WHOOSH_BASE": "/tmp/hactar/whoosh",
         "DEBUG": true,
