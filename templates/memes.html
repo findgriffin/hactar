@@ -24,6 +24,9 @@
         <small style="text-align:right;float:right">
             {{ meme.modified|reldatetime }}</small></h4>
     {{ meme.markup|safe }}
+    {% if meme.checked %} 
+    <small>status: {{ meme.status_code }} {{ meme.checked|reldatetime }} </small>
+    {% endif %}
   {% else %}
     <li><em>Unbelievable.  No memes here so far</em>
   {% endfor %}
