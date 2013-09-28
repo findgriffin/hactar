@@ -20,8 +20,10 @@ def _jinja2_filter_reldatetime(date):
     now = datetime.datetime.now()
     if type(date) == datetime.datetime:
         dtime = date
-    else:
+    elif type(date) in (float, int):
         dtime = datetime.datetime.fromtimestamp(date)
+    else:
+        return 'unknown type %s for date: %s' % (type(date), date)
     delta = now - dtime
     if delta.days > 1:
         return '%s days ago' % delta.days
