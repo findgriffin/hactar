@@ -29,13 +29,13 @@ db = SQLAlchemy()
 class Meme(db.Model):
     id=db.Column(db.Integer, primary_key=True)
     uri = db.Column(db.Text())
-    title = db.Column(db.Text(), default='')
+    title = db.Column(db.Text(), default=unicode(''))
     text = db.Column(db.Text())
     added = db.Column(db.DateTime())
     modified = db.Column(db.DateTime())
     checked = db.Column(db.DateTime())
     status_code = db.Column(db.Integer(), default=-1)
-    content = db.Column(db.Text(), default='')
+    content = db.Column(db.Text(), default=unicode(''))
     _hash = None
     __searchable__ = ['uri', 'text', 'content', 'title']
 
@@ -43,7 +43,7 @@ class Meme(db.Model):
         if is_uri(uri):
             self.uri = uri
         else:
-            self.uri = None
+            self.uri = unicode('')
             self.title = uri
         if len(text.split()) < 2:
             raise ValueError('Description must be more than one word.')
@@ -58,7 +58,7 @@ class Meme(db.Model):
         """ Return the sha1 hash of this meme. Use the URL if it exists or
         the title if this meme has no URI. (it must have one or the other)"""
         if self._hash is None:
-            if self.uri is not None:
+            if self.uri:
                 sha = sha1(self.uri)
             else:
                 sha = sha1(self.title)
