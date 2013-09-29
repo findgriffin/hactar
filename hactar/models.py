@@ -28,14 +28,14 @@ db = SQLAlchemy()
 
 class Meme(db.Model):
     id=db.Column(db.Integer, primary_key=True)
-    uri = db.Column(db.Text())
-    title = db.Column(db.Text(), default=unicode(''))
-    text = db.Column(db.Text())
+    uri = db.Column(db.UnicodeText())
+    title = db.Column(db.UnicodeText(), default=unicode(''))
+    text = db.Column(db.UnicodeText())
     added = db.Column(db.DateTime())
     modified = db.Column(db.DateTime())
     checked = db.Column(db.DateTime())
     status_code = db.Column(db.Integer(), default=-1)
-    content = db.Column(db.Text(), default=unicode(''))
+    content = db.Column(db.UnicodeText(), default=unicode(''))
     _hash = None
     __searchable__ = ['uri', 'text', 'content', 'title']
 
