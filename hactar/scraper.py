@@ -19,6 +19,7 @@ celery = Celery("scraper", broker=conf['BROKER_URL'])
 celery.conf.update(conf)
 
 def visible(element):
+    """Check if a BeautifulSoup element is visible (True) or not (False)"""
     if element.parent.name in ['style', 'script', '[document]', 'head',
             'title']:
         return False
@@ -39,16 +40,17 @@ def get_uri(meme_id, sesh):
         return None
 
 def get_data(uri):
+    """Get the status code, content and title of a html page."""
     resp = get(uri)
     status_code = resp.status_code
     title = re.search('<title>(.*)</title>', resp.content)# just title for now
-    texts = bs.BeautifulSoup(unicode(resp.content, errors='ignore').encode()).findAll(text=True)
+    texts = bs.BeautifulSoup(unicode(resp.content, errors='ignore')).findAll(text=True)
     page_text = filter(visible, texts)
     if title:
         title = title.group().lstrip('<title>').rstrip('</title>')
     else:
         title = 'unknown'
-    return status_code, title, ' '.join(page_text)
+    return status_code, title, u' '.join(page_text)
 
 @celery.task(name='crawl')
 def crawl(meme_id):
@@ -75,11 +77,10 @@ def crawl(meme_id):
         if ngt:
             break
         time.sleep(1)
-#       index_service.after_commit(sesh)
     index_service.before_commit(sesh)
     sesh.commit()
+    index_service.after_commit(sesh)
     sesh.close()
-    index_service.after_commit()
     return status, title, data
 
 if __name__ == "__main__":
