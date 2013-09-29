@@ -48,6 +48,17 @@ def pull_hactar():
     with cd(CONF['ROOT']):
         cuisine.run('git pull')
 
+def send_hactar():
+    """Run tests and send local copy to github"""
+    cuisine.mode_local()
+    cuisine.run('git checkout master')
+    test_out = cuisine.run('nosetests')
+    if not passed(test_out):
+        print test_out
+        exit(1)
+    cuisine.run('git push')
+    cuisine.mode_remote()
+
 def setup_repo():
     """Setup the hactar repo including parent directories, permissions etc.
     the repo will be group writeable so there is no need to login as the hactar
@@ -69,6 +80,8 @@ def setup_repo():
 
 def setup_host():
     """ Setup a host to the point where it can run hactar."""
+
+    send_hactar()
     if not cuisine.user_check(CONF['USER']):
         exit(1)
     cuisine.mode_sudo()
@@ -105,14 +118,7 @@ def run_hactar():
 def update():
     """Get the latest release of hactar (assumes local host will push to github
     master and remote host will pull from it)"""
-    cuisine.mode_local()
-    cuisine.run('git checkout master')
-    test_out = cuisine.run('nosetests')
-    if not passed(test_out):
-        print test_out
-        exit(1)
-    cuisine.run('git push')
-    cuisine.mode_remote()
+    send_hactar()
     with cd(CONF['ROOT']):
         pull_output = cuisine.run('git pull')
         if 'requirements.txt' in pull_output:
