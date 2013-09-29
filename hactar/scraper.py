@@ -44,7 +44,8 @@ def get_data(uri):
     resp = get(uri)
     status_code = resp.status_code
     title = re.search('<title>(.*)</title>', resp.content)# just title for now
-    texts = bs.BeautifulSoup(unicode(resp.content, errors='ignore')).findAll(text=True)
+    content = unicode(resp.content, errors='ignore')
+    texts = bs.BeautifulSoup(content).findAll(text=True)
     page_text = filter(visible, texts)
     if title:
         title = title.group().lstrip('<title>').rstrip('</title>')
@@ -54,9 +55,9 @@ def get_data(uri):
 
 @celery.task(name='crawl')
 def crawl(meme_id):
-    db = create_engine(conf['SQLALCHEMY_DATABASE_URI'])
-    Session = sessionmaker(bind=db)
-    sesh = Session()
+    """Get data for meme and add it to search index."""
+    engine = create_engine(conf['SQLALCHEMY_DATABASE_URI'])
+    sesh = sessionmaker(bind=engine)()
     index_service = setup('develop', session=sesh)
 
 
@@ -71,9 +72,9 @@ def crawl(meme_id):
     timeout = conf["BROKER_TRANSPORT_OPTIONS"]["visibility_timeout"]
     while time.time() < start+timeout:
         now = datetime.datetime.now()
-        ngt = sesh.query(Meme).filter(Meme.uri == uri).update({'checked': now, 'status_code': status, 'content': data,
-        'title': title})
-        print 'session: %s' % dir(sesh)
+        upd = {'checked': now, 'status_code': status, 'content': data,
+                'title': title}
+        ngt = sesh.query(Meme).filter(Meme.uri == uri).update(upd)
         if ngt:
             break
         time.sleep(1)
@@ -82,10 +83,3 @@ def crawl(meme_id):
     index_service.after_commit(sesh)
     sesh.close()
     return status, title, data
-
-if __name__ == "__main__":
-    import sys
-    code, title, text = get_data(sys.argv[-1])
-    print "%s: %s" % (title, code)
-    print 'text:'
-    print text
