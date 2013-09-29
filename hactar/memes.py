@@ -20,6 +20,7 @@ def memes():
             db.session.add(newmeme)
             db.session.commit()
             if current_app.celery_running:
+                current_app.logger.debug('submitting to celery: %s' % newmeme)
                 crawl.delay(newmeme.id)
             flash('New meme was successfully added')
         except ValueError as err:
@@ -78,6 +79,7 @@ def update_meme(meme):
         ngt[0].update()
         db.session.commit()
         if current_app.celery_running:
+            current_app.logger.debug('submitting to celery: %s' % ngt[0])
             crawl.delay(ngt[0].id)
         flash('Meme successfully modified')
     except ValueError as err:
