@@ -43,6 +43,11 @@ def setup_upstart():
     dest = '/etc/init/hactar.conf'
     cuisine.run('rsync %s %s' % (source, dest))
 
+def pull_hactar():
+    """A quick method to pull hactar from origin/master"""
+    with cd(CONF['ROOT']):
+        cuisine.run('git pull')
+
 def setup_repo():
     """Setup the hactar repo including parent directories, permissions etc.
     the repo will be group writeable so there is no need to login as the hactar
@@ -56,6 +61,8 @@ def setup_repo():
     if not cuisine.dir_exists(os.path.join(CONF['ROOT'], '.git')):
         cuisine.run('su hactar -c "git clone %s  %s"' % (CONF['GIT'], 
             CONF['ROOT']))
+    else:
+        pull_hactar()
     with cd(CONF['ROOT']):
         cuisine.run('git config core.sharedRepository group')
         cuisine.run('chmod -R g+w .')
@@ -94,10 +101,6 @@ def run_hactar():
     cuisine.upstart_ensure('hactar')
     cuisine.run('/etc/init.d/redis-server restart')
 
-def pull_hactar():
-    """A quick method to pull hactar from origin/master"""
-    with cd(CONF['ROOT']):
-        cuisine.run('git pull')
 
 def update():
     """Get the latest release of hactar (assumes local host will push to github
