@@ -67,6 +67,9 @@ def setup_host():
     cuisine.mode_sudo()
     cuisine.package_ensure('git')
     cuisine.package_ensure('python-pip')
+    cuisine.package_ensure('redis-server')
+    # install celery from ubuntu repos to get init scripts setup for us
+    cuisine.package_ensure('python-celery')
     # logs
     cuisine.dir_ensure(CONF['LOG_DIR'], owner=CONF['USER'],
             group=CONF['USER'])
@@ -75,6 +78,9 @@ def setup_host():
     setup_repo()
 
     setup_upstart()
+    source = os.path.join(CONF['ROOT'], 'etc/celeryd')
+    dest = '/etc/default/celeryd'
+    cuisine.run('rsync %s %s' % (source, dest))
 
 def update_deps():
     """Used for when we add a new dependancy to hactar."""
@@ -86,6 +92,7 @@ def run_hactar():
     """Restart the tornado service running hactar."""
     cuisine.mode_sudo()
     cuisine.upstart_ensure('hactar')
+    cuisine.run('/etc/init.d/redis-server restart')
 
 def pull_hactar():
     """A quick method to pull hactar from origin/master"""
