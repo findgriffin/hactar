@@ -106,7 +106,7 @@ window.onload = function(){
     {% endfor %}
   <div class="three columns sidebar">
     <nav>
-    <h3>Hactar</h3>
+    <a href="{{ url_for('home') }}" style="text-decoration: none"><h3>Hactar</h3></a>
     <form id="newsearch" method="get" action="{{ url_for('memes') }}">
           <input type="text" id="searchq" name="q" value="search memes">
       </form>
