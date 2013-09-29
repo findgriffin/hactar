@@ -3,7 +3,7 @@
   {% if session.logged_in and add %}
     <form action="{{ url_for('memes') }}" method=post>
       <dl>
-        <dd><input type=text id="urltitle" name=uri style="width: 100%;" value="URL or title">
+        <dd><input type=text id="urltitle" name=uri style="width: 100%;" value="http://">
         <dd><textarea name=desc id="description" rows=5 style="width: 100%;">description</textarea>
         <dd><input type=submit value=Add>
       </dl>

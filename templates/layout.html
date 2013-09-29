@@ -67,8 +67,8 @@ window.onload = function(){
     // add listener to urlfield field
     if(urlfield){
         if(urlfield.addEventListener){
-            urlfield.addEventListener("focus", function() {
-                if (urlfield.value == 'URL or title'){
+            urlfield.addEventListener("click", function() {
+                if (urlfield.value == 'http://'){
                     urlfield.value = '';
                 }
             });
