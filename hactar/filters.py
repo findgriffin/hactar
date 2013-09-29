@@ -1,5 +1,6 @@
 """Various jinja2 filters for hactar"""
 import datetime
+from httplib import responses
 
 from flask import current_app
 
@@ -38,3 +39,11 @@ def _jinja2_filter_reldatetime(date):
             return '%s seconds ago' % delta.seconds
         else:
             return 'just now'
+
+@current_app.template_filter('status')
+def _jinja2_filter_status(code):
+    if code == 200:
+        return responses[code]
+    else:
+        return '%s (%s)' % (responses[code], code)
+

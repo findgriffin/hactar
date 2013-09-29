@@ -22,4 +22,7 @@
       added:{{ meme.added|reldatetime }} 
       </small>
   {% endif %}
+  {% if meme.checked %} 
+  <small>status: {{ meme.status_code|status }} {{ meme.checked|reldatetime }} </small>
+  {% endif %}
 {% endblock %}
