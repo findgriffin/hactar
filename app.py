@@ -55,5 +55,5 @@ if __name__ == '__main__':
     import sys
     if sys.argv[-1] == 'clean':
         init_db(app)
-    setup('develop')
+    app.index_service = setup('develop')
     app.run()

@@ -123,8 +123,9 @@ class Event(db.Model):
         self.added = time.time()
         self.modified = self.added
 
-def setup(context):
+def setup(context, session=None):
     conf = json.load(open('config.json', 'rb'))[context]
-    index_service = IndexService(conf)
+    index_service = IndexService(conf, session=session)
     index_service.register_class(Meme)
+    return index_service
 
