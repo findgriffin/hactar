@@ -41,6 +41,7 @@ def main(test=False):
     if not os.path.exists(conf['SQLALCHEMY_DATABASE_URI'].lstrip('sqlite:///')):
         with app.test_request_context():
             db.create_all()
+    app.celery_running = False
     app.logger.debug('starting app with config: %s' % app.config)
     http_server = HTTPServer(WSGIContainer(app))
     http_server.listen(8080)

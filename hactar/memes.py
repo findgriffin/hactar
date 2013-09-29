@@ -5,6 +5,7 @@ from flask import current_app, request, session, redirect, url_for, abort, \
      render_template, flash
 
 from hactar.models import Meme, db 
+from hactar.scraper import crawl
 
 @current_app.route('/memes', methods=['GET', 'POST'])
 def memes():
@@ -15,9 +16,11 @@ def memes():
         uri = unicode(request.form['uri'])
         text = unicode(request.form['desc'])
         try:
-            ngt = Meme(text=text, uri=uri)
-            db.session.add(ngt)
+            newmeme = Meme(text=text, uri=uri)
+            db.session.add(newmeme)
             db.session.commit()
+            if current_app.celery_running:
+                crawl.delay(newmeme.id)
             flash('New meme was successfully added')
         except ValueError as err:
             current_app.logger.error('got error: %s' % err.message)
@@ -74,6 +77,8 @@ def update_meme(meme):
         ngt.update({'text': text})
         ngt[0].update()
         db.session.commit()
+        if current_app.celery_running:
+            crawl.delay(ngt[0].id)
         flash('Meme successfully modified')
     except ValueError as err:
         db.session.rollback()

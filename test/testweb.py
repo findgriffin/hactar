@@ -32,6 +32,7 @@ class TestWeb(TestCase):
         app.config.update(conf)
         hactar.models.setup('test')
         app.logger.setLevel(30)
+        app.celery_running = False
         return app
 
     def setUp(self):
