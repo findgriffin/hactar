@@ -152,7 +152,7 @@ class TestWeb(TestCase):
                 follow_redirects=True)
         self.check_meme(rv1, self.uri0, self.desc1, new=False,
             flash='Meme successfully modified')
-        self.assertNotIn('<br>%s' % self.desc0, rv1.data)
+        self.assertNotIn(self.desc0, rv1.data)
     
     def test_delete_meme(self):
         """Test deleting a meme"""
@@ -246,11 +246,16 @@ class TestWeb(TestCase):
 
     def test_update_fail(self):
         """Test updating a nonexistant meme"""
-        self.skipTest(True)
+        self.login()
+        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
+            follow_redirects=True)
+        meme_id = self.check_meme(rv0, self.uri0, self.desc0, new=True) - 10
+        rv1 = self.client.post('/memes/%s' % meme_id, data=dict(text=self.desc1),
+                follow_redirects=True)
+        self.check_meme(rv1, self.uri0, self.desc0, new=False,
+            flash='Meme id:%s could not be found' % meme_id)
+        self.assertNotIn(self.desc1, rv1.data)
 
-    def test_add_no_uri(self):
-        """Test adding a meme with no uri"""
-        self.skipTest(True)
     def test_code_snippet(self):
         self.skipTest(True)
 

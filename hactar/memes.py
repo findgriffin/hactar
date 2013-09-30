@@ -76,12 +76,16 @@ def update_meme(meme):
     try:
         ngt = Meme.query.filter(Meme.id == int(meme))
         ngt.update({'text': text})
-        ngt[0].update()
-        db.session.commit()
-        if current_app.celery_running:
-            current_app.logger.debug('submitting to celery: %s' % ngt[0])
-            crawl.delay(ngt[0].id)
-        flash('Meme successfully modified')
+        if ngt.first():
+            ngt.first().update()
+            db.session.commit()
+            if current_app.celery_running:
+                current_app.logger.debug('submitting to celery: %s' % ngt[0])
+                crawl.delay(ngt[0].id)
+            flash('Meme successfully modified')
+        else:
+            db.session.rollback()
+            flash('Meme id:%s could not be found' % meme )
     except ValueError as err:
         db.session.rollback()
         flash(err.message)
