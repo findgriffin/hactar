@@ -80,6 +80,12 @@ def setup_repo():
         cuisine.run('git config core.sharedRepository group')
         cuisine.run('chmod -R g+w .')
 
+def update_deps():
+    """Used for when we add a new dependancy to hactar."""
+    with cd(CONF['ROOT']):
+        cuisine.mode_sudo()
+        cuisine.python_package_ensure_pip(r='requirements.txt')
+
 def setup_host():
     """ Setup a host to the point where it can run hactar."""
 
@@ -98,17 +104,12 @@ def setup_host():
     cuisine.dir_ensure(CONF['WHOOSH_BASE'], owner=CONF['USER'],
             group=CONF['USER'])
     setup_repo()
+    update_deps()
 
     setup_upstart()
     source = os.path.join(CONF['ROOT'], 'etc/celeryd')
     dest = '/etc/default/celeryd'
     cuisine.run('rsync %s %s' % (source, dest))
-
-def update_deps():
-    """Used for when we add a new dependancy to hactar."""
-    with cd(CONF['ROOT']):
-        cuisine.mode_sudo()
-        cuisine.python_package_ensure_pip(r='requirements.txt')
 
 def run_hactar():
     """Restart the tornado service running hactar."""
