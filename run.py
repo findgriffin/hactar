@@ -12,9 +12,13 @@ from app import app, config_app
 
 from hactar.models import db, setup
 
+def set_env(env):
+    with open(ENV_FILE, 'wb') as efile:
+        efile.write(env)
 
 def main(test=False):
     """Start tornado running hactar."""
+    set_env('production')
     conf = load(open('config.json', 'rb'))['production']
     if test:
         config_app(app)

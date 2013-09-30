@@ -2,18 +2,27 @@ import re
 import json
 import datetime
 import time
+import os
 
 from requests import get
 import BeautifulSoup as bs
 from flask import Flask, current_app
 from celery import Celery
-
-from models import Meme, setup
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-import time
 
-conf = json.load(open('config.json', 'rb'))['develop']
+from models import Meme, setup
+
+ENV_FILE = '.environment'
+
+def get_env():
+    if os.path.exists(ENV_FILE):
+        with open(ENV_FILE, 'rb') as efile:
+            return efile.read()
+    else:
+        return 'production'
+
+conf = json.load(open('config.json', 'rb'))[get_env()]
 
 celery = Celery("scraper", broker=conf['BROKER_URL'])
 celery.conf.update(conf)

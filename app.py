@@ -4,6 +4,12 @@ from sqlalchemy.exc import IntegrityError
 from flask import Flask, redirect, session, g, url_for
 from hactar.models import db, setup
 
+ENV_FILE = '.environment'
+
+def set_env(env):
+    with open(ENV_FILE, 'wb') as efile:
+        efile.write(env)
+
 # create our little application :)
 app = Flask(__name__)
 db.init_app(app)
@@ -51,6 +57,7 @@ def config_app(application):
     application.celery_running = True
 
 if __name__ == '__main__':
+    set_env('develop')
     config_app(app)
     import sys
     if sys.argv[-1] == 'clean':

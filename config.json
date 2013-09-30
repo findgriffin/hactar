@@ -1,5 +1,8 @@
 {
     "production": {
+        "ENVIRONMENT": "production",
+        "BROKER_URL": "redis://localhost:6379/0",
+        "BROKER_TRANSPORT_OPTIONS": {"visibility_timeout": 300},
         "HOST": "auroraborealis.com.au",
         "USER": "hactar",
         "GIT": "https://github.com/findgriffin/hactar.git",
@@ -12,6 +15,7 @@
         "ROOT": "/home/hactar/git/hactar"
     },
     "develop": {
+        "ENVIRONMENT": "develop",
         "BROKER_URL": "redis://localhost:6379/0",
         "BROKER_TRANSPORT_OPTIONS": {"visibility_timeout": 300},
         "SQLALCHEMY_DATABASE_URI": "sqlite:////tmp/hactar/hactar.db",
@@ -22,6 +26,7 @@
         "PASSWORD": "cricket"
     },
     "test": {
+        "ENVIRONMENT": "test",
         "SQLALCHEMY_DATABASE_URI": "sqlite:////tmp/hactar/hactar.db",
         "WHOOSH_BASE": "/tmp/hactar/whoosh-test",
         "DEBUG": true,
