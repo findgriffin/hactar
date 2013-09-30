@@ -16,6 +16,8 @@ import hactar.models
 
 class TestWeb(TestCase):
 
+    _multiprocess_can_split = False
+
     uri0 = 'http://foobar.com'
     desc0 = 'a description of foobar'
     uri1 = 'http://stuff.com/somewhere'

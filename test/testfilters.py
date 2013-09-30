@@ -9,6 +9,7 @@ import hactar.filters as filters
 import hactar.models
 
 class TestFilters(TestCase):
+    _multiprocess_can_split = True
 
     whoosh = '/tmp/hactar/whoosh-nosetest'
 
