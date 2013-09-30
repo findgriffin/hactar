@@ -27,12 +27,10 @@ class TestWeb(TestCase):
     title0 = 'A title not a URI'
     desc4 = 'a description of this "not-URI"'
 
-    whoosh = '/tmp/hactar/whoosh-nosetest'
-
     def create_app(self):
         import json
-        conf = json.load(open('config.json', 'rb'))['test']
-        app.config.update(conf)
+        self.conf = json.load(open('config.json', 'rb'))['test']
+        app.config.update(self.conf)
         hactar.models.setup('test')
         app.logger.setLevel(30)
         app.celery_running = False
@@ -41,9 +39,10 @@ class TestWeb(TestCase):
     def setUp(self):
         """Before each test, set up a blank database"""
         try:
-            shutil.rmtree(self.whoosh)
+            shutil.rmtree(self.conf['WHOOSH_BASE'])
         except OSError as err:
             pass
+        hactar.models.setup('test')
         db.create_all()
 
     def tearDown(self):
