@@ -257,7 +257,25 @@ class TestWeb(TestCase):
         self.assertNotIn(self.desc1, rv1.data)
 
     def test_code_snippet(self):
-        self.skipTest(True)
+        self.login()
+        code_md = """
+This is a description:
+
+    #! /usr/bin/env python
+    def hello_world():
+        print "Hello, world!"
+"""
+        code_html = """<p>This is a description:</p>
+<pre><code>#! /usr/bin/env python
+def hello_world():
+    print "Hello, world!"
+</code></pre>
+"""
+        rv = self.client.post('/memes', data=dict( uri=self.uri0, desc=code_md,
+        ), follow_redirects=True)
+        self.check_meme(rv, self.uri0, 'This is a description:')
+        self.assertIn(code_html, rv.data)
+    
 
 if __name__ == '__main__':
     unittest.main()
