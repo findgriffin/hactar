@@ -21,8 +21,9 @@ def get_env():
             return efile.read()
     else:
         return 'production'
+ENV = get_env()
 
-conf = json.load(open('config.json', 'rb'))[get_env()]
+conf = json.load(open('config.json', 'rb'))[ENV]
 
 celery = Celery("scraper", broker=conf['BROKER_URL'])
 celery.conf.update(conf)
@@ -67,7 +68,7 @@ def crawl(meme_id):
     """Get data for meme and add it to search index."""
     engine = create_engine(conf['SQLALCHEMY_DATABASE_URI'])
     sesh = sessionmaker(bind=engine)()
-    index_service = setup('develop', session=sesh)
+    index_service = setup(ENV, session=sesh)
 
 
     start = time.time()
