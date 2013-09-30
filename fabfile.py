@@ -73,7 +73,9 @@ def setup_repo():
         cuisine.run('su hactar -c "git clone %s  %s"' % (CONF['GIT'], 
             CONF['ROOT']))
     else:
+        cuisine.mode_user()
         pull_hactar()
+        cuisine.mode_sudo()
     with cd(CONF['ROOT']):
         cuisine.run('git config core.sharedRepository group')
         cuisine.run('chmod -R g+w .')
