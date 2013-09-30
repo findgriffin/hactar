@@ -12,6 +12,8 @@ from app import app, config_app
 
 from hactar.models import db, setup
 
+ENV_FILE = '.environment'
+
 def set_env(env):
     with open(ENV_FILE, 'wb') as efile:
         efile.write(env)
