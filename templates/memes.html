@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
   {% if session.logged_in and add %}
-    <form action="{{ url_for('memes') }}" method=post>
+    <form action="{{ url_for('memes') }}" method="post">
       <dl>
         <dd><input type=text id="urltitle" name=uri style="width: 100%;" value="http://">
         <dd><textarea name=desc id="description" rows=5 style="width: 100%;">description</textarea>
@@ -18,9 +18,8 @@
         {% else %}
        <h4>{{ meme.title }}
         {% endif %} 
-        {% if session.logged_in %} 
-            <a href="{{ url_for('meme_handler', meme=meme.id) }}">(edit)</a>
-        {% endif %}
+        <a href="{{ url_for('meme_handler', meme=meme.id) }}">
+        {% if session.logged_in %}(edit){% else %}(view){% endif %}</a>
         <small style="text-align:right;float:right">
             {{ meme.modified|reldatetime }}</small></h4>
     {{ meme.markup|safe }}

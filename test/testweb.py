@@ -7,10 +7,11 @@
 import unittest
 from hashlib import sha1
 import shutil
+import re
 
 from flask.ext.testing import TestCase
 
-from app import db, app, config_app
+from app import db, app
 import hactar.models
 
 class TestWeb(TestCase):
@@ -62,7 +63,8 @@ class TestWeb(TestCase):
         return self.client.get('/logout', follow_redirects=True)
 
 
-    def check_meme(self, resp, uri, desc, new=True, flash=None, isuri=True):
+    def check_meme(self, resp, uri, desc, new=True, flash=None, isuri=True,
+            logged_in=True):
         if flash:
             self.assertIn(flash, resp.data)
         elif new:
@@ -71,7 +73,12 @@ class TestWeb(TestCase):
         now = 'just now'
         self.assertEqual(resp.status_code, 200)
         meme_id = int(sha1(uri).hexdigest()[:15], 16)
-        self.assertIn('<a href="/memes/%s">(edit)</a>' % meme_id, resp.data)
+        if logged_in:
+            self.assertIn('<ahref="/memes/%s">(edit)</a>' % meme_id,
+                    re.sub('\s+', '', resp.data))
+        else:
+            self.assertIn('<ahref="/memes/%s">(view)</a>' % meme_id,
+                    re.sub('\s+', '', resp.data))
         if isuri:
             self.assertIn('<h4><a href="%s" target="_blank">%s</a>' % (uri, uri), resp.data)
         else:
@@ -206,7 +213,28 @@ class TestWeb(TestCase):
 
     def test_logged_out_views(self):
         """Test page appearance when logged out"""
-        self.skipTest(True)
+        self.login()
+        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0,
+        ), follow_redirects=True)
+        rv1 = self.client.post('/memes', data=dict( uri=self.uri1, desc=self.desc1,
+        ), follow_redirects=True)
+        rv2 = self.client.post('/memes', data=dict( uri=self.uri2, desc=self.desc2,
+        ), follow_redirects=True)
+        self.assertIn('<textarea', rv2.data)
+        self.assertIn('method="post"', rv2.data)
+        self.logout()
+        rv3 = self.client.get('/memes', follow_redirects=True)
+        self.assertNotIn('<textarea', rv3.data)
+        self.assertNotIn('method="post"', rv3.data)
+        meme0 = self.check_meme(rv3, self.uri0, self.desc0,
+                logged_in=False, new=False)
+        meme1 = self.check_meme(rv3, self.uri1, self.desc1,
+                logged_in=False, new=False)
+        meme2 = self.check_meme(rv3, self.uri2, self.desc2,
+                logged_in=False, new=False)
+        rv4 = self.client.get('/memes/%s' % meme0, follow_redirects=True)
+        self.assertNotIn('<textarea', rv4.data)
+        self.assertNotIn('method="post"', rv4.data)
 
     def test_delete_fail(self):
         """Test attempting to delete a nonexistant meme"""
