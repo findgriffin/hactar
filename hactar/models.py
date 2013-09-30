@@ -23,27 +23,49 @@ URI_SCHEMES = [
     'postal2', 'secondlife', 'skype', 'spotify', 'ssh', 'svn', 'sftp', 'smb',
     'sms', 'steam', 'webcal', 'winamp', 'wyciwyg', 'xfire', 'ymsgr',
 ]
+TLDS = ['ac', 'ad', 'ae', 'aero', 'af', 'ag', 'ai', 'al', 'am', 'an', 'ao',
+    'aq', 'ar', 'arpa', 'as', 'asia', 'at', 'au', 'aw', 'ax', 'az', 'ba', 'bb',
+    'bd', 'be', 'bf', 'bg', 'bh', 'bi', 'biz', 'bj', 'bm', 'bn', 'bo', 'br', 'bs',
+    'bt', 'bv', 'bw', 'by', 'bz', 'ca', 'cat', 'cc', 'cd', 'cf', 'cg', 'ch', 'ci',
+    'ck', 'cl', 'cm', 'cn', 'co', 'com', 'coop', 'cr', 'cu', 'cv', 'cw', 'cx',
+    'cy', 'cz', 'de', 'dj', 'dk', 'dm', 'do', 'dz', 'ec', 'edu', 'ee', 'eg', 'er',
+    'es', 'et', 'eu', 'fi', 'fj', 'fk', 'fm', 'fo', 'fr', 'ga', 'gb', 'gd', 'ge',
+    'gf', 'gg', 'gh', 'gi', 'gl', 'gm', 'gn', 'gov', 'gp', 'gq', 'gr', 'gs', 'gt',
+    'gu', 'gw', 'gy', 'hk', 'hm', 'hn', 'hr', 'ht', 'hu', 'id', 'ie', 'il', 'im',
+    'in', 'info', 'int', 'io', 'iq', 'ir', 'is', 'it', 'je', 'jm', 'jo', 'jobs',
+    'jp', 'ke', 'kg', 'kh', 'ki', 'km', 'kn', 'kp', 'kr', 'kw', 'ky', 'kz', 'la',
+    'lb', 'lc', 'li', 'lk', 'lr', 'ls', 'lt', 'lu', 'lv', 'ly', 'ma', 'mc', 'md',
+    'me', 'mg', 'mh', 'mil', 'mk', 'ml', 'mm', 'mn', 'mo', 'mobi', 'mp', 'mq',
+    'mr', 'ms', 'mt', 'mu', 'museum', 'mv', 'mw', 'mx', 'my', 'mz', 'na', 'name',
+    'nc', 'ne', 'net', 'nf', 'ng', 'ni', 'nl', 'no', 'np', 'nr', 'nu', 'nz', 'om',
+    'org', 'pa', 'pe', 'pf', 'pg', 'ph', 'pk', 'pl', 'pm', 'pn', 'post', 'pr',
+    'pro', 'ps', 'pt', 'pw', 'py', 'qa', 're', 'ro', 'rs', 'ru', 'rw', 'sa', 'sb',
+    'sc', 'sd', 'se', 'sg', 'sh', 'si', 'sj', 'sk', 'sl', 'sm', 'sn', 'so', 'sr',
+    'st', 'su', 'sv', 'sx', 'sy', 'sz', 'tc', 'td', 'tel', 'tf', 'tg', 'th', 'tj',
+    'tk', 'tl', 'tm', 'tn', 'to', 'tp', 'tr', 'travel', 'tt', 'tv', 'tw', 'tz',
+    'ua', 'ug', 'uk', 'us', 'uy', 'uz', 'va', 'vc', 've', 'vg', 'vi', 'vn', 'vu',
+    'wf', 'ws', 'xxx', 'ye', 'yt', 'za', 'zm', 'zw']
 
 db = SQLAlchemy()
 
 class Meme(db.Model):
     id=db.Column(db.Integer, primary_key=True)
     uri = db.Column(db.UnicodeText())
-    title = db.Column(db.UnicodeText(), default=unicode(''))
+    title = db.Column(db.UnicodeText())
     text = db.Column(db.UnicodeText())
     added = db.Column(db.DateTime())
     modified = db.Column(db.DateTime())
     checked = db.Column(db.DateTime())
     status_code = db.Column(db.Integer(), default=-1)
-    content = db.Column(db.UnicodeText(), default=unicode(''))
+    content = db.Column(db.UnicodeText())
     _hash = None
     __searchable__ = ['uri', 'text', 'content', 'title']
 
-    def __init__(self, text, uri=None, plugins=None):
-        if is_uri(uri):
-            self.uri = uri
+    def __init__(self, text, uri, plugins=None):
+        self.uri = is_uri(uri)
+        if self.uri:
+            self.title = None
         else:
-            self.uri = unicode('')
             self.title = uri
         if len(text.split()) < 2:
             raise ValueError('Description must be more than one word.')
@@ -94,12 +116,17 @@ class Meme(db.Model):
 
 def is_uri(uri):
     """ Check that the given URI is valid. Raise an exception if it is not."""
+    parts = uri.split('/')
+    if len(parts) > 1:
+        hostname = parts[0].split('.')
+        if len(hostname) > 1 and hostname[-1] in TLDS:
+            return u'http://'+uri
     parts = uri.split(':')
     if len(parts) < 2:
-        return False
+        return None
     elif parts[0] not in URI_SCHEMES and parts[0] != 'urn':
-        return False
-    return True
+        return None
+    return uri
 
 class Event(db.Model):
     """ A event, something that the user may do or has done."""
