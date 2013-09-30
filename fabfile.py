@@ -115,6 +115,7 @@ def run_hactar():
     cuisine.mode_sudo()
     cuisine.upstart_ensure('hactar')
     cuisine.run('/etc/init.d/redis-server restart')
+    cuisine.run('/etc/init.d/celeryd restart')
 
 
 def update():
