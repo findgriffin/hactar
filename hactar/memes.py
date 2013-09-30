@@ -94,7 +94,7 @@ def delete_meme(meme):
     try:
         Meme.query.filter(Meme.id == int(meme)).delete()
         db.session.commit()
-        flash('Meme successfully deleted')
+        flash('Meme deleted')
     except ValueError as err:
         db.session.rollback()
         flash(err.message)

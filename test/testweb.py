@@ -174,8 +174,15 @@ class TestWeb(TestCase):
         rv3 = self.client.post('/memes/%s' % meme_id, data=dict(
             delete='Delete'), follow_redirects=True)
         self.check_meme(rv3, self.uri1, self.desc1, new=False, 
-                    flash='Meme successfully deleted')
+                    flash='Meme deleted')
         self.assertNotIn('<br>%s' % self.desc0, rv3.data)
+
+        # try to delete it again
+        rv4 = self.client.post('/memes/%s' % meme_id, data=dict(
+            delete='Delete'), follow_redirects=True)
+        self.check_meme(rv4, self.uri1, self.desc1, new=False, 
+                    flash='Meme deleted')
+
 
     def test_search_memes(self):
         """Test basic meme searching"""
@@ -236,9 +243,6 @@ class TestWeb(TestCase):
         self.assertNotIn('<textarea', rv4.data)
         self.assertNotIn('method="post"', rv4.data)
 
-    def test_delete_fail(self):
-        """Test attempting to delete a nonexistant meme"""
-        self.skipTest(True)
 
     def test_update_fail(self):
         """Test updating a nonexistant meme"""
