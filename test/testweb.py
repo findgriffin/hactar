@@ -62,7 +62,6 @@ class TestWeb(TestCase):
     def logout(self):
         return self.client.get('/logout', follow_redirects=True)
 
-
     def check_meme(self, resp, uri, desc, new=True, flash=None, isuri=True,
             logged_in=True):
         if flash:
@@ -86,6 +85,7 @@ class TestWeb(TestCase):
         self.assertIn('<p>%s</p>' % desc, resp.data)
         self.assertIn('%s</small></h4>' % now, resp.data)
         return meme_id
+
     # testing functions
 
     def test_empty_db(self):

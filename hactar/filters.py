@@ -16,9 +16,11 @@ def _jinja2_filter_datetime(date, fmt=None):
     return dtime.strftime(fmt)
 
 @current_app.template_filter('reldatetime')
-def _jinja2_filter_reldatetime(date):
-    """Application wide datetime filter."""
-    now = datetime.datetime.now()
+def _jinja2_filter_reldatetime(date, now=None):
+    """Application wide datetime filter. We allow passing in a different value
+    of 'now' to assist # with testing"""
+    if now == None: 
+        now = datetime.datetime.now()
     if type(date) == datetime.datetime:
         dtime = date
     elif type(date) in (float, int):
@@ -26,7 +28,13 @@ def _jinja2_filter_reldatetime(date):
     else:
         return 'unknown type %s for date: %s' % (type(date), date)
     delta = now - dtime
-    if delta.days > 1:
+    YEAR  = 365.256
+    MONTH = YEAR/12.0
+    if delta.days > 2*YEAR:
+        return '%s years ago' % int(delta.days/YEAR)
+    elif delta.days > 2*MONTH:
+        return '%s months ago' % int(delta.days/MONTH)
+    elif delta.days > 1:
         return '%s days ago' % delta.days
     elif delta.days == 1:
         return 'yesterday'
