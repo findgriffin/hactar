@@ -39,7 +39,7 @@ def passed(output):
 def setup_upstart():
     """ Start upstart job running hactar."""
     cuisine.mode_sudo()
-    source = os.path.join(CONF['ROOT'], 'hactar.conf')
+    source = os.path.join(CONF['ROOT'], 'etc', 'hactar.conf')
     dest = '/etc/init/hactar.conf'
     cuisine.run('rsync %s %s' % (source, dest))
 
