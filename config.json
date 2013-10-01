@@ -1,9 +1,10 @@
 {
     "production": {
-        "ENVIRONMENT": "production",
         "BROKER_URL": "redis://localhost:6379/0",
         "BROKER_TRANSPORT_OPTIONS": {"visibility_timeout": 300},
         "HOST": "auroraborealis.com.au",
+        "DB_HOST": "localhost",
+        "PORT": 80,
         "USER": "vagrant",
         "GIT": "https://github.com/findgriffin/hactar.git",
         "LOG_DIR": "/var/log/hactar",
@@ -15,7 +16,8 @@
         "ROOT": "/home/vagrant/hactar"
     },
     "develop": {
-        "ENVIRONMENT": "develop",
+        "DB_HOST": "localhost",
+        "PORT": 5000,
         "BROKER_URL": "redis://localhost:6379/0",
         "BROKER_TRANSPORT_OPTIONS": {"visibility_timeout": 300},
         "SQLALCHEMY_DATABASE_URI": "sqlite:////tmp/hactar/hactar.db",
@@ -26,7 +28,8 @@
         "PASSWORD": "cricket"
     },
     "test": {
-        "ENVIRONMENT": "test",
+        "DB_HOST": "localhost",
+        "PORT": 5000,
         "SQLALCHEMY_DATABASE_URI": "sqlite:////tmp/hactar/hactar.db",
         "WHOOSH_BASE": "/tmp/hactar/whoosh-test",
         "DEBUG": true,

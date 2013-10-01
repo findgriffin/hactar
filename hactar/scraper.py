@@ -51,45 +51,22 @@ def get_uri(meme_id, sesh):
 def get_data(uri):
     """Get the status code, content and title of a html page."""
     resp = get(uri)
-    status_code = resp.status_code
+    data = {}
+    data['status_code'] = resp.status_code
     content = unicode(resp.content, errors='ignore')
     title = re.search('<title>(.*)</title>', content)# just title for now
     texts = bs.BeautifulSoup(content).findAll(text=True)
     page_text = filter(visible, texts)
     if title:
-        title = title.group().lstrip('<title>').rstrip('</title>')
-    else:
-        title = 'unknown'
-    return status_code, title, u' '.join(page_text)
+        data['title'] = title.group().lstrip('<title>').rstrip('</title>')
+    data['content'] = u' '.join(page_text)
+    return data
 
 @celery.task(name='crawl')
-def crawl(meme_id):
+def crawl(url, cookies):
     """Get data for meme and add it to search index."""
-    engine = create_engine(conf['SQLALCHEMY_DATABASE_URI'])
-    try:
-        sesh = sessionmaker(bind=engine)()
-        index_service = setup(ENV, session=sesh)
-        start = time.time()
-        if type(meme_id) == int:
-            uri = get_uri(meme_id, sesh)
-            if not uri:
-                return None
-        elif type(meme_id) in (str, unicode):
-            uri = meme_id
-        status, title, data = get_data(uri)
-        timeout = conf["BROKER_TRANSPORT_OPTIONS"]["visibility_timeout"]
-        while time.time() < start+timeout:
-            now = datetime.datetime.now()
-            upd = {'checked': now, 'status_code': status, 'content': data,
-                    'title': title}
-            ngt = sesh.query(Meme).filter(Meme.uri == uri).update(upd)
-            if ngt:
-                break
-            time.sleep(1)
-        index_service.before_commit(sesh)
-        sesh.commit()
-        sesh.close()
-        return status, title, data
-    except (ValueError, IntegrityError, OperationalError) as err:
-        print('got exception: %s' % err.message)
-        sesh.close()
+    status, title, data = get_data(url)
+    post_url = 'http://%s:%s/memes/%s' % (conf['DB_HOST'], conf['PORT'],
+            meme_id) 
+    requests.post(post_url, cookies=cookies, data=data)
+    return status, title
