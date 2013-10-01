@@ -22,7 +22,7 @@ def memes():
             if current_app.celery_running and newmeme.uri:
                 current_app.logger.debug('submitting to celery: %s' % newmeme)
                 cookie = request.cookies.get('session')
-                crawl.delay(newmeme.uri, {'session': cookie})
+                crawl.delay(newmeme.id, newmeme.uri, {'session': cookie})
             flash('New meme was successfully added')
         except ValueError as err:
             current_app.logger.error('got error: %s' % err.message)
@@ -80,12 +80,13 @@ def update_meme(meme):
     try:
         ngt = Meme.query.filter(Meme.id == int(meme))
         ngt.update({'text': text})
-        if ngt.first():
+        first = ngt.first()
+        if first:
             db.session.commit()
             if current_app.celery_running and ngt.first().uri:
                 current_app.logger.debug('submitting to celery: %s' % ngt[0])
                 cookie = request.cookies.get('session')
-                crawl.delay(ngt.first().uri, {'session': cookie})
+                crawl.delay(first.id, first.uri, {'session': cookie})
             flash('Meme successfully modified')
         else:
             db.session.rollback()
