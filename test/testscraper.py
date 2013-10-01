@@ -17,6 +17,7 @@ class TestScraper(TestCase):
     def create_app(self):
         import json
         self.conf = json.load(open('config.json', 'rb'))['test2']
+        scraper.conf = self.conf
         app.config.update(self.conf)
         hactar.models.setup('test')
         app.logger.setLevel(30)
@@ -24,7 +25,6 @@ class TestScraper(TestCase):
         return app
 
     def setUp(self):
-        scraper.ENV = 'test2'
         """Before each test, set up a blank database"""
         try:
             shutil.rmtree(self.conf['WHOOSH_BASE'])
