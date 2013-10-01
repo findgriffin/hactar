@@ -77,7 +77,7 @@ class TestScraper(TestCase):
     def test_simple(self):
         """Start with a blank database."""
         self.login()
-        uri = 'http://localhost:5000/memes'
+        uri = 'http://en.wikipedia.org'
         meme_id = int(sha1(uri).hexdigest()[:15], 16)
         rv = self.client.post('/memes', data=dict( uri=uri, desc='a b'), 
                 follow_redirects=True)
