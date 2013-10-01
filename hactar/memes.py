@@ -2,7 +2,7 @@
 
 from sqlalchemy.exc import IntegrityError
 from flask import current_app, request, session, redirect, url_for, abort, \
-     render_template, flash
+     render_template, flash, jsonify
 
 from hactar.models import Meme, db 
 from hactar.scraper import crawl
@@ -52,6 +52,8 @@ def meme_handler(meme):
         return get_meme(meme)
     elif 'delete' in request.form and request.form['delete'] == 'Delete':
         return delete_meme(meme)
+    elif 'content' in request.form:
+        return update_content(meme)
     else:
         return update_meme(meme)
 
@@ -77,7 +79,6 @@ def update_meme(meme):
         ngt = Meme.query.filter(Meme.id == int(meme))
         ngt.update({'text': text})
         if ngt.first():
-            ngt.first().update()
             db.session.commit()
             if current_app.celery_running:
                 current_app.logger.debug('submitting to celery: %s' % ngt[0])
@@ -90,6 +91,34 @@ def update_meme(meme):
         db.session.rollback()
         flash(err.message)
     return redirect(url_for('memes'))
+
+def update_content(meme):
+    """Update a memes content (for use by crawler)"""
+    try:
+        int(meme)
+    except ValueError:
+        abort(400)
+    if not session.get('logged_in'):
+        abort(401)
+    current_app.logger.debug('updating content: %s' % meme)
+    updict = {'content', unicode(request.form['content'])}
+    if 'title' in request.form:
+        updict['title'] = request.form['title']
+    if 'status_code' in request.form:
+        updict['status_code'] = request.form['status_code']
+    try:
+        ngt = Meme.query.filter(Meme.id == int(meme))
+        ngt.update(updict)
+        if ngt.first():
+            db.session.commit()
+            return jsonify({meme: True})
+        else:
+            db.session.rollback()
+            return jsonify({meme: False})
+    except ValueError as err:
+        db.session.rollback()
+        return jsonify({meme: False})
+    return jsonify({meme: True})
 
 def delete_meme(meme):
     """Remove a meme from the db."""
