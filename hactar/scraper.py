@@ -65,7 +65,7 @@ def get_data(uri):
 @celery.task(name='crawl')
 def crawl(url, cookies):
     """Get data for meme and add it to search index."""
-    status, title, data = get_data(url)
+    data = get_data(url)
     post_url = 'http://%s:%s/memes/%s' % (conf['DB_HOST'], conf['PORT'],
             meme_id) 
     requests.post(post_url, cookies=cookies, data=data)
