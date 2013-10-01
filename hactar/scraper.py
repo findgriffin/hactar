@@ -5,7 +5,7 @@ import datetime
 import time
 import os
 
-from requests import get
+from requests import get, post
 import BeautifulSoup as bs
 from flask import Flask, current_app
 from celery import Celery
@@ -68,5 +68,5 @@ def crawl(meme_id, url, cookies):
     data = get_data(url)
     post_url = 'http://%s:%s/memes/%s' % (conf['DB_HOST'], conf['PORT'],
             meme_id) 
-    requests.post(post_url, cookies=cookies, data=data)
+    post(post_url, cookies=cookies, data=data)
     return data['status_code']
