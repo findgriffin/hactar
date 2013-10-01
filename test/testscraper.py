@@ -24,6 +24,7 @@ class TestScraper(TestCase):
         return app
 
     def setUp(self):
+        scraper.ENV = 'test2'
         """Before each test, set up a blank database"""
         try:
             shutil.rmtree(self.conf['WHOOSH_BASE'])
