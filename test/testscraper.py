@@ -74,12 +74,6 @@ class TestScraper(TestCase):
         self.assertIn('%s</small></h4>' % now, resp.data)
         return meme_id
 
-    # testing functions
-    def test_add_meme(self):
-        """Test adding a meme with flask"""
-        self.login()
-        self.check_meme(rv, self.uri0, self.desc0)
-
     def test_simple(self):
         """Start with a blank database."""
         self.login()
