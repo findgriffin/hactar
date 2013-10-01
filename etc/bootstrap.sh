@@ -24,6 +24,7 @@ cd /home/vagrant/hactar
 pip install -r requirements.txt
 cp etc/hactar.conf /etc/init/hactar.conf
 cp etc/celeryd /etc/default/celeryd
+cp etc/celeryd-init /etc/init.d/celeryd
 $SECRET_DEST=/home/vagrant/secrets.json
 cp /vagrant/secrets.json $SECRET_DEST
 chmod 400 $SECRET_DEST
