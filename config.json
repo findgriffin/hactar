@@ -4,15 +4,15 @@
         "BROKER_URL": "redis://localhost:6379/0",
         "BROKER_TRANSPORT_OPTIONS": {"visibility_timeout": 300},
         "HOST": "auroraborealis.com.au",
-        "USER": "hactar",
+        "USER": "vagrant",
         "GIT": "https://github.com/findgriffin/hactar.git",
         "LOG_DIR": "/var/log/hactar",
         "LOG_MAIN": "main.log",
-        "SQLALCHEMY_DATABASE_URI": "sqlite:////home/hactar/hactar.db",
-        "WHOOSH_BASE": "/home/hactar/whoosh",
-        "MIN_TESTS": 9,
-        "SECRETS": "/home/hactar/secrets.json",
-        "ROOT": "/home/hactar/git/hactar"
+        "SQLALCHEMY_DATABASE_URI": "sqlite:////home/vagrant/hactar.db",
+        "WHOOSH_BASE": "/home/vagrant/whoosh",
+        "MIN_TESTS": 22,
+        "SECRETS": "/home/vagrant/secrets.json",
+        "ROOT": "/home/vagrant/hactar"
     },
     "develop": {
         "ENVIRONMENT": "develop",
