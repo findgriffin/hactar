@@ -212,6 +212,19 @@ class TestWeb(TestCase):
         self.check_meme(rv6, self.uri2, self.desc2, new=False)
         self.assertNotIn(self.desc0, rv5.data)
 
+    def test_update_search(self):
+        """Test updating and then searching for a meme"""
+        self.login()
+        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
+            follow_redirects=True)
+        meme_id = self.check_meme(rv0, self.uri0, self.desc0, new=True)
+        rv1 = self.client.post('/memes/%s' % meme_id, data=dict(text=self.desc1),
+                follow_redirects=True)
+        self.check_meme(rv1, self.uri0, self.desc1, new=False,
+            flash='Meme successfully modified')
+        rv2 = self.client.get('/memes?q=stuff', follow_redirects=True)
+        self.assertNotIn(self.desc0, rv2.data)
+
     def test_title_memes(self):
         """Test adding memes with title (no URL)"""
         self.login()
@@ -276,7 +289,3 @@ def hello_world():
         ), follow_redirects=True)
         self.check_meme(rv, self.uri0, 'This is a description:')
         self.assertIn(code_html, rv.data)
-    
-
-if __name__ == '__main__':
-    unittest.main()
