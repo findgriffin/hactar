@@ -32,5 +32,5 @@ CELERYD_LOG_FILE="/var/log/celery/%n.log"
 CELERYD_PID_FILE="/var/run/celery/%n.pid"
 
 # Workers should run as an unprivileged user.
-CELERYD_USER="hactar"
-CELERYD_GROUP="hactar"
+CELERYD_USER="vagrant"
+CELERYD_GROUP="vagrant"
