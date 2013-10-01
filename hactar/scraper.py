@@ -52,8 +52,8 @@ def get_data(uri):
     """Get the status code, content and title of a html page."""
     resp = get(uri)
     status_code = resp.status_code
-    title = re.search('<title>(.*)</title>', resp.content)# just title for now
     content = unicode(resp.content, errors='ignore')
+    title = re.search('<title>(.*)</title>', content)# just title for now
     texts = bs.BeautifulSoup(content).findAll(text=True)
     page_text = filter(visible, texts)
     if title:
