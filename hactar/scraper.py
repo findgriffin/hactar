@@ -11,6 +11,7 @@ from flask import Flask, current_app
 from celery import Celery
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import IntegrityError, OperationalError
 
 from models import Meme, setup
 
@@ -65,29 +66,30 @@ def get_data(uri):
 def crawl(meme_id):
     """Get data for meme and add it to search index."""
     engine = create_engine(conf['SQLALCHEMY_DATABASE_URI'])
-    sesh = sessionmaker(bind=engine)()
-    index_service = setup(ENV, session=sesh)
-
-
-    start = time.time()
-    if type(meme_id) == int:
-        uri = get_uri(meme_id, sesh)
-        if not uri:
-            return None
-    elif type(meme_id) in (str, unicode):
-        uri = meme_id
-    status, title, data = get_data(uri)
-    timeout = conf["BROKER_TRANSPORT_OPTIONS"]["visibility_timeout"]
-    while time.time() < start+timeout:
-        now = datetime.datetime.now()
-        upd = {'checked': now, 'status_code': status, 'content': data,
-                'title': title}
-        ngt = sesh.query(Meme).filter(Meme.uri == uri).update(upd)
-        if ngt:
-            break
-        time.sleep(1)
-    index_service.before_commit(sesh)
-    sesh.commit()
-    index_service.after_commit(sesh)
-    sesh.close()
-    return status, title, data
+    try:
+        sesh = sessionmaker(bind=engine)()
+        index_service = setup(ENV, session=sesh)
+        start = time.time()
+        if type(meme_id) == int:
+            uri = get_uri(meme_id, sesh)
+            if not uri:
+                return None
+        elif type(meme_id) in (str, unicode):
+            uri = meme_id
+        status, title, data = get_data(uri)
+        timeout = conf["BROKER_TRANSPORT_OPTIONS"]["visibility_timeout"]
+        while time.time() < start+timeout:
+            now = datetime.datetime.now()
+            upd = {'checked': now, 'status_code': status, 'content': data,
+                    'title': title}
+            ngt = sesh.query(Meme).filter(Meme.uri == uri).update(upd)
+            if ngt:
+                break
+            time.sleep(1)
+        index_service.before_commit(sesh)
+        sesh.commit()
+        sesh.close()
+        return status, title, data
+    except (ValueError, IntegrityError, OperationalError) as err:
+        print('got exception: %s' % err.message)
+        sesh.close()
