@@ -1,3 +1,4 @@
+"""This module defines celery tasks used by hactar"""
 import re
 import json
 import datetime
@@ -13,15 +14,12 @@ from sqlalchemy.orm import sessionmaker
 
 from models import Meme, setup
 
+ENV = 'production'
 ENV_FILE = '.environment'
 
-def get_env():
-    if os.path.exists(ENV_FILE):
-        with open(ENV_FILE, 'rb') as efile:
-            return efile.read()
-    else:
-        return 'production'
-ENV = get_env()
+if os.path.exists(ENV_FILE):
+    with open(ENV_FILE, 'rb') as efile:
+        ENV = efile.read()
 
 conf = json.load(open('config.json', 'rb'))[ENV]
 
