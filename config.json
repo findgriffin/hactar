@@ -36,5 +36,15 @@
         "SECRET_KEY": "cricket is a stupid sport",
         "USERNAME": "admin",
         "PASSWORD": "cricket"
+    },
+    "test2": {
+        "DB_HOST": "localhost",
+        "PORT": 5000,
+        "SQLALCHEMY_DATABASE_URI": "sqlite:////tmp/hactar/hactar2.db",
+        "WHOOSH_BASE": "/tmp/hactar/whoosh-test2",
+        "DEBUG": true,
+        "SECRET_KEY": "cricket is a stupid sport",
+        "USERNAME": "admin",
+        "PASSWORD": "cricket"
     }
 }
