@@ -1,3 +1,5 @@
+# This script should be copied to /etc/default and works with the /etc/init.d
+# script for celeryd.
 # Edit the options in this file to match your projects environment.
 # See http://ask.github.com/celery/cookbook/daemonizing.html for the complete
 # documentation on the options.
@@ -18,7 +20,7 @@ CELERYD_NODES="w1"
 #CELERYD_NODES="w1 w2 w3"
 
 # Where to chdir at start.
-CELERYD_CHDIR=/home/hactar/git/hactar/
+CELERYD_CHDIR="/home/vagrant/hactar/"
 
 # Extra arguments to celeryd
 CELERYD_OPTS="--time-limit=300 --concurrency=8"
