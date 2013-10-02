@@ -75,8 +75,8 @@ def test_config():
     paths = ["LOG_DIR", "LOG_MAIN", "WHOOSH_BASE", "SECRETS",  "ROOT"]
     paths.append
     for path in paths:
-        cuisine.dir_ensure(conf[path])
-    cuisine.dir_ensure(conf["SQLALCHEMY_DATABASE_URI"].lstrip('sqlite:///'))
+        cuisine.dir_ensure(CONF[path])
+    cuisine.dir_ensure(CONF["SQLALCHEMY_DATABASE_URI"].lstrip('sqlite:///'))
 
 def test_running():
     wget = cuisine.run('wget http://localhost:8080')
