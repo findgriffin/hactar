@@ -88,3 +88,20 @@ class TestScraper(TestCase):
                 client=self.client)
         self.assertEqual(status, 200)
 
+    def test_crawl_search(self):
+        """Crawl a page, then search for page content"""
+        self.login()
+        uri = 'http://en.wikipedia.org'
+        meme_id = int(sha1(uri).hexdigest()[:15], 16)
+        rv0 = self.client.post('/memes', data=dict( uri=uri, desc='arthur dent'), 
+                follow_redirects=True)
+        cookie_jar = self.client.cookie_jar._cookies
+        cookie = cookie_jar['localhost.local']['/']['session'].value
+        status = scraper.crawl(meme_id, uri, {'session': cookie},
+                client=self.client)
+        self.assertEqual(status, 200)
+        rv1 = self.client.get('/memes?q=encyclopedia', follow_redirects=True)
+        with self.assertRaises(AssertionError):
+            self.assertIn('Wikipedia', rv1.data)
+        with self.assertRaises(AssertionError):
+            self.assertNotIn('Unbelievable. No memes here so far', rv1.data)

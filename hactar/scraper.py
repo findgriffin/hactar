@@ -67,9 +67,12 @@ def crawl(meme_id, url, cookies, client=None):
     """Get data for meme and add it to search index."""
     data = get_data(url)
     if client:
-        client.post('/memes/%s' % meme_id, data=data)
+        resp = client.post('/memes/%s' % meme_id, data=data)
     else:
         post_url = 'http://%s:%s/memes/%s' % (conf['DB_HOST'], conf['PORT'],
                 meme_id) 
-        post(post_url, cookies=cookies, data=data)
-    return data['status_code']
+        resp = post(post_url, cookies=cookies, data=data)
+    if json.loads(resp.data)[str(meme_id)]:
+        return data['status_code']
+    else: 
+        return 'failed to post crawl data'
