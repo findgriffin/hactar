@@ -7,7 +7,9 @@ import cuisine
 from fabric.api import cd, env
 
 CONF = json.load(open('config.json', 'rb'))['production']
-env.hosts = [CONF['HOST']]
+env.roledefs = {'production': ['vagrant@grumman'],
+                'staging': ['vagrant@roger'],
+                }
 
 def parent(location):
     """Return the parent directory of a location (i.e. strip last element of
@@ -36,13 +38,6 @@ def passed(output):
         return False
     return True
 
-def setup_upstart():
-    """ Start upstart job running hactar."""
-    cuisine.mode_sudo()
-    source = os.path.join(CONF['ROOT'], 'etc', 'hactar.conf')
-    dest = '/etc/init/hactar.conf'
-    cuisine.run('rsync %s %s' % (source, dest))
-
 def pull_hactar():
     """A quick method to pull hactar from origin/master"""
     with cd(CONF['ROOT']):
@@ -59,57 +54,15 @@ def send_hactar():
     cuisine.run('git push')
     cuisine.mode_remote()
 
-def setup_repo():
-    """Setup the hactar repo including parent directories, permissions etc.
-    the repo will be group writeable so there is no need to login as the hactar
-    user when updating."""
-    cuisine.mode_sudo()
-    cuisine.dir_ensure(parent(CONF['ROOT']), mode='774', owner=CONF['USER'],
-            group=CONF['USER'])
-    # root directory with code
-    cuisine.dir_ensure(CONF['ROOT'], mode='774', owner=CONF['USER'],
-            group=CONF['USER'])
+def ensure_repo():
+    """Setup the hactar repo including parent directories, permissions etc."""
     if not cuisine.dir_exists(os.path.join(CONF['ROOT'], '.git')):
-        cuisine.run('su hactar -c "git clone %s  %s"' % (CONF['GIT'], 
-            CONF['ROOT']))
+        cuisine.dir_ensure(parent(CONF['ROOT']), mode='774',
+                owner=CONF['USER'], group=CONF['USER'])
+        cuisine.run('git clone %s %s' % (CONF['GIT'], CONF['ROOT']))
+        return True
     else:
-        cuisine.mode_user()
-        pull_hactar()
-        cuisine.mode_sudo()
-    with cd(CONF['ROOT']):
-        cuisine.run('git config core.sharedRepository group')
-        cuisine.run('chmod -R g+w .')
-
-def update_deps():
-    """Used for when we add a new dependancy to hactar."""
-    with cd(CONF['ROOT']):
-        cuisine.mode_sudo()
-        cuisine.python_package_ensure_pip(r='requirements.txt')
-
-def setup_host():
-    """ Setup a host to the point where it can run hactar."""
-
-    send_hactar()
-    if not cuisine.user_check(CONF['USER']):
-        exit(1)
-    cuisine.mode_sudo()
-    cuisine.package_ensure('git')
-    cuisine.package_ensure('python-pip')
-    cuisine.package_ensure('redis-server')
-    # install celery from ubuntu repos to get init scripts setup for us
-    cuisine.package_ensure('python-celery')
-    # logs
-    cuisine.dir_ensure(CONF['LOG_DIR'], owner=CONF['USER'],
-            group=CONF['USER'])
-    cuisine.dir_ensure(CONF['WHOOSH_BASE'], owner=CONF['USER'],
-            group=CONF['USER'])
-    setup_repo()
-    update_deps()
-
-    setup_upstart()
-    source = os.path.join(CONF['ROOT'], 'etc/celeryd')
-    dest = '/etc/default/celeryd'
-    cuisine.run('rsync %s %s' % (source, dest))
+        return False
 
 def run_hactar():
     """Restart the tornado service running hactar."""
@@ -119,21 +72,14 @@ def run_hactar():
     cuisine.run('/etc/init.d/celeryd restart')
 
 
-def update():
+def release():
     """Get the latest release of hactar (assumes local host will push to github
     master and remote host will pull from it)"""
     send_hactar()
-    with cd(CONF['ROOT']):
-        pull_output = cuisine.run('git pull')
-        if 'requirements.txt' in pull_output:
-            update_deps()
-        if 'hactar.conf' in pull_output:
-            setup_upstart()
-        cuisine.run('git clean -f')
-
-def update_run():
-    """Update and restart tornado service"""
-    update()
+    if not ensure_repo():
+        with cd(CONF['ROOT']):
+            pull_output = cuisine.run('git pull')
+            if 'requirements.txt' in pull_output:
+                print '***** requirements modified *****'
+            cuisine.run('git clean -f')
     run_hactar()
-
-
