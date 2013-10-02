@@ -80,9 +80,9 @@ def update_meme(meme):
     text = unicode(request.form['text'])
     try:
         ngt = Meme.query.filter(Meme.id == int(meme))
-        ngt.update({'text': text})
+        updated = ngt.update({'text': text}, synchronize_session=False)
         first = ngt.first()
-        if first:
+        if first and updated == 1:
             db.session.commit()
             if current_app.celery_running and ngt.first().uri:
                 current_app.logger.debug('submitting to celery: %s' % ngt[0])
@@ -113,8 +113,8 @@ def update_content(meme):
         updict['status_code'] = request.form['status_code']
     try:
         ngt = Meme.query.filter(Meme.id == int(meme))
-        ngt.update(updict)
-        if ngt.first():
+        updated = ngt.update(updict, synchronize_session=False)
+        if ngt.first() and updated == 1:
             db.session.commit()
             return jsonify({meme: True})
         else:
