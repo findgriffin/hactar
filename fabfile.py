@@ -67,17 +67,17 @@ def ensure_repo():
 def run_hactar():
     """Restart the tornado service running hactar."""
     cuisine.mode_sudo()
-    cuisine.run('/etc/init.d/redis-server restart')
+    cuisine.run('/etc/init.d/redis-server start')
     cuisine.run('/etc/init.d/celeryd restart')
     cuisine.upstart_ensure('hactar')
 
 def test_config():
-    paths = ["LOG_DIR", "LOG_MAIN", "WHOOSH_BASE", "SECRETS",  "ROOT"]
+    paths = ["LOG_DIR", "LOG_MAIN", "WHOOSH_BASE", "ROOT"]
     paths.append
     for path in paths:
         cuisine.dir_ensure(CONF[path])
     cuisine.dir_ensure(CONF["SQLALCHEMY_DATABASE_URI"].lstrip('sqlite:///'))
-
+    cuisine.file_ensure(CONF["SECRETS"])
 def test_running():
     wget = cuisine.run('wget http://localhost:8080')
     assert 'index.html' in wget
