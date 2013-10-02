@@ -105,7 +105,7 @@ def update_content(meme):
     if not session.get('logged_in'):
         abort(401)
     current_app.logger.debug('updating content: %s' % meme)
-    updict = {'content', unicode(request.form['content'])}
+    updict = {'content': unicode(request.form['content'])}
     if 'title' in request.form:
         updict['title'] = request.form['title']
     if 'status_code' in request.form:

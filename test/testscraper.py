@@ -75,8 +75,8 @@ class TestScraper(TestCase):
         self.assertIn('%s</small></h4>' % now, resp.data)
         return meme_id
 
-    def test_simple(self):
-        """Start with a blank database."""
+    def test_crawl(self):
+        """Crawl a page"""
         self.login()
         uri = 'http://en.wikipedia.org'
         meme_id = int(sha1(uri).hexdigest()[:15], 16)
@@ -84,6 +84,7 @@ class TestScraper(TestCase):
                 follow_redirects=True)
         cookie_jar = self.client.cookie_jar._cookies
         cookie = cookie_jar['localhost.local']['/']['session'].value
-        status = scraper.crawl(meme_id, uri, {'session': cookie})
+        status = scraper.crawl(meme_id, uri, {'session': cookie},
+                client=self.client)
         self.assertEqual(status, 200)
 
