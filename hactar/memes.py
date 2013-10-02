@@ -6,6 +6,7 @@ from flask import current_app, request, session, redirect, url_for, abort, \
 
 from hactar.models import Meme, db 
 from hactar.scraper import crawl
+from datetime import datetime as dtime
 
 @current_app.route('/memes', methods=['GET', 'POST'])
 def memes():
@@ -80,7 +81,8 @@ def update_meme(meme):
     text = unicode(request.form['text'])
     try:
         ngt = Meme.query.filter(Meme.id == int(meme))
-        updated = ngt.update({'text': text}, synchronize_session=False)
+        updated = ngt.update({'text': text, 'modified': dtime.now()},
+                synchronize_session=False) 
         first = ngt.first()
         if first and updated == 1:
             db.session.commit()
@@ -106,7 +108,8 @@ def update_content(meme):
     if not session.get('logged_in'):
         abort(401)
     current_app.logger.debug('updating content: %s' % meme)
-    updict = {'content': unicode(request.form['content'])}
+    updict = {'content': unicode(request.form['content']), 'modified':
+        dtime.now()} 
     if 'title' in request.form:
         updict['title'] = request.form['title']
     if 'status_code' in request.form:

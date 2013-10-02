@@ -289,3 +289,7 @@ def hello_world():
         ), follow_redirects=True)
         self.check_meme(rv, self.uri0, 'This is a description:')
         self.assertIn(code_html, rv.data)
+
+    def test_modified_times(self):
+        """Check that modified and checked times get updated"""
+        self.skipTest('not implemented yet')
