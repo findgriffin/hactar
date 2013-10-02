@@ -67,9 +67,9 @@ def ensure_repo():
 def run_hactar():
     """Restart the tornado service running hactar."""
     cuisine.mode_sudo()
-    cuisine.upstart_ensure('hactar')
     cuisine.run('/etc/init.d/redis-server restart')
     cuisine.run('/etc/init.d/celeryd restart')
+    cuisine.upstart_ensure('hactar')
 
 
 def release():

@@ -12,7 +12,7 @@
         "SQLALCHEMY_DATABASE_URI": "sqlite:////home/vagrant/hactar.db",
         "WHOOSH_BASE": "/home/vagrant/whoosh",
         "MIN_TESTS": 22,
-        "SECRETS": "/home/vagrant/secrets.json",
+        "SECRETS": "/vagrant/secrets.json",
         "ROOT": "/home/vagrant/hactar"
     },
     "develop": {
