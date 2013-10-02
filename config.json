@@ -4,7 +4,7 @@
         "BROKER_TRANSPORT_OPTIONS": {"visibility_timeout": 300},
         "HOST": "auroraborealis.com.au",
         "DB_HOST": "localhost",
-        "PORT": 80,
+        "PORT": 8080,
         "USER": "vagrant",
         "GIT": "https://github.com/findgriffin/hactar.git",
         "LOG_DIR": "/var/log/hactar",
