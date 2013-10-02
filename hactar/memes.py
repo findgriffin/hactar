@@ -55,7 +55,7 @@ def meme_handler(meme):
         return get_meme(meme)
     elif 'delete' in request.form and request.form['delete'] == 'Delete':
         return delete_meme(meme)
-    elif 'content' in request.form:
+    elif 'status_code' in request.form:
         return update_content(meme)
     else:
         return update_meme(meme)
@@ -108,12 +108,12 @@ def update_content(meme):
     if not session.get('logged_in'):
         abort(401)
     current_app.logger.debug('updating content: %s' % meme)
-    updict = {'content': unicode(request.form['content']), 'modified':
+    updict = {'status_code': request.form['status_code'], 'modified':
         dtime.now()} 
     if 'title' in request.form:
         updict['title'] = request.form['title']
-    if 'status_code' in request.form:
-        updict['status_code'] = request.form['status_code']
+    if 'content' in request.form:
+        updict['content'] = unicode(request.form['content'])
     try:
         ngt = Meme.query.filter(Meme.id == int(meme))
         updated = ngt.update(updict, synchronize_session=False)

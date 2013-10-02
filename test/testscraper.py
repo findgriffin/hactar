@@ -105,3 +105,6 @@ class TestScraper(TestCase):
             self.assertIn('Wikipedia', rv1.data)
         with self.assertRaises(AssertionError):
             self.assertNotIn('Unbelievable. No memes here so far', rv1.data)
+
+    def test_crawl_not_found(self):
+        """Try to crawl some nonexistant servers and pages"""

@@ -5,7 +5,7 @@ import datetime
 import time
 import os
 
-from requests import get, post
+from requests import get, post, ConnectionError
 import BeautifulSoup as bs
 from flask import Flask, current_app
 from celery import Celery
@@ -65,7 +65,11 @@ def get_data(uri):
 @celery.task(name='crawl')
 def crawl(meme_id, url, cookies, client=None):
     """Get data for meme and add it to search index."""
-    data = get_data(url)
+    try:
+        data = get_data(url)
+    except (ConnectionError, AttributeError) as err:
+        data = {'status_code': -2}
+
     if client:
         resp = client.post('/memes/%s' % meme_id, data=data)
     else:
