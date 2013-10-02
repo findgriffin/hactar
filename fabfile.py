@@ -71,6 +71,21 @@ def run_hactar():
     cuisine.run('/etc/init.d/celeryd restart')
     cuisine.upstart_ensure('hactar')
 
+def test_config():
+    paths = ["LOG_DIR", "LOG_MAIN", "WHOOSH_BASE", "SECRETS",  "ROOT"]
+    paths.append
+    for path in paths:
+        cuisine.dir_ensure(conf[path])
+    cuisine.dir_ensure(conf["SQLALCHEMY_DATABASE_URI"].lstrip('sqlite:///')
+
+def test_running():
+    wget = cuisine.run('wget http://localhost:8080')
+    assert 'index.html' in wget
+    cuisine.mode_sudo()
+    redis = cuisine.run('/etc/init.d/redis-server status')
+    assert 'is running' in redis
+    celery = cuisine.run('/etc/init.d/celeryd status')
+    assert 'is running' in celery
 
 def release():
     """Get the latest release of hactar (assumes local host will push to github
@@ -82,4 +97,6 @@ def release():
             if 'requirements.txt' in pull_output:
                 print '***** requirements modified *****'
             cuisine.run('git clean -f')
+    test_config()
     run_hactar()
+    test_running()
