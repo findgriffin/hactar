@@ -43,6 +43,7 @@ def memes():
             memes = filtered.order_by(Meme.modified.desc())
             return render_template('memes.html', memes=memes,
                     add=False)
+    # this produces an SAWarning when db is empty (empty sequence)
     memes = Meme.query.order_by(Meme.modified.desc())
     return render_template('memes.html', memes=memes, add=True)
 
