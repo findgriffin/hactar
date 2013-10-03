@@ -158,9 +158,10 @@ class Event(db.Model):
     def dictify(self):
         if not type(self._dict) == dict:
             self._dict = {}
-            for field in self.__mapper__.columns():
+            for field in self.__mapper__.columns:
                 value = unicode(getattr(self, field.name))
                 self._dict[field.name] = value
+
 def setup(context, session=None):
     conf = json.load(open('config.json', 'rb'))[context]
     index_service = IndexService(conf, session=session)
