@@ -52,6 +52,10 @@ def _jinja2_filter_reldatetime(date, now=None):
 def _jinja2_filter_status(code):
     if code == 200:
         return responses[code]
+    elif code == -2:
+        return 'Crawl Failed (-2)'
+    elif code == -1:
+        return 'Not checked (-1)'
     else:
         return '%s (%s)' % (responses[code], code)
 
