@@ -17,7 +17,7 @@ from models import Meme, setup
 
 ENV = 'production'
 ENV_FILE = '.environment'
-
+HEADERS = {'Content-Type': 'application/json'}
 if os.path.exists(ENV_FILE):
     with open(ENV_FILE, 'rb') as efile:
         ENV = efile.read()
@@ -54,13 +54,16 @@ def get_data(uri):
     data = {}
     data['status_code'] = resp.status_code
     content = unicode(resp.content, errors='ignore')
-    title = re.search('<title>(.*)</title>', content)# just title for now
-    texts = bs.BeautifulSoup(content).findAll(text=True)
-    page_text = filter(visible, texts)
-    if title:
-        data['title'] = title.group().lstrip('<title>').rstrip('</title>')
-    data['content'] = u' '.join(page_text)
-    return data
+    if 'html' in resp.headers['content-type']:
+        title = re.search('<title>(.*)</title>', content)# just title for now
+        texts = bs.BeautifulSoup(content).findAll(text=True)
+        page_text = filter(visible, texts)
+        if title:
+            data['title'] = title.group().lstrip('<title>').rstrip('</title>')
+        data['content'] = u' '.join(page_text)
+        return data
+    else:
+        return content
 
 @celery.task(name='crawl')
 def crawl(meme_id, url, cookies, client=None):
@@ -68,15 +71,18 @@ def crawl(meme_id, url, cookies, client=None):
     try:
         data = get_data(url)
     except (ConnectionError, AttributeError) as err:
+        # we must always post with status_code because that's how hactar can
+        # tell not to run crawl again
         data = {'status_code': -2}
 
+    HEADERS['Cookie'] = 'session=%s' % cookies['session']
     if client:
-        resp = client.post('/memes/%s' % meme_id, data=data)
+        resp = client.post('/memes/%s' % meme_id, headers=HEADERS, data=data)
     else:
         post_url = 'http://%s:%s/memes/%s' % (conf['DB_HOST'], conf['PORT'],
                 meme_id) 
-        resp = post(post_url, cookies=cookies, data=data)
-    if json.loads(resp.data)[str(meme_id)]:
-        return data['status_code']
+        resp = post(post_url, headers=HEADERS, data=data)
+    if resp.status_code == 200 and resp.json:
+        return resp.json
     else: 
-        return 'failed to post crawl data'
+        return 'Failed to post results STATUS: %s' % resp.status_code 
