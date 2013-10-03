@@ -87,6 +87,27 @@ def test_running():
     celery = cuisine.run('/etc/init.d/celeryd status')
     assert 'is running' in celery
 
+def backup_data():
+    """Backup sql db and whoosh index to current dir, must be run with
+    mode_local"""
+    cuisine.mode_local()
+    rsync = 'rsync -r --archive'
+    cuisine.run('%s %s:%s hactar.db' % (rsync, env.host_string, 
+        conf['SQLALCHEMY_DATABASE_URI'])
+    cuisine.run('%s %s:%s whoosh' % (rsync, env.host_string, 
+        conf['WHOOSH_BASE'])
+
+def restore_data()
+    """Restore sql db and whoosh index from current dir, must be run with
+    mode_local"""
+    cuisine.mode_local()
+    rsync = 'rsync -r --archive'
+    cuisine.run('%s hactar.db %s:%s' % (rsync, env.host_string, 
+        conf['SQLALCHEMY_DATABASE_URI'])
+    cuisine.run('%s whoosh %s:%s' % (rsync, env.host_string, 
+        conf['WHOOSH_BASE'])
+   
+
 def release():
     """Get the latest release of hactar (assumes local host will push to github
     master and remote host will pull from it)"""
@@ -100,3 +121,13 @@ def release():
     test_config()
     run_hactar()
     test_running()
+
+def rebuild():
+    cuisine.mode_local()
+    backup_data()
+    cuisine.run('vagrant rebuild ' % env.host_string)
+    restore_data()
+    cuisine.mode_remote()
+    release()
+    
+
