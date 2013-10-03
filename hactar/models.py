@@ -58,7 +58,8 @@ class Meme(db.Model):
     checked = db.Column(db.DateTime())
     status_code = db.Column(db.Integer(), default=-1)
     content = db.Column(db.UnicodeText())
-    _hash = None
+    _dict = None
+    _sha1 = None
     __searchable__ = ['uri', 'text', 'content', 'title']
 
     def __init__(self, text, uri, plugins=None):
@@ -79,13 +80,13 @@ class Meme(db.Model):
     def sha1(self):
         """ Return the sha1 hash of this meme. Use the URL if it exists or
         the title if this meme has no URI. (it must have one or the other)"""
-        if self._hash is None:
+        if self._sha1 is None:
             if self.uri:
                 sha = sha1(self.uri)
             else:
                 sha = sha1(self.title)
-            self._hash = sha.hexdigest()
-        return self._hash
+            self._sha1 = sha.hexdigest()
+        return self._sha1
 
     def getid(self):
         """ Return the (first 15 digits) sha1 hash of this meme as an
@@ -103,16 +104,19 @@ class Meme(db.Model):
     def markup(self):
         return markdown.markdown(self.text)
 
-    def update(self):
-#       self.check()
-        self.modified = datetime.datetime.now()
-
     def __str__(self):
         return 'meme: %s|%s|%s|%s' % (self.text, self.heading, 
                 self.added, self.modified)
 
     def __repr__(self):
         return '<Meme %s>' % self.heading 
+
+    def dictify(self):
+        if not type(self._json) == dict:
+            self._json = {}
+            for field in self.__mapper__.columns():
+                value = unicode(getattr(self, field.name))
+                self._json[field.name] = value
 
 def is_uri(uri):
     """ Check that the given URI is valid. Raise an exception if it is not."""
@@ -138,6 +142,7 @@ class Event(db.Model):
     start_time = db.Column(db.DateTime())
     finish_time = db.Column(db.DateTime())
     priority = db.Column(db.Integer())
+    _dict = None
     
     def __init__(self, text, due=None, start_time=None, finish_time=None):
         self.text = text
@@ -150,6 +155,12 @@ class Event(db.Model):
         self.added = time.time()
         self.modified = self.added
 
+    def dictify(self):
+        if not type(self._json) == dict:
+            self._json = {}
+            for field in self.__mapper__.columns():
+                value = unicode(getattr(self, field.name))
+                self._json[field.name] = value
 def setup(context, session=None):
     conf = json.load(open('config.json', 'rb'))[context]
     index_service = IndexService(conf, session=session)
