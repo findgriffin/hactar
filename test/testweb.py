@@ -4,10 +4,10 @@
     ~~~~~~~~~~~~
 
 """
-import unittest
 from hashlib import sha1
 import shutil
 import re
+import json
 
 from flask.ext.testing import TestCase
 
@@ -31,7 +31,7 @@ class TestWeb(TestCase):
         import json
         self.conf = json.load(open('config.json', 'rb'))['test']
         app.config.update(self.conf)
-        hactar.models.setup('test')
+        self.idx = hactar.models.setup('test')
         app.logger.setLevel(30)
         app.celery_running = False
         return app
@@ -224,6 +224,7 @@ class TestWeb(TestCase):
             flash='Meme successfully modified')
         rv2 = self.client.get('/memes?q=stuff', follow_redirects=True)
         self.assertNotIn(self.desc0, rv2.data)
+        self.assertIn(self.desc1, rv2.data)
 
     def test_title_memes(self):
         """Test adding memes with title (no URL)"""
@@ -293,3 +294,20 @@ def hello_world():
     def test_modified_times(self):
         """Check that modified and checked times get updated"""
         self.skipTest('not implemented yet')
+
+    def test_update_content(self):
+        """Check that we can update the content of a meme (used by scraper)"""
+        self.skipTest('expected fail')
+        self.login()
+        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
+            follow_redirects=True)
+        meme_id = self.check_meme(rv0, self.uri0, self.desc0, new=True)
+        content = 'page content'
+        title = 'super duper title'
+        rv1 = self.client.post('/memes/%s' % meme_id,
+                data=dict(content=content, title=title, status_code=200),
+                follow_redirects=True)
+        result = json.loads(rv1.data)
+        self.assertEquals(result[unicode(meme_id)], True)
+        # check search query here
+        
