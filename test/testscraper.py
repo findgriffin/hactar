@@ -13,8 +13,9 @@ from app import db, app
 import hactar.models
 from hactar import scraper
 
-PORT = 8081
+PORT = 8082
 class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+    # suppress the logging output of our little http server
     def log_message(self, format, *args):
         pass
 
@@ -90,6 +91,13 @@ class TestScraper(TestCase):
         self.assertIn('%s</small></h4>' % now, resp.data)
         return meme_id
 
+    def test_get_data(self):
+        """Crawl a page"""
+        self.login()
+        uri = 'http://localhost:%s/README.md' % PORT
+        crawled = scraper.get_data(uri)
+        self.assertIn('programmer', crawled)
+
     def test_crawl(self):
         """Crawl a page"""
         self.login()
@@ -102,6 +110,7 @@ class TestScraper(TestCase):
         crawled = scraper.crawl(meme_id, uri, {'session': cookie},
                 client=self.client)
         self.assertEqual(crawled['uri'], uri)
+        self.assertIn('programmer', crawled['content'])
 
     def test_crawl_search(self):
         """Crawl a page, then search for page content"""
