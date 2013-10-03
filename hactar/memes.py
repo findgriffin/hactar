@@ -67,7 +67,6 @@ def meme_handler(meme):
         else:
             return redirect(url_for('memes'))
 
-
 def update_meme(meme):
     """Update a meme (i.e. implement an edit to a meme)"""
     if not session.get('logged_in'):
@@ -77,18 +76,28 @@ def update_meme(meme):
     form = request.form
     try:
         first = Meme.query.filter(Meme.id == int(meme)).first_or_404()
-        checked = 'status_code' in request.form
+        checked = 'status_code' in form
         if checked: 
+            first.status_code = form['status_code']
             first.checked = dtime.now()
-        if 'text' in form:
+            assert 'content' in form
+            if 'content' in form and form['content'] != first.content:
+                first.content = form['content']
+                assert first.content == form['content']
+                raise StandardError('updated content')
+            if 'title' in form and form['title'] != first.title:
+                first.title = form['title']
+                raise StandardError('updated title')
+        elif 'text' in form:
             text = unicode(request.form['text'])
             if first.text != text:
                 first.text = text
                 first.modified = dtime.now()
-        for key, val in form.items():
-            setattr(first, key, val)
-        flash('Meme successfully modified')
-        db.session.commit()
+        else: 
+            raise ValueError('not updating anything')
+        if db.session.dirty:
+            flash('Meme successfully modified')
+            db.session.commit()
         # really important to not create infinite loop with celery
         # celery must not post without status code
         if current_app.celery_running and first.uri and not checked:

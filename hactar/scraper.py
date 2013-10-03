@@ -63,7 +63,7 @@ def get_data(uri):
         data['content'] = u' '.join(page_text)
         return data
     else:
-        return content
+        return unicode(content)
 
 @celery.task(name='crawl')
 def crawl(meme_id, url, cookies, client=None):
