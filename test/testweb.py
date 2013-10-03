@@ -304,9 +304,10 @@ def hello_world():
         rv1 = self.client.post('/memes/%s' % meme_id,
                 data=dict(content=content, title=title, status_code=200),
                 follow_redirects=True)
-        result = json.loads(rv1.data)
-        self.assertEquals(result[unicode(meme_id)], True)
         rv2 = self.client.get('/memes?q=duper', follow_redirects=True)
         self.assertIn(self.desc0, rv2.data)
         self.assertIn(title, rv2.data)
+        rv3 = self.client.get('/memes?q=content', follow_redirects=True)
+        self.assertIn(self.desc0, rv3.data)
+        self.assertIn(title, rv3.data)
         
