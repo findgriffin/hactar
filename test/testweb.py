@@ -262,14 +262,12 @@ class TestWeb(TestCase):
     def test_update_fail(self):
         """Test updating a nonexistant meme"""
         self.login()
-        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
+        rv0 = self.client.post('/memes', data=dict(uri=self.uri0, desc=self.desc0),
             follow_redirects=True)
         meme_id = self.check_meme(rv0, self.uri0, self.desc0, new=True) - 10
         rv1 = self.client.post('/memes/%s' % meme_id, data=dict(text=self.desc1),
                 follow_redirects=True)
-        self.check_meme(rv1, self.uri0, self.desc0, new=False,
-            flash='Meme id:%s could not be found' % meme_id)
-        self.assertNotIn(self.desc1, rv1.data)
+        self.assertEquals(404, rv1.status_code)
 
     def test_code_snippet(self):
         self.login()
@@ -296,8 +294,7 @@ def hello_world():
         self.skipTest('not implemented yet')
 
     def test_update_content(self):
-        """Check that we can update the content of a meme (used by scraper)"""
-        self.skipTest('expected fail')
+        """Check that we can update the content of a meme"""
         self.login()
         rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
             follow_redirects=True)
@@ -309,5 +306,7 @@ def hello_world():
                 follow_redirects=True)
         result = json.loads(rv1.data)
         self.assertEquals(result[unicode(meme_id)], True)
-        # check search query here
+        rv2 = self.client.get('/memes?q=duper', follow_redirects=True)
+        self.assertIn(self.desc0, rv2.data)
+        self.assertIn(title, rv2.data)
         

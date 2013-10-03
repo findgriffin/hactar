@@ -2,6 +2,7 @@ import unittest
 from hashlib import sha1
 import shutil
 import re
+import logging
 
 from flask.ext.testing import TestCase
 from nose.tools import set_trace;
@@ -99,12 +100,11 @@ class TestScraper(TestCase):
         cookie = cookie_jar['localhost.local']['/']['session'].value
         status = scraper.crawl(meme_id, uri, {'session': cookie},
                 client=self.client)
+        logging.debug('crawled: %s' % uri)
         self.assertEqual(status, 200)
         rv1 = self.client.get('/memes?q=encyclopedia', follow_redirects=True)
-        with self.assertRaises(AssertionError):
-            self.assertIn('Wikipedia', rv1.data)
-        with self.assertRaises(AssertionError):
-            self.assertNotIn('Unbelievable. No memes here so far', rv1.data)
+        self.assertIn('Wikipedia', rv1.data)
+        self.assertNotIn('Unbelievable. No memes here so far', rv1.data)
 
     def test_crawl_not_found(self):
         """Try to crawl some nonexistant servers and pages"""

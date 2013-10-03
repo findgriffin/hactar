@@ -51,8 +51,13 @@ def memes():
 @current_app.route('/memes/<int:meme>', methods=['GET', 'POST'])
 def meme_handler(meme):
     """Handle any request for individual memes and defer to helper methods"""
+    json = request.headers['Content-Type'] == 'application/json'
     if request.method == 'GET':
-        return get_meme(meme)
+        first = Meme.query.filter(Meme.id == int(meme)).first_or_404()
+        if json:
+            return jsonify(first.dictify())
+        else:
+            return render_template('meme.html', meme=first)
     elif 'delete' in request.form and request.form['delete'] == 'Delete':
         return delete_meme(meme)
     elif 'status_code' in request.form:
@@ -61,12 +66,6 @@ def meme_handler(meme):
         return update_meme(meme)
 
 
-def get_meme(meme):
-    """Edit (or delete) a meme."""
-    memes = Meme.query.filter(Meme.id == int(meme)).all()
-    if not memes:
-        abort(404)
-    return render_template('meme.html', meme=memes[0])
 
 def update_meme(meme):
     """Update a meme (i.e. implement an edit to a meme)"""
@@ -76,8 +75,7 @@ def update_meme(meme):
     current_app.logger.debug('session: %s' % session.items())
     text = unicode(request.form['text'])
     try:
-        result = Meme.query.filter(Meme.id == int(meme))
-        first = result.first_or_404()
+        first = Meme.query.filter(Meme.id == int(meme)).first_or_404()
         first.text = text
         first.modified = dtime.now()
         db.session.commit()
@@ -97,8 +95,7 @@ def update_content(meme):
         abort(401)
     try:
         current_app.logger.debug('updating content: %s' % meme)
-        result = Meme.query.filter(Meme.id == int(meme))
-        first = result.first_or_404()
+        first = Meme.query.filter(Meme.id == int(meme)).first_or_404()
         assert 'status_code' in request.form
         for key, val in request.form.items():
             setattr(first, key, val)
