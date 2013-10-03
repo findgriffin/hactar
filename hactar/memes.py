@@ -39,6 +39,7 @@ def memes():
     else:
         terms = request.args.get('q')
         if terms:
+            import pdb; pdb.set_trace()
             current_app.logger.debug('looking for memes with terms: %s' % terms)
             filtered = Meme.search_query(terms)
             memes = filtered.order_by(Meme.modified.desc())
@@ -70,30 +71,22 @@ def get_meme(meme):
 
 def update_meme(meme):
     """Update a meme (i.e. implement an edit to a meme)"""
-    try:
-        int(meme)
-    except ValueError:
-        abort(400)
     if not session.get('logged_in'):
         abort(401)
     current_app.logger.debug('updating meme: %s' % meme)
     current_app.logger.debug('session: %s' % session.items())
     text = unicode(request.form['text'])
     try:
-        ngt = Meme.query.filter(Meme.id == int(meme))
-        updated = ngt.update({'text': text, 'modified': dtime.now()},
-                synchronize_session=False) 
-        first = ngt.first()
-        if first and updated == 1:
-            db.session.commit()
-            if current_app.celery_running and ngt.first().uri:
-                current_app.logger.debug('submitting to celery: %s' % ngt[0])
-                cookie = request.cookies.get('session')
-                crawl.delay(first.id, first.uri, {'session': cookie})
-            flash('Meme successfully modified')
-        else:
-            db.session.rollback()
-            flash('Meme id:%s could not be found' % meme )
+        result = Meme.query.filter(Meme.id == int(meme))
+        first = result.first_or_404()
+        first.text = text
+        first.modified = dtime.now()
+        db.session.commit()
+        if current_app.celery_running and first.uri:
+            current_app.logger.debug('submitting to celery: %s' % first)
+            cookie = request.cookies.get('session')
+            crawl.delay(first.id, first.uri, {'session': cookie})
+        flash('Meme successfully modified')
     except ValueError as err:
         db.session.rollback()
         flash(err.message)
@@ -101,32 +94,21 @@ def update_meme(meme):
 
 def update_content(meme):
     """Update a memes content (for use by crawler)"""
-    try:
-        int(meme)
-    except ValueError:
-        abort(400)
     if not session.get('logged_in'):
         abort(401)
-    current_app.logger.debug('updating content: %s' % meme)
-    updict = {'status_code': request.form['status_code'], 'modified':
-        dtime.now()} 
-    if 'title' in request.form:
-        updict['title'] = request.form['title']
-    if 'content' in request.form:
-        updict['content'] = unicode(request.form['content'])
     try:
-        ngt = Meme.query.filter(Meme.id == int(meme))
-        updated = ngt.update(updict, synchronize_session=False)
-        if ngt.first() and updated == 1:
-            db.session.commit()
-            return jsonify({meme: True})
-        else:
-            db.session.rollback()
-            return jsonify({meme: False})
+        current_app.logger.debug('updating content: %s' % meme)
+        result = Meme.query.filter(Meme.id == int(meme))
+        first = result.first_or_404()
+        assert 'status_code' in request.form
+        for key, val in request.form.items():
+            setattr(first, key, val)
+        first.checked = dtime.now()
+        db.session.commit()
+        return jsonify({meme: True})
     except ValueError as err:
         db.session.rollback()
-        return jsonify({meme: False})
-    return jsonify({meme: True})
+        flash(err.message)
 
 def delete_meme(meme):
     """Remove a meme from the db."""
