@@ -60,11 +60,12 @@ def meme_handler(meme):
             return render_template('meme.html', meme=first)
     elif 'delete' in request.form and request.form['delete'] == 'Delete':
         return delete_meme(meme)
-    elif 'status_code' in request.form:
-        return update_content(meme)
     else:
-        return update_meme(meme)
-
+        updated = update_meme(meme)
+        if json:
+            return jsonify(updated.dictify())
+        else:
+            return redirect(url_for('memes'))
 
 
 def update_meme(meme):
@@ -73,38 +74,32 @@ def update_meme(meme):
         abort(401)
     current_app.logger.debug('updating meme: %s' % meme)
     current_app.logger.debug('session: %s' % session.items())
-    text = unicode(request.form['text'])
+    form = request.form
     try:
         first = Meme.query.filter(Meme.id == int(meme)).first_or_404()
-        first.text = text
-        first.modified = dtime.now()
+        checked = 'status_code' in request.form
+        if checked: 
+            first.checked = dtime.now()
+        if 'text' in form:
+            text = unicode(request.form['text'])
+            if first.text != text:
+                first.text = text
+                first.modified = dtime.now()
+        for key, val in form.items():
+            setattr(first, key, val)
+        flash('Meme successfully modified')
         db.session.commit()
-        if current_app.celery_running and first.uri:
+        # really important to not create infinite loop with celery
+        # celery must not post without status code
+        if current_app.celery_running and first.uri and not checked:
             current_app.logger.debug('submitting to celery: %s' % first)
             cookie = request.cookies.get('session')
             crawl.delay(first.id, first.uri, {'session': cookie})
-        flash('Meme successfully modified')
     except ValueError as err:
         db.session.rollback()
         flash(err.message)
-    return redirect(url_for('memes'))
+    return first
 
-def update_content(meme):
-    """Update a memes content (for use by crawler)"""
-    if not session.get('logged_in'):
-        abort(401)
-    try:
-        current_app.logger.debug('updating content: %s' % meme)
-        first = Meme.query.filter(Meme.id == int(meme)).first_or_404()
-        assert 'status_code' in request.form
-        for key, val in request.form.items():
-            setattr(first, key, val)
-        first.checked = dtime.now()
-        db.session.commit()
-        return jsonify({meme: True})
-    except ValueError as err:
-        db.session.rollback()
-        flash(err.message)
 
 def delete_meme(meme):
     """Remove a meme from the db."""
