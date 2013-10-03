@@ -39,7 +39,6 @@ def memes():
     else:
         terms = request.args.get('q')
         if terms:
-            import pdb; pdb.set_trace()
             current_app.logger.debug('looking for memes with terms: %s' % terms)
             filtered = Meme.search_query(terms)
             memes = filtered.order_by(Meme.modified.desc())
