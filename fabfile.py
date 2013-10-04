@@ -93,21 +93,20 @@ def backup_data():
     cuisine.mode_local()
     rsync = 'rsync -r --archive'
     cuisine.run('%s %s:%s hactar.db' % (rsync, env.host_string, 
-        conf['SQLALCHEMY_DATABASE_URI'])
+        CONF['SQLALCHEMY_DATABASE_URI']))
     cuisine.run('%s %s:%s whoosh' % (rsync, env.host_string, 
-        conf['WHOOSH_BASE'])
+        CONF['WHOOSH_BASE']))
 
-def restore_data()
+def restore_data():
     """Restore sql db and whoosh index from current dir, must be run with
     mode_local"""
     cuisine.mode_local()
     rsync = 'rsync -r --archive'
     cuisine.run('%s hactar.db %s:%s' % (rsync, env.host_string, 
-        conf['SQLALCHEMY_DATABASE_URI'])
+        CONF['SQLALCHEMY_DATABASE_URI']))
     cuisine.run('%s whoosh %s:%s' % (rsync, env.host_string, 
-        conf['WHOOSH_BASE'])
+        CONF['WHOOSH_BASE']))
    
-
 def release():
     """Get the latest release of hactar (assumes local host will push to github
     master and remote host will pull from it)"""
