@@ -63,7 +63,7 @@ class TestWeb(TestCase):
     def logout(self):
         return self.client.get('/logout', follow_redirects=True)
 
-    def check_meme(self, resp, uri, desc, new=True, flash=None, iswhat=True,
+    def check_meme(self, resp, uri, desc, new=True, flash=None, isuri=True,
             logged_in=True):
         if flash:
             self.assertIn(flash, resp.data)
@@ -231,7 +231,7 @@ class TestWeb(TestCase):
         self.login()
         rv = self.client.post('/memes', data=dict( what=self.title0, why=self.desc4,
         ), follow_redirects=True)
-        self.check_meme(rv, self.title0, self.desc4, iswhat=False)
+        self.check_meme(rv, self.title0, self.desc4, isuri=False)
 
     def test_logged_out_views(self):
         """Test page appearance when logged out"""
