@@ -8,7 +8,6 @@
   ================================================== -->
 	<meta charset="utf-8">
 	<title>Hactar | remembers everything.</title>
-	<meta name="Your personal AI" content="">
 	<meta name="David Griffin" content="">
 
 	<!-- Mobile Specific Metas
@@ -51,19 +50,19 @@ window.onload = function(){
         });
     };
     // get description field
-    var descfield = document.getElementById("description");
+    var descfield = document.getElementById("why");
     // add listener to descfield field
     if(descfield){
         if(descfield.addEventListener){
             descfield.addEventListener("focus", function() {
-                if (descfield.value == 'description'){
+                if (descfield.value == 'Why?'){
                     descfield.value = '';
                 }
             });
         };
     };
     // get description field
-    var urlfield = document.getElementById("urltitle");
+    var urlfield = document.getElementById("what");
     // add listener to urlfield field
     if(urlfield){
         if(urlfield.addEventListener){
@@ -106,7 +105,8 @@ window.onload = function(){
     {% endfor %}
   <div class="three columns sidebar">
     <nav>
-    <a href="{{ url_for('home') }}" style="text-decoration: none"><h3>Hactar</h3></a>
+    <a href="{{ url_for('home') }}" style="text-decoration: none">
+        <h3>WhatWhyWhen</h3></a>
     <form id="newsearch" method="get" action="{{ url_for('memes') }}">
           <input type="text" id="searchq" name="q" value="search memes">
       </form>

@@ -63,7 +63,7 @@ class TestWeb(TestCase):
     def logout(self):
         return self.client.get('/logout', follow_redirects=True)
 
-    def check_meme(self, resp, uri, desc, new=True, flash=None, isuri=True,
+    def check_meme(self, resp, uri, desc, new=True, flash=None, iswhat=True,
             logged_in=True):
         if flash:
             self.assertIn(flash, resp.data)
@@ -110,21 +110,21 @@ class TestWeb(TestCase):
     def test_add_meme(self):
         """Test adding a meme with flask"""
         self.login()
-        rv = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0,
+        rv = self.client.post('/memes', data=dict( what=self.uri0, why=self.desc0,
         ), follow_redirects=True)
         self.check_meme(rv, self.uri0, self.desc0)
 
     def test_add_memes(self):
         """Test adding some memes with flask"""
         self.login()
-        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0,
+        rv0 = self.client.post('/memes', data=dict( what=self.uri0, why=self.desc0,
         ), follow_redirects=True)
         self.check_meme(rv0, self.uri0, self.desc0)
-        rv1 = self.client.post('/memes', data=dict( uri=self.uri1, desc=self.desc1,
+        rv1 = self.client.post('/memes', data=dict( what=self.uri1, why=self.desc1,
         ), follow_redirects=True)
         self.check_meme(rv1, self.uri0, self.desc0)
         self.check_meme(rv1, self.uri1, self.desc1)
-        rv2 = self.client.post('/memes', data=dict( uri=self.uri2, desc=self.desc2,
+        rv2 = self.client.post('/memes', data=dict( what=self.uri2, why=self.desc2,
         ), follow_redirects=True)
         self.check_meme(rv2, self.uri0, self.desc0)
         self.check_meme(rv2, self.uri1, self.desc1)
@@ -133,10 +133,10 @@ class TestWeb(TestCase):
     def test_dup_memes(self):
         """Test attempting to add duplicate memes"""
         self.login()
-        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0,
+        rv0 = self.client.post('/memes', data=dict( what=self.uri0, why=self.desc0,
         ), follow_redirects=True)
         self.check_meme(rv0, self.uri0, self.desc0)
-        rv1 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc1,
+        rv1 = self.client.post('/memes', data=dict( what=self.uri0, why=self.desc1,
         ), follow_redirects=True)
         self.assertEqual(rv1.status_code, 200)
         errstr = 'Meme with that URI or description already exists'
@@ -146,7 +146,7 @@ class TestWeb(TestCase):
     def test_update_meme(self):
         """Test updating a meme"""
         self.login()
-        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
+        rv0 = self.client.post('/memes', data=dict( what=self.uri0, why=self.desc0),
             follow_redirects=True)
         meme_id = self.check_meme(rv0, self.uri0, self.desc0, new=True)
         rv1 = self.client.post('/memes/%s' % meme_id, data=dict(text=self.desc1),
@@ -158,10 +158,10 @@ class TestWeb(TestCase):
     def test_delete_meme(self):
         """Test deleting a meme"""
         self.login()
-        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
+        rv0 = self.client.post('/memes', data=dict( what=self.uri0, why=self.desc0),
             follow_redirects=True)
         meme_id = self.check_meme(rv0, self.uri0, self.desc0, new=True)
-        rv1 = self.client.post('/memes', data=dict( uri=self.uri1, desc=self.desc1),
+        rv1 = self.client.post('/memes', data=dict( what=self.uri1, why=self.desc1),
             follow_redirects=True)
         self.check_meme(rv1, self.uri1, self.desc1, new=True)
 
@@ -189,11 +189,11 @@ class TestWeb(TestCase):
         """Test basic meme searching"""
         self.login()
         # add 3 memes to get us started
-        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
+        rv0 = self.client.post('/memes', data=dict( what=self.uri0, why=self.desc0),
             follow_redirects=True)
-        rv1 = self.client.post('/memes', data=dict( uri=self.uri1, desc=self.desc1),
+        rv1 = self.client.post('/memes', data=dict( what=self.uri1, why=self.desc1),
             follow_redirects=True)
-        rv2 = self.client.post('/memes', data=dict( uri=self.uri2, desc=self.desc2),
+        rv2 = self.client.post('/memes', data=dict( what=self.uri2, why=self.desc2),
             follow_redirects=True)
         rv3 = self.client.get('/memes?q=description', follow_redirects=True)
         self.check_meme(rv3, self.uri0, self.desc0, new=False)
@@ -215,7 +215,7 @@ class TestWeb(TestCase):
     def test_update_search(self):
         """Test updating and then searching for a meme"""
         self.login()
-        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
+        rv0 = self.client.post('/memes', data=dict( what=self.uri0, why=self.desc0),
             follow_redirects=True)
         meme_id = self.check_meme(rv0, self.uri0, self.desc0, new=True)
         rv1 = self.client.post('/memes/%s' % meme_id, data=dict(text=self.desc1),
@@ -229,18 +229,18 @@ class TestWeb(TestCase):
     def test_title_memes(self):
         """Test adding memes with title (no URL)"""
         self.login()
-        rv = self.client.post('/memes', data=dict( uri=self.title0, desc=self.desc4,
+        rv = self.client.post('/memes', data=dict( what=self.title0, why=self.desc4,
         ), follow_redirects=True)
-        self.check_meme(rv, self.title0, self.desc4, isuri=False)
+        self.check_meme(rv, self.title0, self.desc4, iswhat=False)
 
     def test_logged_out_views(self):
         """Test page appearance when logged out"""
         self.login()
-        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0,
+        rv0 = self.client.post('/memes', data=dict( what=self.uri0, why=self.desc0,
         ), follow_redirects=True)
-        rv1 = self.client.post('/memes', data=dict( uri=self.uri1, desc=self.desc1,
+        rv1 = self.client.post('/memes', data=dict( what=self.uri1, why=self.desc1,
         ), follow_redirects=True)
-        rv2 = self.client.post('/memes', data=dict( uri=self.uri2, desc=self.desc2,
+        rv2 = self.client.post('/memes', data=dict( what=self.uri2, why=self.desc2,
         ), follow_redirects=True)
         self.assertIn('<textarea', rv2.data)
         self.assertIn('method="post"', rv2.data)
@@ -262,7 +262,7 @@ class TestWeb(TestCase):
     def test_update_fail(self):
         """Test updating a nonexistant meme"""
         self.login()
-        rv0 = self.client.post('/memes', data=dict(uri=self.uri0, desc=self.desc0),
+        rv0 = self.client.post('/memes', data=dict(what=self.uri0, why=self.desc0),
             follow_redirects=True)
         meme_id = self.check_meme(rv0, self.uri0, self.desc0, new=True) - 10
         rv1 = self.client.post('/memes/%s' % meme_id, data=dict(text=self.desc1),
@@ -284,7 +284,7 @@ def hello_world():
     print "Hello, world!"
 </code></pre>
 """
-        rv = self.client.post('/memes', data=dict( uri=self.uri0, desc=code_md,
+        rv = self.client.post('/memes', data=dict( what=self.uri0, why=code_md,
         ), follow_redirects=True)
         self.check_meme(rv, self.uri0, 'This is a description:')
         self.assertIn(code_html, rv.data)
@@ -296,7 +296,7 @@ def hello_world():
     def test_update_content(self):
         """Check that we can update the content of a meme"""
         self.login()
-        rv0 = self.client.post('/memes', data=dict( uri=self.uri0, desc=self.desc0),
+        rv0 = self.client.post('/memes', data=dict( what=self.uri0, why=self.desc0),
             follow_redirects=True)
         meme_id = self.check_meme(rv0, self.uri0, self.desc0, new=True)
         content = 'page content'

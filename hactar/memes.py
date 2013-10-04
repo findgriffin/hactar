@@ -14,8 +14,8 @@ def memes():
     if request.method == 'POST':
         if not session.get('logged_in'):
             abort(401)
-        uri = unicode(request.form['uri'])
-        text = unicode(request.form['desc'])
+        uri = unicode(request.form['what'])
+        text = unicode(request.form['why'])
         try:
             newmeme = Meme(text=text, uri=uri)
             db.session.add(newmeme)
