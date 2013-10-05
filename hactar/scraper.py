@@ -17,7 +17,7 @@ from models import Meme, setup
 
 ENV = 'production'
 ENV_FILE = '.environment'
-HEADERS = {'Content-Type': 'application/json'}
+HEADERS = {}
 if os.path.exists(ENV_FILE):
     with open(ENV_FILE, 'rb') as efile:
         ENV = efile.read()
