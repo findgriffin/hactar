@@ -51,7 +51,10 @@ class TestScraper(BaseTest):
         cookie = cookie_jar['localhost.local']['/']['session'].value
         crawled = scraper.crawl(meme_id, uri, {'session': cookie},
                 client=self.client)
-        self.assertIn(unicode(meme_id), crawled)
+        self.assertEquals(crawled['post'], {'status_code': 200})
+        self.assertEquals(crawled['meme']['status_code'], 200)
+        self.assertEquals(crawled['meme']['id'], meme_id)
+        self.assertEquals(crawled['meme']['uri'], uri)
 
     def test_crawl_search(self):
         """Crawl a page, then search for page content"""
@@ -63,7 +66,10 @@ class TestScraper(BaseTest):
         cookie_jar = self.client.cookie_jar._cookies
         cookie = cookie_jar['localhost.local']['/']['session'].value
         crawled = scraper.crawl(meme_id, uri, {'session': cookie}, client=self.client)
-        self.assertIn(unicode(meme_id), crawled)
+        self.assertEquals(crawled['post'], {'status_code': 200})
+        self.assertEquals(crawled['meme']['status_code'], 200)
+        self.assertEquals(crawled['meme']['id'], meme_id)
+        self.assertEquals(crawled['meme']['uri'], uri)
         rv1 = self.client.get('/memes?q=programmer', follow_redirects=True)
         self.assertIn('arthur', rv1.data)
         self.assertNotIn('Unbelievable. No memes here so far', rv1.data)

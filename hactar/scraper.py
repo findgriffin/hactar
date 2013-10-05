@@ -87,7 +87,8 @@ def crawl(meme_id, url, cookies, client=None):
         post_url = 'http://%s:%s/memes/%s' % (conf['DB_HOST'], conf['PORT'],
                 meme_id) 
         resp = post(post_url, headers=HEADERS, data=data)
-    if resp.status_code == 200 and resp.json:
-        return resp.json
-    else: 
-        return 'Failed to post results STATUS: %s' % resp.status_code 
+    data['uri'] = url 
+    data['id'] = meme_id
+    output = {'meme': data}
+    output['post'] = {'status_code': resp.status_code}
+    return output
