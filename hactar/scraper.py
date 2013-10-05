@@ -61,9 +61,9 @@ def get_data(uri):
         if title:
             data['title'] = title.group().lstrip('<title>').rstrip('</title>')
         data['content'] = u' '.join(page_text)
-        return data
     else:
-        return content
+        data['content'] = content
+    return data
 
 @celery.task(name='crawl')
 def crawl(meme_id, url, cookies, client=None):
@@ -77,7 +77,7 @@ def crawl(meme_id, url, cookies, client=None):
 
     HEADERS['Cookie'] = 'session=%s' % cookies['session']
     if client:
-        resp = client.post('/memes/%s' % meme_id, headers=HEADERS, data=data)
+        resp = client.post('/memes/%s' % meme_id, data=data)
     else:
         post_url = 'http://%s:%s/memes/%s' % (conf['DB_HOST'], conf['PORT'],
                 meme_id) 

@@ -38,7 +38,7 @@ class TestScraper(BaseTest):
         self.login()
         uri = 'http://localhost:%s/README.md' % PORT
         crawled = scraper.get_data(uri)
-        self.assertIn('programmer', crawled)
+        self.assertIn('programmer', crawled['content'])
 
     def test_crawl(self):
         """Crawl a page through scraper.crawl() (i.e. interact with app)"""
@@ -51,7 +51,7 @@ class TestScraper(BaseTest):
         cookie = cookie_jar['localhost.local']['/']['session'].value
         crawled = scraper.crawl(meme_id, uri, {'session': cookie},
                 client=self.client)
-        self.assertEqual(crawled, uri)
+        self.assertIn(unicode(meme_id), crawled)
 
     def test_crawl_search(self):
         """Crawl a page, then search for page content"""
@@ -63,11 +63,9 @@ class TestScraper(BaseTest):
         cookie_jar = self.client.cookie_jar._cookies
         cookie = cookie_jar['localhost.local']['/']['session'].value
         crawled = scraper.crawl(meme_id, uri, {'session': cookie}, client=self.client)
-        self.assertEqual(crawled['uri'], uri)
-        self.assertIn('programmer', crawled['content'])
-        logging.debug('crawled: %s' % uri)
-        rv1 = self.client.get('/memes?q=encyclopedia', follow_redirects=True)
-        self.assertIn('Wikipedia', rv1.data)
+        self.assertIn(unicode(meme_id), crawled)
+        rv1 = self.client.get('/memes?q=programmer', follow_redirects=True)
+        self.assertIn('arthur', rv1.data)
         self.assertNotIn('Unbelievable. No memes here so far', rv1.data)
 
     def test_crawl_not_found(self):
