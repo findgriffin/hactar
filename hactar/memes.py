@@ -12,15 +12,20 @@ from datetime import datetime as dtime
 @current_app.route('/memes', methods=['GET', 'POST'])
 def memes():
     """Handle requests for memes and defer to helper methods"""
+    json = request.headers['Content-Type'] == 'application/json'
     if request.method == 'POST':
-        memelise = post_memes()
+        post_memes()
     terms = request.args.get('q')
     if terms:
-        memes = search_memes(terms)
-        return render_template('memes.html', memes=memes, add=False)
+        mlist = search_memes(terms)
+        add = False
     else:
-        memes = get_memes()
-    return render_template('memes.html', memes=memes, add=True)
+        mlist = get_memes()
+        add = True
+    if json:
+        return jsonify([meme.dictify() for meme in mlist])
+    else:
+        return render_template('memes.html', memes=mlist, add=add)
     
 def post_memes():
     """This is actually kind of the home page."""
@@ -75,15 +80,13 @@ def meme_handler(meme):
     else:
         return update_meme(meme)
 
-
-
 def update_meme(meme):
     """Update a meme (i.e. implement an edit to a meme)"""
     if not session.get('logged_in'):
         abort(401)
     current_app.logger.debug('updating meme: %s' % meme)
     current_app.logger.debug('session: %s' % session.items())
-    text = unicode(request.form['text'])
+    text = unicode(request.form['why'])
     try:
         first = Meme.query.filter(Meme.id == int(meme)).first_or_404()
         first.text = text

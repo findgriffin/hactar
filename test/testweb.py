@@ -76,7 +76,7 @@ class TestWeb(BaseTest):
         rv0 = self.client.post('/memes', data=dict( what=self.uri0, why=self.desc0),
             follow_redirects=True)
         meme_id = self.check_meme(rv0, self.uri0, self.desc0, new=True)
-        rv1 = self.client.post('/memes/%s' % meme_id, data=dict(text=self.desc1),
+        rv1 = self.client.post('/memes/%s' % meme_id, data=dict(why=self.desc1),
                 follow_redirects=True)
         self.check_meme(rv1, self.uri0, self.desc1, new=False,
             flash='Meme successfully modified')
@@ -145,7 +145,7 @@ class TestWeb(BaseTest):
         rv0 = self.client.post('/memes', data=dict( what=self.uri0, why=self.desc0),
             follow_redirects=True)
         meme_id = self.check_meme(rv0, self.uri0, self.desc0, new=True)
-        rv1 = self.client.post('/memes/%s' % meme_id, data=dict(text=self.desc1),
+        rv1 = self.client.post('/memes/%s' % meme_id, data=dict(why=self.desc1),
                 follow_redirects=True)
         self.check_meme(rv1, self.uri0, self.desc1, new=False,
             flash='Meme successfully modified')
@@ -192,7 +192,7 @@ class TestWeb(BaseTest):
         rv0 = self.client.post('/memes', data=dict(what=self.uri0, why=self.desc0),
             follow_redirects=True)
         meme_id = self.check_meme(rv0, self.uri0, self.desc0, new=True) - 10
-        rv1 = self.client.post('/memes/%s' % meme_id, data=dict(text=self.desc1),
+        rv1 = self.client.post('/memes/%s' % meme_id, data=dict(why=self.desc1),
                 follow_redirects=True)
         self.assertEquals(404, rv1.status_code)
 
