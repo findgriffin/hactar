@@ -82,7 +82,7 @@ def meme_handler(meme):
             return render_template('meme.html', meme=first)
     elif 'delete' in request.form and request.form['delete'] == 'Delete':
         return delete_meme(meme)
-    elif 'status_code' in request.form:
+    elif 'status_code' in request.form or json:
         return update_content(meme)
     else:
         return update_meme(meme)
