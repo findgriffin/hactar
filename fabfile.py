@@ -2,6 +2,7 @@
 import os
 import json
 import re
+import time
 
 import cuisine
 from fabric.api import cd, env
@@ -70,6 +71,7 @@ def run_hactar():
     cuisine.run('/etc/init.d/redis-server start')
     cuisine.run('/etc/init.d/celeryd restart')
     cuisine.upstart_ensure('hactar')
+    cuisine.mode_user()
 
 def test_config():
     paths = ["LOG_DIR", "LOG_MAIN", "WHOOSH_BASE", "ROOT"]
@@ -78,6 +80,7 @@ def test_config():
         cuisine.dir_ensure(CONF[path])
     cuisine.dir_ensure(CONF["SQLALCHEMY_DATABASE_URI"].lstrip('sqlite:///'))
     cuisine.file_ensure(CONF["SECRETS"])
+
 def test_running():
     wget = cuisine.run('wget http://localhost:8080')
     assert 'index.html' in wget
@@ -86,6 +89,7 @@ def test_running():
     assert 'is running' in redis
     celery = cuisine.run('/etc/init.d/celeryd status')
     assert 'is running' in celery
+    cuisine.mode_user()
 
 def backup_data():
     """Backup sql db and whoosh index to current dir, must be run with
@@ -119,6 +123,7 @@ def release():
             cuisine.run('git clean -f')
     test_config()
     run_hactar()
+    time.sleep(5)
     test_running()
 
 def rebuild():
