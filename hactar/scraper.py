@@ -48,6 +48,16 @@ def get_uri(meme_id, sesh):
     else:
         return None
 
+def scrape_html(content):
+    """Scrape the page content and return the title (for now)"""
+    soup = bs.BeautifulSoup(content)
+    texts = soup.findAll(text=True)
+    title = soup.title.string
+    page_text = filter(visible, texts)
+    content = u' '.join(page_text)
+    return content, title
+
+
 def get_data(uri):
     """Get the status code, content and title of a html page."""
     resp = get(uri)
@@ -55,12 +65,7 @@ def get_data(uri):
     data['status_code'] = resp.status_code
     content = unicode(resp.content, errors='ignore')
     if 'html' in resp.headers['content-type']:
-        title = re.search('<title>(.*)</title>', content)# just title for now
-        texts = bs.BeautifulSoup(content).findAll(text=True)
-        page_text = filter(visible, texts)
-        if title:
-            data['title'] = title.group().lstrip('<title>').rstrip('</title>')
-        data['content'] = u' '.join(page_text)
+        data['content'], data['title'] = scrape_html(content)
     else:
         data['content'] = content
     return data

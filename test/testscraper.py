@@ -72,6 +72,13 @@ class TestScraper(BaseTest):
         """Try to crawl some nonexistant servers and pages"""
         self.skipTest('Not implemented yet')
 
+    def test_crawl_html(self):
+        """Crawl a page"""
+        self.login()
+        uri = 'http://localhost:%s/test/files/rfc2910.html' % PORT
+        title = u'RFC 2910 - Internet Printing Protocol/1.1: Encoding and Transport'
+        crawled = scraper.get_data(uri)
+        self.assertEquals(crawled['title'], title)
     @classmethod
     def tearDownClass(cls):
         cls.server.terminate()
