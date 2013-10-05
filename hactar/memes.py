@@ -12,7 +12,11 @@ from datetime import datetime as dtime
 @current_app.route('/memes', methods=['GET', 'POST'])
 def memes():
     """Handle requests for memes and defer to helper methods"""
-    json = request.headers['Content-Type'] == 'application/json'
+    hdrs = request.headers
+    if 'Content-Type' in hdrs and hdrs['Content-Type'] == 'application/json':
+        json = True
+    else:
+        json = False
     if request.method == 'POST':
         post_memes()
     terms = request.args.get('q')
@@ -65,7 +69,11 @@ def get_memes():
 @current_app.route('/memes/<int:meme>', methods=['GET', 'POST'])
 def meme_handler(meme):
     """Handle any request for individual memes and defer to helper methods"""
-    json = request.headers['Content-Type'] == 'application/json'
+    hdrs = request.headers
+    if 'Content-Type' in hdrs and hdrs['Content-Type'] == 'application/json':
+        json = True
+    else:
+        json = False
     if request.method == 'GET':
         first = Meme.query.filter(Meme.id == int(meme)).first_or_404()
         if json:
