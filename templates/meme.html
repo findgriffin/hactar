@@ -4,7 +4,7 @@
   <form action="{{ url_for('meme_handler', meme=meme.id) }}" method="post" class=add-meme>
       <dl>
         <dt><h4>{{ meme.heading }}</h4>
-        <dt>Description:
+        <dt>Why is this important?
         <dd><textarea name=why rows=20 style="width: 100%;">{{ meme.text }}</textarea>
         <dd><input type="checkbox" name="delete" value="Delete">delete</input>
         <dd><input type=submit value=Update>
@@ -17,12 +17,12 @@
       <h2>{{ meme.title }}</h2>
     {% endif %}
     {{ meme.markup|safe }}
-      <small>
-      modified:{{ meme.modified|reldatetime }} &nbsp
-      added:{{ meme.added|reldatetime }} 
-      </small>
   {% endif %}
   {% if meme.checked %} 
   <small>status: {{ meme.status_code|status }} {{ meme.checked|reldatetime }} </small>
   {% endif %}
+  <small>
+  modified:{{ meme.modified|reldatetime }} &nbsp
+  added:{{ meme.added|reldatetime }} 
+  </small>
 {% endblock %}
