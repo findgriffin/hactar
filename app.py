@@ -48,7 +48,7 @@ def config_app(application):
     import json
     conf = json.load(open('config.json', 'rb'))['develop']
     application.config.update(conf)
-    application.celery_running = True
+    application.celery_running = False
 
 if __name__ == '__main__':
     config_app(app)
