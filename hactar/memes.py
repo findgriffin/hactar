@@ -8,45 +8,55 @@ from hactar.models import Meme, db
 from hactar.scraper import crawl
 from datetime import datetime as dtime
 
+
 @current_app.route('/memes', methods=['GET', 'POST'])
 def memes():
-    """This is actually kind of the home page."""
+    """Handle requests for memes and defer to helper methods"""
     if request.method == 'POST':
-        if not session.get('logged_in'):
-            abort(401)
-        uri = unicode(request.form['what'])
-        text = unicode(request.form['why'])
-        try:
-            newmeme = Meme(text=text, uri=uri)
-            db.session.add(newmeme)
-            db.session.commit()
-            if current_app.celery_running and newmeme.uri:
-                current_app.logger.debug('submitting to celery: %s' % newmeme)
-                cookie = request.cookies.get('session')
-                crawl.delay(newmeme.id, newmeme.uri, {'session': cookie})
-            flash('New meme was successfully added')
-        except ValueError as err:
-            current_app.logger.error('got error: %s' % err.message)
-            db.session.rollback()
-            flash(err.message)
-        except IntegrityError as err:
-            db.session.rollback()
-            if 'primary key must be unique' in err.message.lower():
-                current_app.logger.debug("can't add duplicate meme: %s" % uri )
-                flash('Meme with that URI or description already exists')
-            else:
-                abort(500)
+        memelise = post_memes()
+    terms = request.args.get('q')
+    if terms:
+        memes = search_memes(terms)
+        return render_template('memes.html', memes=memes, add=False)
     else:
-        terms = request.args.get('q')
-        if terms:
-            current_app.logger.debug('looking for memes with terms: %s' % terms)
-            filtered = Meme.search_query(terms)
-            memes = filtered.order_by(Meme.modified.desc())
-            return render_template('memes.html', memes=memes,
-                    add=False)
-    # this produces an SAWarning when db is empty (empty sequence)
-    memes = Meme.query.order_by(Meme.modified.desc())
+        memes = get_memes()
     return render_template('memes.html', memes=memes, add=True)
+    
+def post_memes():
+    """This is actually kind of the home page."""
+    if not session.get('logged_in'):
+        abort(401)
+    uri = unicode(request.form['what'])
+    text = unicode(request.form['why'])
+    try:
+        newmeme = Meme(text=text, uri=uri)
+        db.session.add(newmeme)
+        db.session.commit()
+        if current_app.celery_running and newmeme.uri:
+            current_app.logger.debug('submitting to celery: %s' % newmeme)
+            cookie = request.cookies.get('session')
+            crawl.delay(newmeme.id, newmeme.uri, {'session': cookie})
+        flash('New meme was successfully added')
+    except ValueError as err:
+        current_app.logger.error('got error: %s' % err.message)
+        db.session.rollback()
+        flash(err.message)
+    except IntegrityError as err:
+        db.session.rollback()
+        if 'primary key must be unique' in err.message.lower():
+            current_app.logger.debug("can't add duplicate meme: %s" % uri )
+            flash('Meme with that URI or description already exists')
+        else:
+            abort(500)
+
+def search_memes(terms):
+    current_app.logger.debug('looking for memes with terms: %s' % terms)
+    filtered = Meme.search_query(terms)
+    return filtered.order_by(Meme.modified.desc())
+
+def get_memes():
+# this produces an SAWarning when db is empty (empty sequence)
+    return Meme.query.order_by(Meme.modified.desc())
 
 @current_app.route('/memes/<int:meme>', methods=['GET', 'POST'])
 def meme_handler(meme):
