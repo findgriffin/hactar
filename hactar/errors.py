@@ -7,7 +7,7 @@ from flask import current_app, render_template
 def bad_request(exc):
     """Handle HTTP not found error."""
     current_app.logger.debug(traceback.format_exc(exc))
-    return render_template('error.html', exc=exc), 404
+    return render_template('error.html', exc=exc), 400
 
 @current_app.errorhandler(404)
 def not_found(exc):
