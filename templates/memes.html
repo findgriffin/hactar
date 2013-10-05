@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-  {% if session.logged_in and add %}
+  {% if session.logged_in and not searched %}
     <form action="{{ url_for('memes') }}" method="post">
         <dl><h5>What?</h5>
         <dd><input type=text name=what id="what" style="width: 100%;" value="http://">
@@ -10,7 +10,7 @@
     </form>
   {% endif %}
   <ul class=memes>
-      {% for meme in memes %}
+  {% for meme in memes %}
       <li>
       
         {% if meme.uri %}
@@ -27,7 +27,18 @@
     <small>status: {{ meme.status_code|status }} {{ meme.checked|reldatetime }} </small>
     {% endif %}
   {% else %}
-    <li><em>Unbelievable. No memes here so far</em>
+    {% if session.logged_in and searched %}
+      <form action="{{ url_for('memes') }}" method="post">
+          <dl><h5>What?</h5>
+          <dd><input type=text name=what id="what" style="width: 100%;"
+          value="{{ searched }}">
+          <dd><textarea name=why id="why" rows=5 style="width: 100%;">Why?</textarea>
+          <dd><input type=submit value=Add>
+        </dl>
+      </form>
+    {% else %}
+      <li><em>Unbelievable. No memes here so far</em>
+    {% endif %}
   {% endfor %}
   </ul>
 {% endblock %}

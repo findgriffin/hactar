@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from flask import current_app, request, session, redirect, url_for, abort, \
      render_template, flash, jsonify
 
-from hactar.models import Meme, db 
+from hactar.models import Meme, db, is_uri
 from hactar.scraper import crawl
 from datetime import datetime as dtime
 
@@ -18,14 +18,13 @@ def memes():
     terms = request.args.get('q')
     if terms:
         mlist = search_memes(terms)
-        add = False
     else:
         mlist = get_memes()
-        add = True
+        terms = False
     if json:
         return jsonify([meme.dictify() for meme in mlist])
     else:
-        return render_template('memes.html', memes=mlist, add=add)
+        return render_template('memes.html', memes=mlist, searched=terms)
     
 def post_memes():
     """This is actually kind of the home page."""
