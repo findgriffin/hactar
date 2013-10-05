@@ -78,7 +78,7 @@ def test_config():
     paths.append
     for path in paths:
         cuisine.dir_ensure(CONF[path])
-    cuisine.dir_ensure(CONF["SQLALCHEMY_DATABASE_URI"].lstrip('sqlite:///'))
+    cuisine.dir_ensure(CONF["SQLALCHEMY_DATABASE_URI"].replace('sqlite:///', ''))
     cuisine.file_ensure(CONF["SECRETS"])
 
 def test_running():
@@ -91,15 +91,19 @@ def test_running():
     assert 'is running' in celery
     cuisine.mode_user()
 
-def backup_data():
+def backup_data(dest=None):
     """Backup sql db and whoosh index to current dir, must be run with
     mode_local"""
+    if dest is None:
+        dest = '.'
     cuisine.mode_local()
     rsync = 'rsync -r --archive'
-    cuisine.run('%s %s:%s hactar.db' % (rsync, env.host_string, 
-        CONF['SQLALCHEMY_DATABASE_URI']))
-    cuisine.run('%s %s:%s whoosh' % (rsync, env.host_string, 
-        CONF['WHOOSH_BASE']))
+    db_path = CONF['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
+    db_dest = os.path.join(dest, 'hactar.db')
+    wh_dest = os.path.join(dest, 'whoosh')
+    cuisine.run('%s %s:%s %s' % (rsync, env.host_string, db_path, db_dest))
+    cuisine.run('%s %s:%s %s' % (rsync, env.host_string, 
+        CONF['WHOOSH_BASE'], wh_dest))
 
 def restore_data():
     """Restore sql db and whoosh index from current dir, must be run with
