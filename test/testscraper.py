@@ -19,7 +19,7 @@ class TestScraper(BaseTest):
         self.login()
         uri = 'http://en.wikipedia.org'
         meme_id = int(sha1(uri).hexdigest()[:15], 16)
-        rv = self.client.post('/memes', data=dict( uri=uri, desc='a b'), 
+        rv = self.client.post('/memes', data=dict( what=uri, why='a b'), 
                 follow_redirects=True)
         cookie_jar = self.client.cookie_jar._cookies
         cookie = cookie_jar['localhost.local']['/']['session'].value
@@ -32,7 +32,7 @@ class TestScraper(BaseTest):
         self.login()
         uri = 'http://en.wikipedia.org'
         meme_id = int(sha1(uri).hexdigest()[:15], 16)
-        rv0 = self.client.post('/memes', data=dict( uri=uri, desc='arthur dent'), 
+        rv0 = self.client.post('/memes', data=dict( what=uri, why='arthur dent'), 
                 follow_redirects=True)
         cookie_jar = self.client.cookie_jar._cookies
         cookie = cookie_jar['localhost.local']['/']['session'].value
