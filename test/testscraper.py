@@ -5,6 +5,7 @@ import logging
 import SocketServer
 import SimpleHTTPServer
 import multiprocessing
+import random
 
 from flask.ext.testing import TestCase
 from nose.tools import set_trace
@@ -14,9 +15,12 @@ import hactar.models
 from hactar import scraper
 from base import BaseTest
 
-PORT = 8081
+PORT = random.randint(5, 50)+8000
+
 class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+    """A little test server that will serve this directory for crawling"""
     def log_message(self, format, *args):
+        """Suppress the logging output"""
         pass
 
 class TestScraper(BaseTest):
@@ -29,8 +33,15 @@ class TestScraper(BaseTest):
         cls.server = multiprocessing.Process(target=httpd.serve_forever)
         cls.server.start()
 
-    def test_crawl(self):
+    def test_get_data(self):
         """Crawl a page"""
+        self.login()
+        uri = 'http://localhost:%s/README.md' % PORT
+        crawled = scraper.get_data(uri)
+        self.assertIn('programmer', crawled)
+
+    def test_crawl(self):
+        """Crawl a page through scraper.crawl() (i.e. interact with app)"""
         self.login()
         uri = 'http://localhost:%s/README.md' % PORT
         meme_id = int(sha1(uri).hexdigest()[:15], 16)
