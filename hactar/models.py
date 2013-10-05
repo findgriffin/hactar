@@ -112,12 +112,12 @@ class Meme(db.Model):
         return '<Meme %s>' % self.heading 
 
     def dictify(self):
-        if not type(self._json) == dict:
-            self._json = {}
-            for field in self.__mapper__.columns():
+        if not type(self._dict) == dict:
+            self._dict = {}
+            for field in self.__mapper__.columns:
                 value = unicode(getattr(self, field.name))
-                self._json[field.name] = value
-
+                self._dict[field.name] = value
+        return self._dict
 def is_uri(uri):
     """ Check that the given URI is valid. Raise an exception if it is not."""
     parts = uri.split('/')
@@ -156,11 +156,12 @@ class Event(db.Model):
         self.modified = self.added
 
     def dictify(self):
-        if not type(self._json) == dict:
-            self._json = {}
-            for field in self.__mapper__.columns():
+        if not type(self._dict) == dict:
+            self._dict = {}
+            for field in self.__mapper__.columns:
                 value = unicode(getattr(self, field.name))
-                self._json[field.name] = value
+                self._dict[field.name] = value
+
 def setup(context, session=None):
     conf = json.load(open('config.json', 'rb'))[context]
     index_service = IndexService(conf, session=session)
