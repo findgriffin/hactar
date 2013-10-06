@@ -137,7 +137,7 @@ class TestWeb(BaseApi):
         rv6 = self.client.get('/memes?q=somewhere', follow_redirects=True)
         self.check_meme(rv6, self.uri1, self.desc1, new=False)
         self.check_meme(rv6, self.uri2, self.desc2, new=False)
-        self.assertNotIn(self.desc0, rv5.data)
+        self.assertNotIn(self.desc0, rv6.data)
 
     def test_update_search(self):
         """Test updating and then searching for a meme"""
