@@ -49,7 +49,7 @@ def api_meme(meme):
         delete_meme(meme)
         return jsonify(successful=True)
     else:
-        updated = upate_content(meme)
+        updated = update_meme(meme)
         return jsonify(updated.dictify())
 
 
@@ -78,8 +78,6 @@ def meme_handler(meme):
 
 def get_meme(meme):
     return Meme.query.filter(Meme.id == int(meme)).first_or_404()
-
-
     
 def post_memes():
     """This is actually kind of the home page."""
@@ -138,6 +136,7 @@ def update_meme(meme):
     except ValueError as err:
         db.session.rollback()
         flash(err.message)
+    return first
 
 def update_content(meme):
     """Update a memes content (for use by crawler)"""

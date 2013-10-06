@@ -120,3 +120,4 @@ class BaseApi(BaseTest):
         else:
             self.assertTrue(modified > added, 
                     msg='modified not later than added %s' % meme)
+        return meme_id

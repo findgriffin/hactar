@@ -3,6 +3,7 @@ from hashlib import sha1
 import shutil
 import re
 import json
+from dateutil.parser import parse
 
 from app import db, app
 from base import BaseApi
@@ -41,6 +42,7 @@ class TestApi(BaseApi):
         self.check_meme_json(rv2, self.uri0, self.desc0, new=True, last=False)
         self.check_meme_json(rv2, self.uri1, self.desc1, new=True, last=False)
         self.check_meme_json(rv2, self.uri2, self.desc2)
+
     def test_dup_memes(self):
         """Test adding duplicate memes (with api)"""
         self.login()
@@ -55,7 +57,22 @@ class TestApi(BaseApi):
         self.assertNotIn('<br>%s' % self.desc1, rv1.data)
 
     def test_update_meme(self):
-        self.skipTest('Not implemented yet')
+        self.login()
+        rv0 = self.client.post('/api/memes', data=dict( what=self.uri0, why=self.desc0),
+            follow_redirects=True)
+        meme_id = self.check_meme_json(rv0, self.uri0, self.desc0)
+        rv1 = self.client.post('/api/memes/%s' % meme_id, data=dict(why=self.desc1),
+                follow_redirects=True)
+        
+        rjson = json.loads(rv1.data)
+        self.assertEquals(rv1.status_code, 200)
+        self.assertEquals(rjson['uri'], self.uri0)
+        self.assertEquals(rjson['text'], self.desc1)
+        self.assertEquals(rjson['status_code'], u'-1')
+        self.assertEquals(rjson['id'], unicode(meme_id))
+        modified = parse(rjson['modified'])
+        added = parse(rjson['added'])
+        self.assertTrue(modified > added)
 
     def test_delete_meme(self):
         self.skipTest('Not implemented yet')
@@ -90,9 +107,6 @@ class TestApi(BaseApi):
         rv = self.client.post('/api/memes', data=dict( what=self.title0, why=self.desc4,
         ), follow_redirects=True)
         self.check_meme_json(rv, self.title0, self.desc4)
-
-    def test_logged_out_views(self):
-        self.skipTest('Not implemented yet')
 
     def test_update_fail(self):
         self.skipTest('Not implemented yet')
