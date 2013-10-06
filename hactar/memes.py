@@ -2,21 +2,33 @@
 
 from sqlalchemy.exc import IntegrityError
 from flask import current_app, request, session, redirect, url_for, abort, \
-     render_template, flash, jsonify
+     render_template, flash, jsonify, get_flashed_messages
 
 from hactar.models import Meme, db, is_uri
 from hactar.scraper import crawl
 from datetime import datetime as dtime
 
+@current_app.route('/api/memes', methods=['GET', 'POST'])
+def api_memes():
+    mlist, terms = memes_handler()
+    resp = {'memes': [], 'flashes': []}
+    [resp['memes'].append(meme.dictify()) for meme in mlist]
+    resp['flashes'] = get_flashed_messages()
+    
+    return jsonify(resp)
 
 @current_app.route('/memes', methods=['GET', 'POST'])
-def memes():
+def memes(json=False):
     """Handle requests for memes and defer to helper methods"""
-    hdrs = request.headers
-    if 'Content-Type' in hdrs and hdrs['Content-Type'] == 'application/json':
-        json = True
+    mlist, terms = memes_handler()
+    if json:
+        resp = {'memes': []}
+        [resp['memes'].append(meme.dictify()) for meme in mlist]
+        return jsonify(resp)
     else:
-        json = False
+        return render_template('memes.html', memes=mlist, searched=terms)
+
+def memes_handler():
     if request.method == 'POST':
         post_memes()
     terms = request.args.get('q')
@@ -25,10 +37,29 @@ def memes():
     else:
         mlist = get_memes()
         terms = False
-    if json:
-        return jsonify([meme.dictify() for meme in mlist])
+    return mlist, terms
+
+
+@current_app.route('/memes/<int:meme>', methods=['GET', 'POST'])
+def meme_handler(meme):
+    """Handle any request for individual memes and defer to helper methods"""
+    hdrs = request.headers
+    if 'Content-Type' in hdrs and hdrs['Content-Type'] == 'application/json':
+        json = True
     else:
-        return render_template('memes.html', memes=mlist, searched=terms)
+        json = False
+    if request.method == 'GET':
+        first = Meme.query.filter(Meme.id == int(meme)).first_or_404()
+        if json:
+            return jsonify(first.dictify())
+        else:
+            return render_template('meme.html', meme=first)
+    elif 'delete' in request.form and request.form['delete'] == 'Delete':
+        return delete_meme(meme)
+    elif 'status_code' in request.form or json:
+        return update_content(meme)
+    else:
+        return update_meme(meme)
     
 def post_memes():
     """This is actually kind of the home page."""
@@ -66,26 +97,6 @@ def get_memes():
 # this produces an SAWarning when db is empty (empty sequence)
     return Meme.query.order_by(Meme.modified.desc())
 
-@current_app.route('/memes/<int:meme>', methods=['GET', 'POST'])
-def meme_handler(meme):
-    """Handle any request for individual memes and defer to helper methods"""
-    hdrs = request.headers
-    if 'Content-Type' in hdrs and hdrs['Content-Type'] == 'application/json':
-        json = True
-    else:
-        json = False
-    if request.method == 'GET':
-        first = Meme.query.filter(Meme.id == int(meme)).first_or_404()
-        if json:
-            return jsonify(first.dictify())
-        else:
-            return render_template('meme.html', meme=first)
-    elif 'delete' in request.form and request.form['delete'] == 'Delete':
-        return delete_meme(meme)
-    elif 'status_code' in request.form or json:
-        return update_content(meme)
-    else:
-        return update_meme(meme)
 
 def update_meme(meme):
     """Update a meme (i.e. implement an edit to a meme)"""

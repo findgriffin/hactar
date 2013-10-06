@@ -3,6 +3,8 @@ from hashlib import sha1
 import shutil
 import re
 import json
+import time
+from dateutil.parser import parse
 
 from flask.ext.testing import TestCase
 
@@ -81,3 +83,37 @@ class BaseTest(TestCase):
         self.assertIn('<p>%s</p>' % desc, resp.data)
         self.assertIn('%s</small></h4>' % now, resp.data)
         return meme_id
+
+    def get_meme(self, rjson, meme_id):
+        for meme in rjson['memes']:
+            if int(meme['id']) == meme_id:
+                return meme
+        raise AssertionError('meme: %s not in response:%s' % (meme_id, rjson))
+
+    def check_meme_json(self, resp, what, why, new=True, flash=None):
+        rjson = json.loads(resp.data)
+        isuri =  hactar.models.is_uri(what)
+        if flash:
+            self.assertEquals(flash, rjson['flashes'])
+        elif new:
+            msg = u'New meme was successfully added'
+            self.assertEquals([msg], rjson['flashes'])
+        self.assertEqual(resp.status_code, 200)
+        meme_id = int(sha1(what).hexdigest()[:15], 16)
+        if new:
+            meme = rjson['memes'][0]
+            self.assertEquals(meme_id, int(meme['id']))
+        else:
+            meme = get_meme(meme_id)
+        self.assertEquals(len(meme.keys()), 9)
+        self.assertEquals(what, meme['uri'] if isuri else meme['title'])
+        self.assertEquals(why, meme['text'])
+        now = int(time.time())
+        added = parse(meme['added'])
+        modified = parse(meme['modified'])
+        if new:
+            self.assertEquals(added, modified, 
+                    msg='created / modified times are not equal %s' % meme)
+        else:
+            self.assertTrue(modified > added, 
+                    msg='modified not later than added %s' % meme)

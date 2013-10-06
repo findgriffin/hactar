@@ -19,7 +19,7 @@ PORT = random.randint(5, 50)+8000
 
 class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     """A little test server that will serve this directory for crawling"""
-    def log_message(self, format, *args):
+    def log_message(self, format, *args): 
         """Suppress the logging output"""
         pass
 
