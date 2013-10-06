@@ -40,6 +40,19 @@ def memes_handler():
     return mlist, terms
 
 
+@current_app.route('/api/memes/<int:meme>', methods=['GET', 'POST', 'DELETE'])
+def api_meme(meme):
+    if request.method == 'GET':
+        first = get_meme(meme)
+        return jsonify(first.dictify())
+    elif request.method == 'DELETE':
+        delete_meme(meme)
+        return jsonify(successful=True)
+    else:
+        updated = upate_content(meme)
+        return jsonify(updated.dictify())
+
+
 @current_app.route('/memes/<int:meme>', methods=['GET', 'POST'])
 def meme_handler(meme):
     """Handle any request for individual memes and defer to helper methods"""
@@ -49,17 +62,24 @@ def meme_handler(meme):
     else:
         json = False
     if request.method == 'GET':
-        first = Meme.query.filter(Meme.id == int(meme)).first_or_404()
+        first = get_meme(meme)
         if json:
             return jsonify(first.dictify())
         else:
             return render_template('meme.html', meme=first)
     elif 'delete' in request.form and request.form['delete'] == 'Delete':
-        return delete_meme(meme)
+        delete_meme(meme)
+        return redirect(url_for('memes'))
     elif 'status_code' in request.form or json:
         return update_content(meme)
     else:
-        return update_meme(meme)
+        update_meme(meme)
+        return redirect(url_for('memes'))
+
+def get_meme(meme):
+    return Meme.query.filter(Meme.id == int(meme)).first_or_404()
+
+
     
 def post_memes():
     """This is actually kind of the home page."""
@@ -118,7 +138,6 @@ def update_meme(meme):
     except ValueError as err:
         db.session.rollback()
         flash(err.message)
-    return redirect(url_for('memes'))
 
 def update_content(meme):
     """Update a memes content (for use by crawler)"""
@@ -136,6 +155,7 @@ def update_content(meme):
     except ValueError as err:
         db.session.rollback()
         flash(err.message)
+    return first
 
 def delete_meme(meme):
     """Remove a meme from the db."""
@@ -154,4 +174,3 @@ def delete_meme(meme):
             flash('Meme with that URI or description already exists')
         else:
             abort(500)
-    return redirect(url_for('memes'))
