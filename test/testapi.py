@@ -58,7 +58,26 @@ class TestApi(BaseApi):
     def test_delete_meme(self):
         self.skipTest('Not implemented yet')
     def test_search_memes(self):
-        self.skipTest('Not implemented yet')
+        self.login()
+        # add 3 memes to get us started
+        rv0 = self.client.post('/api/memes', data=dict( what=self.uri0, why=self.desc0),
+            follow_redirects=True)
+        rv1 = self.client.post('/api/memes', data=dict( what=self.uri1, why=self.desc1),
+            follow_redirects=True)
+        rv2 = self.client.post('/api/memes', data=dict( what=self.uri2, why=self.desc2),
+            follow_redirects=True)
+        rv3 = self.client.get('/api/memes?q=description', follow_redirects=True)
+        self.check_meme_json(rv3, self.uri0, self.desc0, last=False)
+        self.check_meme_json(rv3, self.uri1, self.desc1, last=False)
+        self.check_meme_json(rv3, self.uri2, self.desc2, last=False)
+        rv4 = self.client.get('/api/memes?q=stuff', follow_redirects=True)
+        self.check_meme_json(rv4, self.uri1, self.desc1, last=False)
+        self.assertEqual(len(json.loads(rv4.data)['memes']), 1)
+        rv5 = self.client.get('/api/memes?q=more', follow_redirects=True)
+        self.check_meme_json(rv5, self.uri2, self.desc2, last=False)
+        self.assertEqual(len(json.loads(rv5.data)['memes']), 1)
+        rv6 = self.client.get('/api/memes?q=somewhere', follow_redirects=True)
+        self.assertEqual(len(json.loads(rv6.data)['memes']), 2)
     def test_update_search(self):
         self.skipTest('Not implemented yet')
     def test_title_memes(self):
