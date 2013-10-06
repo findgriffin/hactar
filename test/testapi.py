@@ -53,10 +53,13 @@ class TestApi(BaseApi):
         errstr = 'Meme with that URI or description already exists'
         self.check_meme_json(rv1, self.uri0, self.desc0, flash=errstr)
         self.assertNotIn('<br>%s' % self.desc1, rv1.data)
+
     def test_update_meme(self):
         self.skipTest('Not implemented yet')
+
     def test_delete_meme(self):
         self.skipTest('Not implemented yet')
+
     def test_search_memes(self):
         self.login()
         # add 3 memes to get us started
@@ -78,17 +81,21 @@ class TestApi(BaseApi):
         self.assertEqual(len(json.loads(rv5.data)['memes']), 1)
         rv6 = self.client.get('/api/memes?q=somewhere', follow_redirects=True)
         self.assertEqual(len(json.loads(rv6.data)['memes']), 2)
+
     def test_update_search(self):
         self.skipTest('Not implemented yet')
+
     def test_title_memes(self):
-        self.skipTest('Not implemented yet')
+        self.login()
+        rv = self.client.post('/api/memes', data=dict( what=self.title0, why=self.desc4,
+        ), follow_redirects=True)
+        self.check_meme_json(rv, self.title0, self.desc4)
+
     def test_logged_out_views(self):
         self.skipTest('Not implemented yet')
+
     def test_update_fail(self):
         self.skipTest('Not implemented yet')
-    def test_code_snippet(self):
-        self.skipTest('Not implemented yet')
-    def test_modified_times(self):
-        self.skipTest('Not implemented yet')
+
     def test_update_content(self):
         self.skipTest('Not implemented yet')
