@@ -60,6 +60,8 @@ class BaseTest(TestCase):
     def logout(self):
         return self.client.get('/logout', follow_redirects=True)
 
+class BaseApi(BaseTest):
+
     def check_meme(self, resp, uri, desc, new=True, flash=None, isuri=True,
             logged_in=True):
         if flash:
@@ -90,21 +92,22 @@ class BaseTest(TestCase):
                 return meme
         raise AssertionError('meme: %s not in response:%s' % (meme_id, rjson))
 
-    def check_meme_json(self, resp, what, why, new=True, flash=None):
+    def check_meme_json(self, resp, what, why, new=True, flash=None,
+            last=True):
         rjson = json.loads(resp.data)
         isuri =  hactar.models.is_uri(what)
         if flash:
-            self.assertEquals(flash, rjson['flashes'])
-        elif new:
+            self.assertEquals([flash], rjson['flashes'])
+        elif last and new:
             msg = u'New meme was successfully added'
             self.assertEquals([msg], rjson['flashes'])
         self.assertEqual(resp.status_code, 200)
         meme_id = int(sha1(what).hexdigest()[:15], 16)
-        if new:
+        if last:
             meme = rjson['memes'][0]
             self.assertEquals(meme_id, int(meme['id']))
         else:
-            meme = get_meme(meme_id)
+            meme = self.get_meme(rjson, meme_id)
         self.assertEquals(len(meme.keys()), 9)
         self.assertEquals(what, meme['uri'] if isuri else meme['title'])
         self.assertEquals(why, meme['text'])

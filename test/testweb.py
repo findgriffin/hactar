@@ -10,9 +10,9 @@ import re
 import json
 
 from app import db, app
-from base import BaseTest
+from base import BaseApi
 
-class TestWeb(BaseTest):
+class TestWeb(BaseApi):
 
     # testing functions
 
