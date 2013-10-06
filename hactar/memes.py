@@ -47,7 +47,8 @@ def api_meme(meme):
         return jsonify(first.dictify())
     elif request.method == 'DELETE':
         delete_meme(meme)
-        return jsonify(successful=True)
+
+        return jsonify({meme: u'deleted', 'flashes': get_flashed_messages()})
     else:
         updated = update_meme(meme)
         return jsonify(updated.dictify())

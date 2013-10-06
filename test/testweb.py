@@ -4,12 +4,9 @@
     ~~~~~~~~~~~~
 
 """
-from hashlib import sha1
-import shutil
-import re
 import json
 
-from app import db, app
+from app import app
 from base import BaseApi
 
 class TestWeb(BaseApi):

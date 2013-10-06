@@ -1,11 +1,7 @@
 """Tests for the hactar api"""
-from hashlib import sha1
-import shutil
-import re
 import json
 from dateutil.parser import parse
 
-from app import db, app
 from base import BaseApi
 
 class TestApi(BaseApi):
@@ -75,7 +71,18 @@ class TestApi(BaseApi):
         self.assertTrue(modified > added)
 
     def test_delete_meme(self):
-        self.skipTest('Not implemented yet')
+        """Test deleting a meme (with api)"""
+        self.login()
+        rv0 = self.client.post('/api/memes', data=dict(what=self.uri0, why=self.desc0),
+            follow_redirects=True)
+        meme_id = self.check_meme_json(rv0, self.uri0, self.desc0, new=True)
+        rv1 = self.client.delete('/api/memes/%s' % meme_id)
+        self.assertEquals(rv1.status_code, 200)
+        self.assertEquals(json.loads(rv1.data), 
+                {unicode(meme_id): u'deleted', 'flashes': [u'Meme deleted']})
+        rv2 = self.client.get('/api/memes', follow_redirects=True)
+        self.assertEquals(rv2.status_code, 200)
+        self.assertEquals({u'memes': [], u'flashes': []}, json.loads(rv2.data))
 
     def test_search_memes(self):
         self.login()
