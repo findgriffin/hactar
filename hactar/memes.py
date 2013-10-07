@@ -169,7 +169,9 @@ def delete_meme(meme):
     if not session.get('logged_in'):
         abort(401)
     try:
-        Meme.query.filter(Meme.id == int(meme)).delete()
+        query = Meme.query.filter(Meme.id == int(meme))
+        query.first_or_404()
+        query.delete()
         db.session.commit()
         flash('Meme deleted')
     except ValueError as err:

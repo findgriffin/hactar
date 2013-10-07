@@ -31,13 +31,6 @@ class TestWeb(BaseApi):
                         app.config['PASSWORD'] + 'x')
         self.assertIn(b'Invalid password', rv.data)
 
-    def test_add_meme(self):
-        """Test adding a meme with flask"""
-        self.login()
-        rv = self.client.post('/memes', data=dict( what=self.uri0, why=self.desc0,
-        ), follow_redirects=True)
-        self.check_meme(rv, self.uri0, self.desc0)
-
     def test_add_memes(self):
         """Test adding some memes with flask"""
         self.login()
@@ -105,8 +98,7 @@ class TestWeb(BaseApi):
         # try to delete it again
         rv4 = self.client.post('/memes/%s' % meme_id, data=dict(
             delete='Delete'), follow_redirects=True)
-        self.check_meme(rv4, self.uri1, self.desc1, new=False, 
-                    flash='Meme deleted')
+        self.assertEquals(rv4.status_code, 404)
 
 
     def test_search_memes(self):

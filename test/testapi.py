@@ -58,6 +58,10 @@ class TestApi(BaseApi):
         rv2 = self.client.get('/api/memes', follow_redirects=True)
         self.assertEquals(rv2.status_code, 200)
         self.assertEquals({u'memes': [], u'flashes': []}, json.loads(rv2.data))
+        # try to delete it again
+        rv4 = self.client.delete('/api/memes/%s' % meme_id, data=dict(
+            delete='Delete'), follow_redirects=True)
+        self.assertEquals(rv4.status_code, 404)
 
     def test_search_memes(self):
         self.login()
