@@ -204,26 +204,3 @@ def hello_world():
         ), follow_redirects=True)
         self.check_meme(rv, self.uri0, 'This is a description:')
         self.assertIn(code_html, rv.data)
-
-    def test_modified_times(self):
-        """Check that modified and checked times get updated"""
-        self.skipTest('not implemented yet')
-
-    def test_update_content(self):
-        """Check that we can update the content of a meme"""
-        self.skipTest('no longer applies')
-        self.login()
-        rv0 = self.client.post('/memes', data=dict( what=self.uri0, why=self.desc0),
-            follow_redirects=True)
-        meme_id = self.check_meme(rv0, self.uri0, self.desc0, new=True)
-        content = 'page content'
-        title = 'super duper title'
-        rv1 = self.client.post('/memes/%s' % meme_id,
-                data=dict(content=content, title=title, status_code=200),
-                follow_redirects=True)
-        result = json.loads(rv1.data)
-        self.assertEquals(result[unicode(meme_id)], True)
-        rv2 = self.client.get('/memes?q=duper', follow_redirects=True)
-        self.assertIn(self.desc0, rv2.data)
-        self.assertIn(title, rv2.data)
-        

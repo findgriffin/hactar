@@ -10,11 +10,11 @@ from datetime import datetime as dtime
 
 @current_app.route('/api/memes', methods=['GET', 'POST'])
 def api_memes():
+    """Handle requests for memes through the api"""
     mlist, terms = memes_handler()
     resp = {'memes': [], 'flashes': []}
     [resp['memes'].append(meme.dictify()) for meme in mlist]
     resp['flashes'] = get_flashed_messages()
-    
     return jsonify(resp)
 
 @current_app.route('/memes', methods=['GET', 'POST'])
@@ -29,6 +29,7 @@ def memes(json=False):
         return render_template('memes.html', memes=mlist, searched=terms)
 
 def memes_handler():
+    """Call the various helper methods, be used by api and html"""
     if request.method == 'POST':
         post_memes()
     terms = request.args.get('q')
@@ -42,6 +43,7 @@ def memes_handler():
 
 @current_app.route('/api/memes/<int:meme>', methods=['GET', 'POST', 'DELETE'])
 def api_meme(meme):
+    """Handle meme requests through the api"""
     if request.method == 'GET':
         first = get_meme(meme)
         return jsonify(first.dictify())
@@ -78,8 +80,9 @@ def meme_handler(meme):
         update_meme(meme)
         return redirect(url_for('memes'))
 
-def get_meme(meme):
-    return Meme.query.filter(Meme.id == int(meme)).first_or_404()
+def get_meme(meme_id):
+    """Return either the meme given by meme_id or raise a 404""" 
+    return Meme.query.filter(Meme.id == int(meme_id)).first_or_404()
     
 def post_memes():
     """This is actually kind of the home page."""

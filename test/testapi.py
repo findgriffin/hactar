@@ -13,9 +13,6 @@ class TestApi(BaseApi):
         self.assertEquals(rv.status_code, 200)
         self.assertEquals({'memes': [], 'flashes': []}, json.loads(rv.data))
 
-    def test_login_logout(self):
-        self.skipTest('Only support html login for now')
-
     def test_add_memes(self):
         """Tes adding memes (with api)"""
         self.login()
@@ -119,7 +116,7 @@ class TestApi(BaseApi):
         rv0 = self.client.post('/api/memes', data=dict( what=self.uri0, why=self.desc0),
             follow_redirects=True)
         meme_id = self.check_meme_json(rv0, self.uri0, self.desc0)
-        rv1 = self.client.post('/api/memes/%s' % (int(meme_id) - 10), data=dict(why=self.desc1),
+        rv1 = self.client.post('/api/memes/%s' % (int(meme_id)-10), data=dict(why=self.desc1),
                 follow_redirects=True)
         self.assertEquals(rv1.status_code, 404)
 

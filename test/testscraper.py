@@ -85,6 +85,7 @@ class TestScraper(BaseTest):
         title = u'RFC 2910 - Internet Printing Protocol/1.1: Encoding and Transport'
         crawled = scraper.get_data(uri)
         self.assertEquals(crawled['title'], title)
+
     @classmethod
     def tearDownClass(cls):
         cls.server.terminate()

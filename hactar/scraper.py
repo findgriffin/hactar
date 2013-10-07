@@ -2,16 +2,12 @@
 import re
 import json
 import datetime
-import time
 import os
 
 from requests import get, post, ConnectionError
 import BeautifulSoup as bs
-from flask import Flask, current_app
 from celery import Celery
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import IntegrityError, OperationalError
 
 from models import Meme, setup
 
