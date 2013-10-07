@@ -119,7 +119,7 @@ def search_memes(terms):
 def get_memes():
     """Get the latest memes"""
 # this produces an SAWarning when db is empty (empty sequence)
-    return Meme.query.order_by(Meme.modified.desc())
+    return Meme.query.order_by(Meme.modified.desc()).limit(10)
 
 
 def update_meme(meme):

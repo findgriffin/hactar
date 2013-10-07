@@ -28,6 +28,15 @@ class TestApi(BaseApi):
         self.check_meme_json(rv2, self.uri0, self.desc0, new=True, last=False)
         self.check_meme_json(rv2, self.uri1, self.desc1, new=True, last=False)
         self.check_meme_json(rv2, self.uri2, self.desc2)
+        extra =['four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'
+                'eleven', 'twelve', 'thirteen', 'fourteen'] 
+        for num in extra:
+            self.client.post('/api/memes', data=dict(what=num, why='meme %s' %
+                num), follow_redirects=True)
+
+        rv3 = self.client.get('/api/memes', follow_redirects=True)
+        rjson = json.loads(rv3.data)
+        self.assertEqual(len(rjson['memes']), 10)
 
     def test_dup_memes(self):
         """Test adding duplicate memes (with api)"""
