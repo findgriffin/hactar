@@ -82,7 +82,7 @@ def crawl(meme_id, url, cookies, client=None):
 
     HEADERS['Cookie'] = 'session=%s' % cookies['session']
     if client:
-        resp = client.post('/memes/%s' % meme_id, data=data)
+        resp = client.post('/api/memes/%s' % meme_id, data=data)
     else:
         post_url = 'http://%s:%s/memes/%s' % (conf['DB_HOST'], conf['PORT'],
                 meme_id) 

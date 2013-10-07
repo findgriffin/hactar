@@ -50,8 +50,9 @@ def api_meme(meme):
 
         return jsonify({meme: u'deleted', 'flashes': get_flashed_messages()})
     else:
-        updated = update_meme(meme)
-        return jsonify(updated.dictify())
+        updated = update_content(meme)
+        resp = {meme: updated.dictify(), 'flashes': get_flashed_messages()}
+        return jsonify(resp)
 
 
 @current_app.route('/memes/<int:meme>', methods=['GET', 'POST'])
@@ -141,17 +142,23 @@ def update_meme(meme):
 
 def update_content(meme):
     """Update a memes content (for use by crawler)"""
+    form = request.form
     if not session.get('logged_in'):
         abort(401)
     try:
         current_app.logger.debug('updating content: %s' % meme)
         first = Meme.query.filter(Meme.id == int(meme)).first_or_404()
-        assert 'status_code' in request.form
-        for key, val in request.form.items():
-            setattr(first, key, val)
-        first.checked = dtime.now()
+        if 'status_code' in form:
+            first.checked = dtime.now()
+            for key, val in form.items():
+                setattr(first, key, val)
+        elif 'why' in form:
+            first.modified = dtime.now()
+            first.text = unicode(form['why'])
+        else:
+            abort(400)
         db.session.commit()
-        return jsonify({meme: True})
+        flash('Meme successfully modified')
     except ValueError as err:
         db.session.rollback()
         flash(err.message)

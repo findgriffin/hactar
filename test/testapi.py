@@ -13,13 +13,6 @@ class TestApi(BaseApi):
         self.assertEquals(rv.status_code, 200)
         self.assertEquals({'memes': [], 'flashes': []}, json.loads(rv.data))
 
-    def test_add_meme(self):
-        """Test adding a meme (via api)"""
-        self.login()
-        rv = self.client.post('/api/memes', data=dict( what=self.uri0, why=self.desc0,
-        ), follow_redirects=True)
-        self.check_meme_json(rv, self.uri0, self.desc0)
-
     def test_login_logout(self):
         self.skipTest('Only support html login for now')
 
@@ -51,24 +44,6 @@ class TestApi(BaseApi):
         errstr = 'Meme with that URI or description already exists'
         self.check_meme_json(rv1, self.uri0, self.desc0, flash=errstr)
         self.assertNotIn('<br>%s' % self.desc1, rv1.data)
-
-    def test_update_meme(self):
-        self.login()
-        rv0 = self.client.post('/api/memes', data=dict( what=self.uri0, why=self.desc0),
-            follow_redirects=True)
-        meme_id = self.check_meme_json(rv0, self.uri0, self.desc0)
-        rv1 = self.client.post('/api/memes/%s' % meme_id, data=dict(why=self.desc1),
-                follow_redirects=True)
-        
-        rjson = json.loads(rv1.data)
-        self.assertEquals(rv1.status_code, 200)
-        self.assertEquals(rjson['uri'], self.uri0)
-        self.assertEquals(rjson['text'], self.desc1)
-        self.assertEquals(rjson['status_code'], u'-1')
-        self.assertEquals(rjson['id'], unicode(meme_id))
-        modified = parse(rjson['modified'])
-        added = parse(rjson['added'])
-        self.assertTrue(modified > added)
 
     def test_delete_meme(self):
         """Test deleting a meme (with api)"""
@@ -107,16 +82,52 @@ class TestApi(BaseApi):
         self.assertEqual(len(json.loads(rv6.data)['memes']), 2)
 
     def test_update_search(self):
-        self.skipTest('Not implemented yet')
+        self.login()
+        rv0 = self.client.post('/api/memes', data=dict( what=self.uri0, why=self.desc0),
+            follow_redirects=True)
+        meme_id = self.check_meme_json(rv0, self.uri0, self.desc0)
+        rv1 = self.client.post('/api/memes/%s' % meme_id, data=dict(why=self.desc1),
+                follow_redirects=True)
+        rjson = json.loads(rv1.data)
+        rjson_meme = rjson[unicode(meme_id)]
+        self.assertEquals(rv1.status_code, 200)
+        self.assertEquals(rjson['flashes'], [u'Meme successfully modified'])
+        self.assertEquals(rjson_meme['uri'], self.uri0)
+        self.assertEquals(rjson_meme['text'], self.desc1)
+        self.assertEquals(rjson_meme['status_code'], u'-1')
+        self.assertEquals(rjson_meme['id'], unicode(meme_id))
+        modified = parse(rjson_meme['modified'])
+        added = parse(rjson_meme['added'])
+        self.assertTrue(modified > added)
+        rv2 = self.client.get('/api/memes?q=stuff', follow_redirects=True )
+        self.check_meme_json(rv2, self.uri0, self.desc1, last=False, new=False)
 
     def test_title_memes(self):
         self.login()
         rv = self.client.post('/api/memes', data=dict( what=self.title0, why=self.desc4,
         ), follow_redirects=True)
         self.check_meme_json(rv, self.title0, self.desc4)
+        self.assertEquals(json.loads(rv.data)['memes'][0]['title'], self.title0)
+        self.assertEquals(json.loads(rv.data)['memes'][0]['uri'], u'None')
 
     def test_update_fail(self):
         self.skipTest('Not implemented yet')
 
     def test_update_content(self):
-        self.skipTest('Not implemented yet')
+        """Check that we can update the content of a meme (with api)"""
+        self.login()
+        rv0 = self.client.post('/api/memes', data=dict( what=self.uri0, why=self.desc0),
+            follow_redirects=True)
+        meme_id = self.check_meme_json(rv0, self.uri0, self.desc0, new=True)
+        content = 'page content'
+        title = 'super duper title'
+        rv1 = self.client.post('/api/memes/%s' % meme_id,
+                data=dict(content=content, title=title, status_code=200),
+                follow_redirects=True)
+        self.assertEquals(rv1.status_code, 200)
+        rjson = json.loads(rv1.data)
+        self.assertEquals(rjson['flashes'], [u'Meme successfully modified'])
+        self.assertEquals(rjson[unicode(meme_id)]['title'], title)
+        self.assertEquals(rjson[unicode(meme_id)]['content'], content)
+        rv2 = self.client.get('/api/memes?q=duper', follow_redirects=True)
+        self.check_meme_json(rv2, self.uri0, self.desc0, last=False)
