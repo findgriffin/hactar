@@ -13,7 +13,10 @@ def api_memes():
     """Handle requests for memes through the api"""
     mlist, terms = memes_handler()
     resp = {'memes': [], 'flashes': []}
-    [resp['memes'].append(meme.dictify()) for meme in mlist]
+    if request.method == 'POST':
+        resp['memes'].append(mlist[0].dictify())
+    else:
+        [resp['memes'].append(meme.dictify()) for meme in mlist]
     resp['flashes'] = get_flashed_messages()
     return jsonify(resp) 
 @current_app.route('/memes', methods=['GET', 'POST'])

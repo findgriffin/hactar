@@ -14,19 +14,16 @@ class TestApi(BaseApi):
         self.assertEquals({'memes': [], 'flashes': []}, json.loads(rv.data))
 
     def test_add_memes(self):
-        """Tes adding memes (with api)"""
+        """Test adding memes (with api)"""
         self.login()
         rv0 = self.client.post('/api/memes', data=dict( what=self.uri0, why=self.desc0,
         ), follow_redirects=True)
         self.check_meme_json(rv0, self.uri0, self.desc0)
         rv1 = self.client.post('/api/memes', data=dict( what=self.uri1, why=self.desc1,
         ), follow_redirects=True)
-        self.check_meme_json(rv1, self.uri0, self.desc0, new=True, last=False)
         self.check_meme_json(rv1, self.uri1, self.desc1)
         rv2 = self.client.post('/api/memes', data=dict( what=self.uri2, why=self.desc2,
         ), follow_redirects=True)
-        self.check_meme_json(rv2, self.uri0, self.desc0, new=True, last=False)
-        self.check_meme_json(rv2, self.uri1, self.desc1, new=True, last=False)
         self.check_meme_json(rv2, self.uri2, self.desc2)
         extra =['four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'
                 'eleven', 'twelve', 'thirteen', 'fourteen'] 
