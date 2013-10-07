@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from flask import current_app, request, session, redirect, url_for, abort, \
      render_template, flash, jsonify, get_flashed_messages
 
-from hactar.models import Meme, db, is_uri
+from hactar.models import Meme, db
 from hactar.scraper import crawl
 from datetime import datetime as dtime
 
@@ -15,8 +15,7 @@ def api_memes():
     resp = {'memes': [], 'flashes': []}
     [resp['memes'].append(meme.dictify()) for meme in mlist]
     resp['flashes'] = get_flashed_messages()
-    return jsonify(resp)
-
+    return jsonify(resp) 
 @current_app.route('/memes', methods=['GET', 'POST'])
 def memes(json=False):
     """Handle requests for memes and defer to helper methods"""
@@ -112,11 +111,13 @@ def post_memes():
             abort(500)
 
 def search_memes(terms):
+    """Return a query with the memes containing terms"""
     current_app.logger.debug('looking for memes with terms: %s' % terms)
     filtered = Meme.search_query(terms)
     return filtered.order_by(Meme.modified.desc())
 
 def get_memes():
+    """Get the latest memes"""
 # this produces an SAWarning when db is empty (empty sequence)
     return Meme.query.order_by(Meme.modified.desc())
 

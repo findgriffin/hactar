@@ -4,6 +4,9 @@ from httplib import responses
 
 from flask import current_app
 
+YEAR  = 365.256
+MONTH = YEAR/12.0
+
 @current_app.template_filter('datetime')
 def _jinja2_filter_datetime(date, fmt=None):
     """Application wide datetime filter."""
@@ -28,8 +31,6 @@ def _jinja2_filter_reldatetime(date, now=None):
     else:
         return 'unknown type %s for date: %s' % (type(date), date)
     delta = now - dtime
-    YEAR  = 365.256
-    MONTH = YEAR/12.0
     if delta.days > 2*YEAR:
         return '%s years ago' % int(delta.days/YEAR)
     elif delta.days > 2*MONTH:

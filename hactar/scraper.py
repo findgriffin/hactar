@@ -7,9 +7,8 @@ import os
 from requests import get, post, ConnectionError
 import BeautifulSoup as bs
 from celery import Celery
-from sqlalchemy import create_engine
 
-from models import Meme, setup
+from models import Meme
 
 ENV = 'production'
 ENV_FILE = '.environment'

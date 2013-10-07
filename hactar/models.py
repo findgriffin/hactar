@@ -11,45 +11,45 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from whooshalchemy import IndexService
 
 
-URI_SCHEMES = [
-    'aaa', 'aaas', 'about', 'acap', 'cap', 'cid', 'crid', 'data', 'dav',
-    'dict', 'dns', 'fax', 'file', 'ftp', 'geo', 'go', 'gopher', 'h323', 'http',
-    'https', 'iax', 'im', 'imap', 'info', 'ldap', 'mailto', 'mid', 'news',
-    'nfs', 'nntp', 'pop', 'rsync', 'pres', 'rtsp', 'sip', 'S-HTTP', 'sips',
-    'snmp', 'tag', 'tel', 'telnet', 'tftp', 'urn', 'view-source', 'wais', 'ws',
-    'wss', 'xmpp', 'afp', 'aim', 'apt', 'bolo', 'bzr', 'callto', 'coffee',
-    'cvs', 'daap', 'dsnp', 'ed2k', 'feed', 'fish', 'gg', 'git', 'gizmoproject',
-    'irc', 'ircs', 'itms', 'javascript', 'ldaps', 'magnet', 'mms', 'msnim',
-    'postal2', 'secondlife', 'skype', 'spotify', 'ssh', 'svn', 'sftp', 'smb',
-    'sms', 'steam', 'webcal', 'winamp', 'wyciwyg', 'xfire', 'ymsgr',
+URI_SCHEMES = [ 'aaa', 'aaas', 'about', 'acap', 'cap', 'cid', 'crid', 'data',
+'dav', 'dict', 'dns', 'fax', 'file', 'ftp', 'geo', 'go', 'gopher', 'h323',
+'http', 'https', 'iax', 'im', 'imap', 'info', 'ldap', 'mailto', 'mid', 'news',
+'nfs', 'nntp', 'pop', 'rsync', 'pres', 'rtsp', 'sip', 'S-HTTP', 'sips', 'snmp',
+'tag', 'tel', 'telnet', 'tftp', 'urn', 'view-source', 'wais', 'ws', 'wss',
+'xmpp', 'afp', 'aim', 'apt', 'bolo', 'bzr', 'callto', 'coffee', 'cvs', 'daap',
+'dsnp', 'ed2k', 'feed', 'fish', 'gg', 'git', 'gizmoproject', 'irc', 'ircs',
+'itms', 'javascript', 'ldaps', 'magnet', 'mms', 'msnim', 'postal2',
+'secondlife', 'skype', 'spotify', 'ssh', 'svn', 'sftp', 'smb', 'sms', 'steam',
+'webcal', 'winamp', 'wyciwyg', 'xfire', 'ymsgr',
 ]
 TLDS = ['ac', 'ad', 'ae', 'aero', 'af', 'ag', 'ai', 'al', 'am', 'an', 'ao',
-    'aq', 'ar', 'arpa', 'as', 'asia', 'at', 'au', 'aw', 'ax', 'az', 'ba', 'bb',
-    'bd', 'be', 'bf', 'bg', 'bh', 'bi', 'biz', 'bj', 'bm', 'bn', 'bo', 'br', 'bs',
-    'bt', 'bv', 'bw', 'by', 'bz', 'ca', 'cat', 'cc', 'cd', 'cf', 'cg', 'ch', 'ci',
-    'ck', 'cl', 'cm', 'cn', 'co', 'com', 'coop', 'cr', 'cu', 'cv', 'cw', 'cx',
-    'cy', 'cz', 'de', 'dj', 'dk', 'dm', 'do', 'dz', 'ec', 'edu', 'ee', 'eg', 'er',
-    'es', 'et', 'eu', 'fi', 'fj', 'fk', 'fm', 'fo', 'fr', 'ga', 'gb', 'gd', 'ge',
-    'gf', 'gg', 'gh', 'gi', 'gl', 'gm', 'gn', 'gov', 'gp', 'gq', 'gr', 'gs', 'gt',
-    'gu', 'gw', 'gy', 'hk', 'hm', 'hn', 'hr', 'ht', 'hu', 'id', 'ie', 'il', 'im',
-    'in', 'info', 'int', 'io', 'iq', 'ir', 'is', 'it', 'je', 'jm', 'jo', 'jobs',
-    'jp', 'ke', 'kg', 'kh', 'ki', 'km', 'kn', 'kp', 'kr', 'kw', 'ky', 'kz', 'la',
-    'lb', 'lc', 'li', 'lk', 'lr', 'ls', 'lt', 'lu', 'lv', 'ly', 'ma', 'mc', 'md',
-    'me', 'mg', 'mh', 'mil', 'mk', 'ml', 'mm', 'mn', 'mo', 'mobi', 'mp', 'mq',
-    'mr', 'ms', 'mt', 'mu', 'museum', 'mv', 'mw', 'mx', 'my', 'mz', 'na', 'name',
-    'nc', 'ne', 'net', 'nf', 'ng', 'ni', 'nl', 'no', 'np', 'nr', 'nu', 'nz', 'om',
-    'org', 'pa', 'pe', 'pf', 'pg', 'ph', 'pk', 'pl', 'pm', 'pn', 'post', 'pr',
-    'pro', 'ps', 'pt', 'pw', 'py', 'qa', 're', 'ro', 'rs', 'ru', 'rw', 'sa', 'sb',
-    'sc', 'sd', 'se', 'sg', 'sh', 'si', 'sj', 'sk', 'sl', 'sm', 'sn', 'so', 'sr',
-    'st', 'su', 'sv', 'sx', 'sy', 'sz', 'tc', 'td', 'tel', 'tf', 'tg', 'th', 'tj',
-    'tk', 'tl', 'tm', 'tn', 'to', 'tp', 'tr', 'travel', 'tt', 'tv', 'tw', 'tz',
-    'ua', 'ug', 'uk', 'us', 'uy', 'uz', 'va', 'vc', 've', 'vg', 'vi', 'vn', 'vu',
-    'wf', 'ws', 'xxx', 'ye', 'yt', 'za', 'zm', 'zw']
+'aq', 'ar', 'arpa', 'as', 'asia', 'at', 'au', 'aw', 'ax', 'az', 'ba', 'bb',
+'bd', 'be', 'bf', 'bg', 'bh', 'bi', 'biz', 'bj', 'bm', 'bn', 'bo', 'br', 'bs',
+'bt', 'bv', 'bw', 'by', 'bz', 'ca', 'cat', 'cc', 'cd', 'cf', 'cg', 'ch', 'ci',
+'ck', 'cl', 'cm', 'cn', 'co', 'com', 'coop', 'cr', 'cu', 'cv', 'cw', 'cx',
+'cy', 'cz', 'de', 'dj', 'dk', 'dm', 'do', 'dz', 'ec', 'edu', 'ee', 'eg', 'er',
+'es', 'et', 'eu', 'fi', 'fj', 'fk', 'fm', 'fo', 'fr', 'ga', 'gb', 'gd', 'ge',
+'gf', 'gg', 'gh', 'gi', 'gl', 'gm', 'gn', 'gov', 'gp', 'gq', 'gr', 'gs', 'gt',
+'gu', 'gw', 'gy', 'hk', 'hm', 'hn', 'hr', 'ht', 'hu', 'id', 'ie', 'il', 'im',
+'in', 'info', 'int', 'io', 'iq', 'ir', 'is', 'it', 'je', 'jm', 'jo', 'jobs',
+'jp', 'ke', 'kg', 'kh', 'ki', 'km', 'kn', 'kp', 'kr', 'kw', 'ky', 'kz', 'la',
+'lb', 'lc', 'li', 'lk', 'lr', 'ls', 'lt', 'lu', 'lv', 'ly', 'ma', 'mc', 'md',
+'me', 'mg', 'mh', 'mil', 'mk', 'ml', 'mm', 'mn', 'mo', 'mobi', 'mp', 'mq',
+'mr', 'ms', 'mt', 'mu', 'museum', 'mv', 'mw', 'mx', 'my', 'mz', 'na', 'name',
+'nc', 'ne', 'net', 'nf', 'ng', 'ni', 'nl', 'no', 'np', 'nr', 'nu', 'nz', 'om',
+'org', 'pa', 'pe', 'pf', 'pg', 'ph', 'pk', 'pl', 'pm', 'pn', 'post', 'pr',
+'pro', 'ps', 'pt', 'pw', 'py', 'qa', 're', 'ro', 'rs', 'ru', 'rw', 'sa', 'sb',
+'sc', 'sd', 'se', 'sg', 'sh', 'si', 'sj', 'sk', 'sl', 'sm', 'sn', 'so', 'sr',
+'st', 'su', 'sv', 'sx', 'sy', 'sz', 'tc', 'td', 'tel', 'tf', 'tg', 'th', 'tj',
+'tk', 'tl', 'tm', 'tn', 'to', 'tp', 'tr', 'travel', 'tt', 'tv', 'tw', 'tz',
+'ua', 'ug', 'uk', 'us', 'uy', 'uz', 'va', 'vc', 've', 'vg', 'vi', 'vn', 'vu',
+'wf', 'ws', 'xxx', 'ye', 'yt', 'za', 'zm', 'zw']
 
 db = SQLAlchemy()
 
 class Meme(db.Model):
-    id=db.Column(db.Integer, primary_key=True)
+    """The smallest unit of information"""
+    id = db.Column(db.Integer, primary_key=True)
     uri = db.Column(db.UnicodeText())
     title = db.Column(db.UnicodeText())
     text = db.Column(db.UnicodeText())
@@ -62,7 +62,7 @@ class Meme(db.Model):
     _sha1 = None
     __searchable__ = ['uri', 'text', 'content', 'title']
 
-    def __init__(self, text, uri, plugins=None):
+    def __init__(self, text, uri):
         self.uri = is_uri(uri)
         if self.uri:
             self.title = None
@@ -112,6 +112,7 @@ class Meme(db.Model):
         return '<Meme %s>' % self.heading 
 
     def dictify(self):
+        """Return a dictionary representation of this event"""
         if not type(self._dict) == dict:
             self._dict = {}
             for field in self.__mapper__.columns:
@@ -134,7 +135,7 @@ def is_uri(uri):
 
 class Event(db.Model):
     """ A event, something that the user may do or has done."""
-    id=db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     text = db.Column(db.Text())
     added = db.Column(db.DateTime())
     modified = db.Column(db.DateTime())
@@ -156,6 +157,7 @@ class Event(db.Model):
         self.modified = self.added
 
     def dictify(self):
+        """Return a dictionary representation of this event"""
         if not type(self._dict) == dict:
             self._dict = {}
             for field in self.__mapper__.columns:
@@ -163,6 +165,7 @@ class Event(db.Model):
                 self._dict[field.name] = value
 
 def setup(context, session=None):
+    """Setup the whooshalchemy index service"""
     conf = json.load(open('config.json', 'rb'))[context]
     index_service = IndexService(conf, session=session)
     index_service.register_class(Meme)
