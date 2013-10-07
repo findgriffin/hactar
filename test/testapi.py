@@ -115,7 +115,13 @@ class TestApi(BaseApi):
         self.assertEquals(json.loads(rv.data)['memes'][0]['uri'], u'None')
 
     def test_update_fail(self):
-        self.skipTest('Not implemented yet')
+        self.login()
+        rv0 = self.client.post('/api/memes', data=dict( what=self.uri0, why=self.desc0),
+            follow_redirects=True)
+        meme_id = self.check_meme_json(rv0, self.uri0, self.desc0)
+        rv1 = self.client.post('/api/memes/%s' % (int(meme_id) - 10), data=dict(why=self.desc1),
+                follow_redirects=True)
+        self.assertEquals(rv1.status_code, 404)
 
     def test_update_content(self):
         """Check that we can update the content of a meme (with api)"""
