@@ -26,6 +26,14 @@
     <script src="popup.js"></script>
   </head>
   <body>
+  <form action="http://192.168.33.10:8080/api/memes" method="post" class=add-meme>
+      <dl>
+        <dd><input type=text name=what id="what" style="width: 100%;" value="http://">
+        <dt>Why is this important?
+        <dd><textarea name=why id="why" rows=20 style="width: 100%;">Why?</textarea>
+        <dd><input type=submit value=Update>
+      </dl>
+  </form>
   </body>
 </html>
 

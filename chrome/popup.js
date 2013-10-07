@@ -10,35 +10,11 @@
  */
 var QUERY = 'kittens';
 
-var kittenGenerator = {
-  /**
-   * Flickr URL that will give us lots and lots of whatever we're looking for.
-   *
-   * See http://www.flickr.com/services/api/flickr.photos.search.html for
-   * details about the construction of this URL.
-   *
-   * @type {string}
-   * @private
-   */
-  searchOnFlickr_: 'https://secure.flickr.com/services/rest/?' +
-      'method=flickr.photos.search&' +
-      'api_key=90485e931f687a9b9c2a66bf58a3861a&' +
-      'text=' + encodeURIComponent(QUERY) + '&' +
-      'safe_search=1&' +
-      'content_type=1&' +
-      'sort=interestingness-desc&' +
-      'per_page=20',
-
-  /**
-   * Sends an XHR GET request to grab photos of lots and lots of kittens. The
-   * XHR's 'onload' event is hooks up to the 'showPhotos_' method.
-   *
-   * @public
-   */
-  requestKittens: function() {
+var urlSetter = {
+  setUrl: function() {
     var req = new XMLHttpRequest();
-    req.open("GET", this.searchOnFlickr_, true);
-    req.onload = this.showPhotos_.bind(this);
+    what = document.getElementById("what");
+    what.value = 'four'
     req.send(null);
   },
 
@@ -76,8 +52,32 @@ var kittenGenerator = {
         "_s.jpg";
   }
 };
-
+chrome.tabs.getSelected(windowId, function(tab) {
+    alert("current:"+tab.url);
+});
+var descfield = document.getElementById("why");
+// add listener to descfield field
+if(descfield){
+    if(descfield.addEventListener){
+        descfield.addEventListener("focus", function() {
+            if (descfield.value == 'Why?'){
+                descfield.value = '';
+            }
+        });
+    };
+};
+var urlfield = document.getElementById("what");
+// add listener to urlfield field
+if(urlfield){
+    if(urlfield.addEventListener){
+        urlfield.addEventListener("click", function() {
+            if (urlfield.value == 'http://'){
+                urlfield.value = '';
+            }
+        });
+    };
+};
 // Run our kitten generation script as soon as the document's DOM is ready.
 document.addEventListener('DOMContentLoaded', function () {
-  kittenGenerator.requestKittens();
+  urlSetter.setUrl();
 });
