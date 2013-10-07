@@ -94,6 +94,7 @@
     pre {margin: 0 0 20px; padding: 9px 20px 9px 19px; border: 1px solid #ddd;
         font-family: "Monospace", "Courier New", "Courier"; background: #eee;
     }
+    code {font-family: "Monospace", "Courier New", "Courier"; color: #000;}
 
 /* #Links
 ================================================== */
