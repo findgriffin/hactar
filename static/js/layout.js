@@ -1,58 +1,32 @@
-window.onload = function(){
-    // get submit button
-    var submitbutton = document.getElementById("searchq");
-    // add listener to button
-    if(submitbutton.addEventListener){
-        submitbutton.addEventListener("focus", function() {
-            if (submitbutton.value == 'search memes'){
-                submitbutton.value = '';
-            }
-        });
-    };
-    // get description field
-    var descfield = document.getElementById("why");
-    // add listener to descfield field
-    if(descfield){
-        if(descfield.addEventListener){
-            descfield.addEventListener("focus", function() {
-                if (descfield.value == 'Why?'){
-                    descfield.value = '';
-                }
-            });
+$( document ).ready(function() {
+    var what = $( "#what" )
+    what.click(function( event ) {
+        if (what.val() == 'http://') {
+            $( "#what" ).val('');
         };
-    };
-    // get description field
-    var urlfield = document.getElementById("what");
-    // add listener to urlfield field
-    if(urlfield){
-        if(urlfield.addEventListener){
-            urlfield.addEventListener("click", function() {
-                if (urlfield.value == 'http://'){
-                    urlfield.value = '';
-                }
-            });
+    });
+    var why = $( "#why" )
+    why.click(function( event ) {
+        if (why.val() == 'Why?') {
+            $( "#why" ).val('');
         };
-    };
-    // get description field
-    var userfield = document.getElementById("username");
-    if(userfield){
-        if(userfield.addEventListener){
-            userfield.addEventListener("focus", function() {
-                if (userfield.value == 'username'){
-                    userfield.value = '';
-                }
-            });
+    });
+    var search = $( "#searchq" )
+    search.click(function( event ) {
+        if (search.val() == 'search memes') {
+            $( "#searchq" ).val('');
         };
-    }; 
-    // get description field
-    var passfield = document.getElementById("password");
-    if(passfield){
-        if(passfield.addEventListener){
-            passfield.addEventListener("click", function() {
-                if (passfield.value == 'password'){
-                    passfield.value = '';
-                }
-            });
+    });
+    var username = $( "#username" )
+    username.click(function( event ) {
+        if (username.val() == 'username') {
+            $( "#username" ).val('');
         };
-    };
-}
+    });
+    var password = $( "#password" )
+    password.click(function( event ) {
+        if (password.val() == 'password') {
+            $( "#password" ).val('');
+        };
+    });
+});
