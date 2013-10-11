@@ -1,0 +1,57 @@
+                    Job Description
+                
+
+            Datalicious is a leading Sydney Data Agency with a number of exciting Big Data opportunities looking for a strong technical all-rounder with systems development &amp; UNIX experience to hit the ground running.
+
+Our systems are written in Go, Python and Bash, but we are in active development and your approach to problems is more important than knowledge of specific languages.
+
+You will
+Get your hands dirty helping to maintain and improve existing products, mostly written in Go
+Proactively present data-driven innovative solutions to our clients&rsquo; problems
+Learn new languages and systems where appropriate
+
+                Skills &amp; Requirements
+            
+Required skills
+OS
+: General knowledge of Linux/Unix systems. Should have basic understanding of processes, threads, standard userspace utilities.
+Shell scripting
+: Essential.
+Languages
+: Most of our current codebase is written in GO, so you should have experience or show to be proactive in learning it. Also, you must be proficient in at least one general-purpose open-source dynamic / scripting language, hopefully Python.
+Databases
+: Understanding of RDBMS, preferably some experience with &ldquo;NoSQL&rdquo; systems as well. PostgresSQL, MySQL.
+You should must have these attributes 
+Ability to balance active development and operational maintenance
+Excellent attention to detail and a desire to understand systems at every layer of the stack
+Excellent time management skills and be willing to multi-task
+Be a self-motivated learner
+Be very strong in at least one programming language
+Desirable Skills 
+Systems Administration: Configuration management, remote execution, monitoring
+Revision Control: Git or other. (we use Git)
+Infrastructure: Cloud IaaS platforms, particularly AWS. We are also using Google Compute Engine and Google App Engine.
+Linux Environments: Experience with the LAMP stack or composable systems in general.
+Bonus Points! 
+If you know Go, you get extra bonus points. You&rsquo;ll also get bonus points if you have done any work with concurrency, distributed systems, quorums, etc. Also a bonus if you have an interest in algorithms, &lsquo;Big Data&rsquo;, R, SPSS and/or have some stats knowledge.
+
+                About Datalicious
+            
+We are a fast paced data and analytics agency that is currently growing at a rapid rate. We have a big list of blue-chip clients and provide our team members with the opportunity to learn new skills and gain experience in actual Big Data.
+Please note this role is available to Australian residents only. No recruiters please.&nbsp;
+How we will reward you
+Competitive salary depending on skills and expereince
+Exposure to a growing list of interesting blue chip clients
+Flexible working hours in a dynamic team environment
+Young start-up with a &ldquo;work hard, play hard&rdquo; company attitude
+Training on industry leading analytics, marketing and big data platforms
+Plenty of development and career opportunities in fast growing business
+Great office space in the city that we share with other agencies
+Free coffee and toast to kick-start your day
+Don&rsquo;t forget to 
+check us out on 
+JobAdvisor
+, 
+Facebook
+ and 
+LinkedIn

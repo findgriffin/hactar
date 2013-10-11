@@ -1,0 +1,49 @@
+This website presents a series of free lectures on quantitative economic modeling,
+designed and written by 
+John Stachurski
+ and 
+Thomas J. Sargent
+.
+The primary programming language is 
+Python
+.
+Table of Contents
+Introduction
+Part 1:  Programming in Python
+About Python
+Setting up Your Python Environment
+An Introductory Example
+Python Essentials
+Object Oriented Programming
+How it Works: Data, Variables and Names
+Advanced Features
+Part 2:  The Scientific Libraries
+NumPy
+SciPy
+Matplotlib
+Pandas
+IPython
+Part 3: Introductory Applications
+Finite Markov Chains
+Shortest Paths
+A First Look at the Kalman Filter
+Schelling&#8217;s Segregation Model
+LLN and CLT
+Infinite Horizon Dynamic Programming
+Part 4: Advanced Applications
+Continuous State Markov Chains
+Linear Quadratic Control Problems
+Modeling Career Choice
+On-the-Job Search
+Search with Offer Distribution Unknown
+Optimal Savings
+Linear Stochastic Models
+Estimation of Spectra
+Optimal Taxation
+Solutions to Exercises
+Useful Resources
+References
+Acknowledgements:  These lectures have benefitted greatly from comments and
+suggestion from our colleagues, students and friends.  Special thanks go to
+Anmol Bhandari, Jeong-Hun Choi, Chase Coleman, Doc-Jin Jang, Spencer Lyon,
+Matthew McKay, Tomohito Okabe, Nathan Palmer and Yixiao Zhou.
