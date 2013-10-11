@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US" xmlns:og="http://opengraphprotocol.org/schema/">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=1080" />
+	<link rel="shortcut icon" href="http://www.zemanta.com/blog/wp-content/themes/zblog/favicon.png" />
+	
+
+	<!--[if lt IE 9]>
+	<script src="http://www.zemanta.com/blog/wp-content/themes/zblog/js/html5.js" type="text/javascript"></script>
+	<![endif]-->
+
+	<link href='http://fonts.googleapis.com/css?family=Crete+Round' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="http://www.zemanta.com/blog/wp-content/themes/zblog/style.css" media="all" />
+	<link rel="pingback" href="http://www.zemanta.com/blog/xmlrpc.php" />
+
+	
+<!-- This site is optimized with the Yoast WordPress SEO plugin v1.2.8.7 - http://yoast.com/wordpress/seo/ -->
+<title>The uncanny valley of web scraping - Zemanta - Trusted Content Discovery</title>
+<link rel="canonical" href="http://www.zemanta.com/blog/the-uncanny-valley-of-web-scraping/" />
+<meta property='og:locale' content='en_US'/>
+<meta property='og:title' content='The uncanny valley of web scraping - Zemanta - Trusted Content Discovery'/>
+<meta property='og:url' content='http://www.zemanta.com/blog/the-uncanny-valley-of-web-scraping/'/>
+<meta property='og:site_name' content='Zemanta - Trusted Content Discovery'/>
+<meta property='og:type' content='article'/>
+<meta property='og:image' content='http://farm3.static.flickr.com/2534/4187565894_1e319e7ce0_m.jpg'/>
+<meta property='og:image' content='http://www.zemanta.com/fruitblog/wp-content/uploads/2012/02/allmetadata.png'/>
+<meta property='og:image' content='http://www.zemanta.com/fruitblog/wp-content/uploads/2012/02/Screen-Shot-2012-02-27-at-3.57.57-AM.png'/>
+<meta property='og:image' content='http://img.zemanta.com/zemified_e.png?x-id=55b01384-9d77-48e1-a9f4-b0a064c7b01b'/>
+<!-- / Yoast WordPress SEO plugin. -->
+
+<link rel="alternate" type="application/rss+xml" title="Zemanta - Trusted Content Discovery &raquo; Feed" href="http://www.zemanta.com/blog/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Zemanta - Trusted Content Discovery &raquo; Comments Feed" href="http://www.zemanta.com/blog/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Zemanta - Trusted Content Discovery &raquo; The uncanny valley of web scraping Comments Feed" href="http://www.zemanta.com/blog/the-uncanny-valley-of-web-scraping/feed/" />
+<link rel='stylesheet' id='fancybox-css'  href='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/jquery.fancybox-1.3.1.css?ver=1.3.1' type='text/css' media='all' />
+<link rel='stylesheet' id='contact-form-7-css'  href='http://www.zemanta.com/blog/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=3.4' type='text/css' media='all' />
+<link rel='stylesheet' id='jetpack-widgets-css'  href='http://www.zemanta.com/blog/wp-content/plugins/jetpack/modules/widgets/widgets.css?ver=20121003' type='text/css' media='all' />
+<script type='text/javascript' src='http://www.zemanta.com/blog/wp-includes/js/jquery/jquery.js?ver=1.7.2'></script>
+<script type='text/javascript' src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/jquery.fancybox-1.3.1.pack.js?ver=1.3.1'></script>
+<script type='text/javascript' src='http://www.zemanta.com/blog/wp-content/plugins/pippity/js/pippity.js?ver=3.4.2'></script>
+<script type='text/javascript' src='http://www.zemanta.com/blog/wp-content/plugins/google-analyticator/external-tracking.min.js?ver=6.3.4'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.zemanta.com/blog/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.zemanta.com/blog/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 4.0" />
+<link rel='shortlink' href='http://wp.me/p2FczM-392' />
+
+<script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
+
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="The uncanny valley of web scraping" />
+<meta property="og:url" content="http://www.zemanta.com/blog/the-uncanny-valley-of-web-scraping/" />
+<meta property="og:description" content="Web scraping is one of those &#8220;Bah, I can do that in a weekend!&#8221; problems. What could possibly be so difficult about going to a website and deciding what the actual content is? Then you ..." />
+<meta property="og:site_name" content="Zemanta - Trusted Content Discovery" />
+<meta property="og:image" content="http://farm3.static.flickr.com/2534/4187565894_1e319e7ce0_m.jpg" />
+<meta property="og:image" content="http://www.zemanta.com/fruitblog/wp-content/uploads/2012/02/allmetadata.png" />
+<meta property="og:image" content="http://www.zemanta.com/fruitblog/wp-content/uploads/2012/02/Screen-Shot-2012-02-27-at-3.57.57-AM.png" />
+<meta property="og:image" content="http://img.zemanta.com/zemified_e.png?x-id=55b01384-9d77-48e1-a9f4-b0a064c7b01b" />
+<style type="text/css">
+#fancybox-loading.fancybox-ie div { background: transparent; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/fancy_loading.png', sizingMethod='scale'); }
+.fancybox-ie #fancybox-close { background: transparent; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/fancy_close.png', sizingMethod='scale'); }
+.fancybox-ie #fancybox-title-over { background: transparent; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/fancy_title_over.png', sizingMethod='scale'); zoom: 1; }
+.fancybox-ie #fancybox-title-left { background: transparent; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/fancy_title_left.png', sizingMethod='scale'); }
+.fancybox-ie #fancybox-title-main { background: transparent; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/fancy_title_main.png', sizingMethod='scale'); }
+.fancybox-ie #fancybox-title-right { background: transparent; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/fancy_title_right.png', sizingMethod='scale'); }
+.fancybox-ie #fancybox-left-ico { background: transparent; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/fancy_nav_left.png', sizingMethod='scale'); }
+.fancybox-ie #fancybox-right-ico { background: transparent; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/fancy_nav_right.png', sizingMethod='scale'); }
+.fancybox-ie #fancy-bg-n { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/fancy_shadow_n.png', sizingMethod='scale'); }
+.fancybox-ie #fancy-bg-ne { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/fancy_shadow_ne.png', sizingMethod='scale'); }
+.fancybox-ie #fancy-bg-e { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/fancy_shadow_e.png', sizingMethod='scale'); }
+.fancybox-ie #fancy-bg-se { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/fancy_shadow_se.png', sizingMethod='scale'); }
+.fancybox-ie #fancy-bg-s { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/fancy_shadow_s.png', sizingMethod='scale'); }
+.fancybox-ie #fancy-bg-sw { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/fancy_shadow_sw.png', sizingMethod='scale'); }
+.fancybox-ie #fancy-bg-w { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/fancy_shadow_w.png', sizingMethod='scale'); }
+.fancybox-ie #fancy-bg-nw { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://www.zemanta.com/blog/wp-content/plugins/optinpop/fancybox/fancy_shadow_nw.png', sizingMethod='scale'); }
+</style><script type="text/javascript">
+				pippity_globals = function(){
+				window.$j = jQuery;
+				window.PTY_URL = "http://www.zemanta.com/blog/wp-content/plugins/pippity";
+				window.PTY_DOM = "www.zemanta.com/blog";
+				window.PTY_AJAX = "http://www.zemanta.com/blog/wp-admin/admin-ajax.php";
+				window.PTY_ADM = "http://www.zemanta.com/blog/wp-admin/admin.php?page=";
+				window.PTY_PAGE = "";
+				window.PTY_ISPOST = true;
+				window.PTY_KEY = "NmIyMGY1ZGRiZjgxYzljZGJlOTliYjA3OTVlNGQxZTc1OGNlZGI4Zjg4ODAxYTM4MGQzMWE1ZTMwYzQzZDg0OTJhYzMyMzYzZGZmMjdmYTA=";
+				window.PTY_AFFLINK = "";
+				window.PTY_AFFTEXT = "";
+				window.PTY_NEWPOPUP = "false";
+				
+				}()
+			</script> <link rel="hub" href="http://pubsubhubbub.appspot.com" /><link rel="hub" href="http://superfeedr.com/hubbub" /><script type="text/javascript">
+	window._zem_rp_blog_id = '698101';
+	window._zem_rp_post_id = '12092';
+	window._zem_rp_thumbnails = true;
+	window._zem_rp_post_title = 'The+uncanny+valley+of+web+scraping';
+	window._zem_rp_post_tags = ['google', 'zemanta', 'social+media', 'readability', 'web+scraping', 'rss', 'technology', 'photo', 'crash', 'web', 'product', 'articl', 'librari', 'websit', 'algorithm', 'vallei', 'credit', 'heurist', 'car', 'meat', 'uncanni', 'media'];
+	window._zem_rp_static_base_url = 'http://content.zemanta.com/static/';
+	window._zem_rp_wp_ajax_url = 'http://www.zemanta.com/blog/wp-admin/admin-ajax.php';
+	window._zem_rp_plugin_version = '1.6';
+	window._zem_rp_num_rel_posts = '6';
+	window._zem_rp_remote_recommendations = true;
+</script>
+<script type="text/javascript" src="http://content.zemanta.com/static/js/recommendations.js?version=1.6"></script>
+<link rel="stylesheet" href="http://content.zemanta.com/static/zem-css/recommendations.css?version=1.6" />
+<script type="text/javascript" src="http://content.zemanta.com/static/js/pageview.js?version=1.6" async></script>
+<link rel="stylesheet" href="http://content.zemanta.com/static/zem-css/vertical-m.css?version=1.6" />
+<style type="text/css">
+ul.related_post li:before {margin-right:20px; background:none; !important}</style>
+<script type="text/javascript">
+	window._wpstream_static_url = 'http://d15dcdlxfj5yvo.cloudfront.net/v0.2.2/';
+	window._wpstream_blog_slug='zemanta';
+	window._wpstream_version = 'v0.2.2';
+	window._wpstream_ajax_url='http://www.zemanta.com/blog/wp-admin/admin-ajax.php';
+	window._wpstream_blog_id = 5033274;
+	
+		window._wpstream_page_num = 1;
+	window._wpstream_is_single = true;
+	window._wpstream_post_id = 12092;
+	
+		
+	window._wpstream_promoted_freq = 5;
+</script><script type="text/javascript">
+	(function () {
+		window._wpstream_request_id = ((new Date().getTime() % 60466176) / 60466176).toString(36).substr(2,5) + Math.random().toString(36).substr(2,10);
+	
+		window.WPStreamSession = (function () {
+			var
+				pri = {
+					// cookie methods https://developer.mozilla.org/en-US/docs/Web/API/document.cookie
+					getCookie: function (sKey) {
+						return unescape(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+					},
+					setCookie: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+						if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+						sExpires = "; expires=" + vEnd.toGMTString();
+						document.cookie = escape(sKey) + "=" + escape(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
+						return true;
+					},
+					hasCookie: function (sKey) {
+						return (new RegExp("(?:^|;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
+					},
+					reHasParam: /[\?|&]wpst=1/,
+					routeMobile: function (){
+						var winhref = window.location.href, pre = '';
+						if(this.reHasParam.test(winhref)){
+							return;
+						}
+						if(winhref.indexOf('?') === -1){
+							pre = '?';
+						}else{
+							if(winhref.lastIndexOf('&') !== (winhref.length - 1)){
+								pre = '&';
+							}
+						}
+						window.location.href = winhref + pre + 'wpst=1';
+					},
+					reRemoveParam: /[\?|&]wpst=1$/,
+					reRemoveParamMiddle: /wpst=1&/,
+					routeDesktop: function () {
+						var winhref = window.location.href;
+						if(!this.reHasParam.test(winhref)){
+							return;
+						}
+						winhref = winhref.replace(this.reRemoveParam, '');
+						winhref = winhref.replace(this.reRemoveParamMiddle, '');
+						window.location.href = winhref;
+					}
+				},
+				pub = {
+					setSessionID: function () {
+						var sid = Math.abs(Math.floor( (Math.random() * 100000000000) + new Date().getTime() ));
+						var cookie_sid = pri.getCookie('_wpstream_sid');
+						if(pri.hasCookie('_wpstream_sid')){
+							window._wpstream_sid = parseInt(cookie_sid);
+							return;
+						}
+						pri.setCookie('_wpstream_sid', sid, new Date(new Date().getTime() + 24 * 60 * 60 * 1000));
+						window._wpstream_sid = sid;
+					},
+					abTest: function () {
+						switch(window._wpstream_sid % 2){
+							case 0: 
+								pri.routeDesktop();
+								window._wpstream_test_group = 0;
+							break;
+							case 1:	
+								pri.routeMobile();
+								window._wpstream_test_group = 1;
+							break;
+						}
+					}
+				};
+			return pub;
+		}());
+		WPStreamSession.setSessionID();
+		WPStreamSession.abTest();
+		
+		window.WPStreamPing = (function () {
+			var pri = {
+				statsUrl: window._wpstream_static_url + 'stats-mobile.gif',
+				encodeParams: function (data_dict) {
+					var query = [], x;
+					for (x in data_dict) {
+						if (data_dict.hasOwnProperty(x)) {
+							query.push(x + '=' + data_dict[x]);
+						}
+					}
+					return query.join('&');
+				}
+			},
+			pub =  {
+				collectPingData: function (typ) {
+					var data = {
+						typ: typ,
+						slug: window._wpstream_blog_slug,
+						blog: window._wpstream_blog_id,
+						sid: window._wpstream_sid,
+						rid: window._wpstream_request_id,
+						ver: window._wpstream_version,
+						testg: window._wpstream_test_group
+					};
+					if(window._wpstream_post_id !== undefined){
+						data.post = window._wpstream_post_id;
+					}
+					if(window._wpstream_category_id !== undefined){
+						data.cat = window._wpstream_category_id;
+					}
+					return data;
+				},
+				ping: function (data) {
+					var url = pri.statsUrl + '?' + pri.encodeParams(data), img = document.createElement('img');
+					img.src = url;
+				},
+			};
+			return pub;
+		}());
+		
+		var touchTimeout;
+		var t0 = new Date();
+		document.addEventListener('touchstart', function () {
+			var dat = WPStreamPing.collectPingData('touch');
+			dat.dt = new Date().getTime() - t0.getTime();
+			dat.scrolltop = document.body && (document.body.scrollTop || document.documentElement.scrollTop) || 0;
+			WPStreamPing.ping(dat);
+		}, false);
+		
+	}());
+</script>
+	<link rel="stylesheet" type="text/css" href="http://www.zemanta.com/blog/?custom-css=1&#038;csblog=1&#038;cscache=6&#038;csrev=34" />
+<!-- Google Analytics Tracking by Google Analyticator 6.3.4: http://www.videousermanuals.com/google-analyticator/ -->
+<script type="text/javascript">
+	var analyticsFileTypes = [''];
+	var analyticsEventTracking = 'enabled';
+</script>
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-1933864-1']);
+        _gaq.push(['_addDevId', 'i9k95']); // Google Analyticator App ID with Google 
+	_gaq.push(['_trackPageview']);
+	_gaq.push(['_trackPageLoadTime']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
+	<script type="text/javascript" src="//use.typekit.net/lts2aey.js"></script>
+	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+	<script type="text/javascript" src="http://www.zemanta.com/blog/wp-content/themes/zblog/js/jquery.dotdotdot-1.5.1.js"></script>
+	<script type="text/javascript" src="http://www.zemanta.com/blog/wp-content/themes/zblog/js/main.js"></script>
+	<script type="text/javascript" src="http://dtmvdvtzf8rz0.cloudfront.net/static/js/zemtracker.min.js"></script>
+	<!-- start Mixpanel --><script type="text/javascript">(function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src=("https:"===e.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f);b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==
+typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" ");for(g=0;g<i.length;g++)f(c,i[g]);
+b._i.push([a,e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
+mixpanel.init("041038e7d5734aea578486471abd2971");</script><!-- end Mixpanel -->
+<script type='text/javascript'>var _sf_startpt=(new Date()).getTime()</script>
+<script type="text/javascript" src="https://s3.amazonaws.com/zstyle/js/svgeezy.js"></script>
+<!-- ClickTale Top part -->
+<script type="text/javascript">
+var WRInitTime=(new Date()).getTime();
+</script>
+<!-- ClickTale end of Top part -->
+<script>
+    svgeezy.init(false, 'png');
+</script>
+	<script type="text/javascript">
+adroll_adv_id = "X6O2L6LFCZHAXPKUIZVB7W";
+adroll_pix_id = "VJVR747SBBHXTEYDABWD3A";
+(function () {
+var oldonload = window.onload;
+window.onload = function(){
+   __adroll_loaded=true;
+   var scr = document.createElement("script");
+   var host = (("https:" == document.location.protocol) ? "https://s.adroll.com" : "http://a.adroll.com");
+   scr.setAttribute('async', 'true');
+   scr.type = "text/javascript";
+   scr.src = host + "/j/roundtrip.js";
+   ((document.getElementsByTagName('head') || [null])[0] ||
+    document.getElementsByTagName('script')[0].parentNode).appendChild(scr);
+   if(oldonload){oldonload()}};
+}());
+</script>
+	
+</head>
+
+<body class="single single-post postid-12092 single-format-standard">
+
+	<div id="container">
+
+		<header id="header">
+			<div class="wrap">
+				<nav class="primary"><ul id="menu-primary" class=""><li id="menu-item-10853" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10853"><a href="http://www.zemanta.com/blog/zemanta-for-publishers-and-networks/">Publishers</a></li>
+<li id="menu-item-10851" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10851"><a href="http://www.zemanta.com/blog/marketers-and-advertisers/">Advertisers</a></li>
+<li id="menu-item-10854" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10854"><a href="http://www.zemanta.com/blog/related-posts-for-bloggers">Bloggers</a></li>
+</ul></nav>				<a href="http://www.zemanta.com" class="logo"><img src="https://s3.amazonaws.com/zstyle/img/logo.svg" alt="Trusted Content Discovery" /></a>
+			</div>
+		</header>
+<div id="content-onecolumn">
+	<div class="wrap">
+		<div class="post-wrap">
+							
+<article id="post-12092" class="post-12092 post type-post status-publish format-standard hentry category-technology tag-google tag-readability tag-rss tag-social-media tag-web-scraping tag-zemanta">
+	<aside class="post-author-wrap">
+		<a href="http://www.zemanta.com/blog/author/swizec/" rel="author"><img alt='' src='http://1.gravatar.com/avatar/11069ea4526454fab5398554dce6571f?s=80&amp;d=http%3A%2F%2F0.gravatar.com%2Favatar%2F06ee7a02ab6f3be0c965234c5c3a15c0%3Fs%3D80%26d%3Dhttp%253A%252F%252F0.gravatar.com%252Favatar%252Fad516503a11cd5ca435acc9bb6523536%253Fs%253D32%26r%3DG&amp;r=G' class='post-author-photo avatar-80 photo' height='80' width='80' /></a>		<div class="post-author"><a href="http://www.zemanta.com/blog/author/swizec/" rel="author">Swizec</a></div>
+		<div class="post-date">02/28/2012</div>
+	</aside>
+		<aside class="post-social-wrap">
+	<div style="min-height:33px;" class="really_simple_share really_simple_share_button robots-nocontent snap_nopreview"><div class="really_simple_share_facebook_like" style="width:100px;"><iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.zemanta.com%2Fblog%2Fthe-uncanny-valley-of-web-scraping%2F&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;height=27&amp;locale=en_US" 
+							scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:27px;" allowTransparency="true"></iframe></div><div class="really_simple_share_google1" style="width:100px;"><div class="g-plusone" data-size="medium" data-href="http://www.zemanta.com/blog/the-uncanny-valley-of-web-scraping/" ></div></div><div class="really_simple_share_linkedin" style="width:100px;"><script type="IN/Share" data-counter="right" data-url="http://www.zemanta.com/blog/the-uncanny-valley-of-web-scraping/"></script></div><div class="really_simple_share_twitter" style="width:100px;"><a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" 
+						data-text="The uncanny valley of web scraping" data-url="http://www.zemanta.com/blog/the-uncanny-valley-of-web-scraping/" 
+						data-via="zemanta"  ></a></div></div>
+		<div style="clear:both;"></div>	</aside>
+		<header>
+		<h1><a href="http://www.zemanta.com/blog/the-uncanny-valley-of-web-scraping/" rel="bookmark" title="Permalink to: The uncanny valley of web scraping">The uncanny valley of web scraping</a></h1>
+		<div class="post-meta">Posted in <a href="http://www.zemanta.com/blog/category/technology/" title="View all posts in Technology" rel="category tag">Technology</a><span class="gap">|</span><a href="http://www.zemanta.com/blog/the-uncanny-valley-of-web-scraping/#comments"><span class="dsq-postid" rel="12092 http://www.zemanta.com/fruitblog/?p=401">49 Comments</span></a></div>
+	</header>
+	<section class="post-content-wrap">
+				<p><a class="zem_slink" title="Web scraping" href="http://en.wikipedia.org/wiki/Web_scraping" rel="wikipedia">Web scraping</a> is one of those <em>&#8220;Bah, I can do that in a weekend!&#8221;</em> problems. What could possibly be so difficult about going to a website and deciding what the actual content is?</p>
+<figure class="wp-caption alignright" style="width: 164px"><a href="http://www.flickr.com/photos/44457602@N00/4187565894"><img class="zemanta-img-inserted zemanta-img-configured" title="Social Media Outposts" src="http://farm3.static.flickr.com/2534/4187565894_1e319e7ce0_m.jpg" alt="Social Media Outposts" width="164" height="240" /></a><figcaption class="wp-caption-text">Social Media Outposts (Photo credit: the tartanpodcast)</figcaption></figure>
+<p>Then you try.</p>
+<p>It doesn&#8217;t work.</p>
+<p>After a bit of digging you realize this is actually a pretty tough problem &#8211; but surely there&#8217;s a library for this, right? I mean, with so many products needing this, surely someone&#8217;s already solved this problem?</p>
+<p>They have!</p>
+<p>A bunch of libraries exist, ranging from advanced algorithm implementations, like <a title="Boilerpipe" href="http://code.google.com/p/boilerpipe/" target="_blank">boilerpipe</a>, to a car crash of hand tuned heuristics, like <a class="zem_slink" title="Readability" href="http://www.readability.com/" rel="wikipedia" target="_blank">Readability</a>.</p>
+<p>Most of them <a class="zem_slink" title="Extract" href="http://en.wikipedia.org/wiki/Extract" rel="wikipedia">extract</a> the meat of the article perfectly. Very few actually miss anything. But it <em>feels</em> wrong. It just doesn&#8217;t look exactly like what you consider content as a human.</p>
+<p>Maybe there&#8217;s the <em>&#8220;&lt;tags&gt; by &lt;author&gt; at &lt;time&gt;&#8221;</em> line left on the top, maybe it&#8217;s on the bottom, perhaps there&#8217;s a bit of cruft strewn in here and there &#8230; Most scrapers deal with this to varying degrees of success, sometimes they&#8217;re better on blogposts, sometimes on news sites, sometimes something else completely.</p>
+<p>Sometimes the website is so weird a scraper will just give up and decide the first two paragraphs aren&#8217;t content. Granted, a lot of blog writers could do with just cutting away the first few paragraphs, but that&#8217;s beside the point.</p>
+<p>Your content indexer, article previewer or full RSS builder are going no where fast. And you&#8217;re way past that <em>weekend project</em> phase too!</p>
+<h2>Easy for humans</h2>
+<p>This task is so easy for humans we notice every little detail. While extracting most of the content with a bit of cruft works perfectly well for indexing and data mining &#8211; showing that to a user will only end in tears.</p>
+<p>It&#8217;s a bit like drawing hands or faces &#8211; unless you get it within 5% of perfection it just looks <em>wrong</em>. You&#8217;re almost better off drawing it at 80% within perfection and calling it a cartoon.</p>
+<p>The <a class="zem_slink" title="Uncanny valley" href="http://en.wikipedia.org/wiki/Uncanny_valley" rel="wikipedia">uncanny valley</a> of article extraction!</p>
+<p>The closer you are to perfection, the less subconscious clues users will get to pick out the content themselves and the more jarring the difference between what they expect and what they get.</p>
+<p>Now what?</p>
+<p><a href="http://www.zemanta.com/fruitblog/wp-content/uploads/2012/02/allmetadata.png"><img class="alignnone size-full wp-image-412" title="USE ALL METADATA" src="http://www.zemanta.com/fruitblog/wp-content/uploads/2012/02/allmetadata.png" alt="USE ALL METADATA" width="315" height="235" /></a></p>
+<p>Instead of relying just on what scraping algorithms say, you should help them out with as much knowledge of the website you can get.</p>
+<p><strong>1.</strong> If there is a full <a class="zem_slink" title="RSS" href="http://en.wikipedia.org/wiki/RSS" rel="wikipedia">RSS feed</a>, why are you even scraping? The content in there is usually clean. (the story of translating an url to an RSS url will come another day)</p>
+<p><strong>2.</strong> Without a full RSS feed you can still learn a lot about the start of the article from looking at the excerpt published in an RSS. Clean up the html, take the published excerpt, then go on a search through <a class="zem_slink" title="Document Object Model" href="http://en.wikipedia.org/wiki/Document_Object_Model" rel="wikipedia">the DOM</a> to look for an approximate match &#8211; voila, the beginning of your article!</p>
+<p><strong>3.</strong> Sometimes you can achieve a lot by relying on good old <a class="zem_slink" title="Regular expression" href="http://en.wikipedia.org/wiki/Regular_expression" rel="wikipedia">regular expressions</a> and hand-tuned heuristics. A lot of those erroneous first and last lines look very similar. Just write a regex to detect a few variations of those and clean them out.</p>
+<p><strong>4.</strong> Another reasonable approach is guessing which articles come from the same website (hint: not just the same domain). These have almost the same cruft around every article. You can run a clustering algorithm on these and figure out what are the bits your scrapers are usually leaving in or missing &#8211; then just fix for those.</p>
+<p><a class="zem_slink" title="Zemanta" href="http://www.zemanta.com" rel="homepage">Zemanta</a> uses a combination of these to create article previews in their widget and I have to say, until I talked with the guys about this blogpost it didn&#8217;t even cross my mind those had to be scraped (even though I&#8217;ve tried solving the same problem myself). And that&#8217;s how it&#8217;s supposed to be!</p>
+<p>It <em>is</em> possible to make a content extractor worthy of a human observer, just not easy.</p>
+<p><a href="http://www.zemanta.com/fruitblog/wp-content/uploads/2012/02/Screen-Shot-2012-02-27-at-3.57.57-AM.png"><img class="alignnone size-full wp-image-410" title="An excerpt" src="http://www.zemanta.com/fruitblog/wp-content/uploads/2012/02/Screen-Shot-2012-02-27-at-3.57.57-AM.png" alt="" width="684" height="289" /></a></p>
+<p>For those more technically inclined &#8211; all of this is explained in great detail over at <a href="http://tomazkovacic.com/blog/" target="_blank">Tomaž Kova?i?&#8217;s blog</a>.</p>
+<h6 class="zemanta-related-title" style="font-size: 1em;">Related articles</h6>
+<ul class="zemanta-article-ul">
+<li class="zemanta-article-ul-li"><a href="http://www.plagiarismtoday.com/2011/11/16/scraping-not-just-for-rss-feeds-anymore/">Scraping: Not Just for RSS Feeds Anymore</a> (plagiarismtoday.com)</li>
+<li class="zemanta-article-ul-li"><a href="http://www.sessions.edu/notes-on-design/inspiration/fine-art-and-illustration-inspiration/by-hand-or-on-the-computer-the-threat-of-the-uncanny-valley/">By hand or on the computer? The threat of the Uncanny Valley</a> (sessions.edu)</li>
+<li class="zemanta-article-ul-li"><a href="http://blog.revolutionanalytics.com/2012/02/the-uncanny-valley-of-big-data.html">The Uncanny Valley of Big Data</a> (revolutionanalytics.com)</li>
+<li class="zemanta-article-ul-li"><a href="http://www.r-bloggers.com/web-scraping-with-python-the-dark-side-of-data/">Web scraping with Python &#8211; the dark side of data</a> (r-bloggers.com)</li>
+<li class="zemanta-article-ul-li"><a href="http://kottke.org/12/01/beyond-the-uncanny-valley">Beyond the uncanny valley</a> (kottke.org)</li>
+<li class="zemanta-article-ul-li"><a href="http://www.hyperorg.com/blogger/2012/01/15/so-you-think-you-can-scrape/">So you think you can scrape?</a> (hyperorg.com)</li>
+<li class="zemanta-article-ul-li"><a href="http://www.labnol.org/internet/fat-pings-for-content-scrapers/20400/">Beat the Content Scrapers with Fat Pings</a> (labnol.org)</li>
+</ul>
+<div class="zemanta-pixie" style="margin-top: 10px; height: 15px;"><a class="zemanta-pixie-a" title="Enhanced by Zemanta" href="http://www.zemanta.com/"><img class="zemanta-pixie-img" style="border: none; float: right;" src="http://img.zemanta.com/zemified_e.png?x-id=55b01384-9d77-48e1-a9f4-b0a064c7b01b" alt="Enhanced by Zemanta" /></a></div>
+<span id="pty_trigger"></span>
+<div class="zem_rp_wrap zem_rp_th_vertical_m" id="zem_rp_first"><div class="zem_rp_content"><h3 class="related_post_title">Related Posts</h3><ul class="related_post zem_rp" style="visibility: hidden"><li data-position="0" data-poid="in-23009" data-post-type="none"><a href="http://www.zemanta.com/blog/introducing-zemanta-tech-circle/" class="zem_rp_thumbnail"><img src="http://www.zemanta.com/blog/wp-content/uploads/2013/08/ZTC-150x150.jpg" alt="Introducing Zemanta Tech Circle: Find New Passionate Readers" /></a><a href="http://www.zemanta.com/blog/introducing-zemanta-tech-circle/" class="zem_rp_title">Introducing Zemanta Tech Circle: Find New Passionate Readers</a></li><li data-position="1" data-poid="in-23696" data-post-type="none"><a href="http://www.zemanta.com/blog/how-we-reach-new-audience-related-articles-campaign/" class="zem_rp_thumbnail"><img src="http://www.zemanta.com/blog/wp-content/uploads/2013/09/shoretel-feature-150x150.jpg" alt="How We Reached a New Audience With a Related Articles Campaign" /></a><a href="http://www.zemanta.com/blog/how-we-reach-new-audience-related-articles-campaign/" class="zem_rp_title">How We Reached a New Audience With a Related Articles Campaign</a></li><li data-position="2" data-poid="in-21961" data-post-type="none"><a href="http://www.zemanta.com/blog/motives-for-mentoring-how-online-publishing-will-benefit/" class="zem_rp_thumbnail"><img src="http://www.zemanta.com/blog/wp-content/uploads/2013/07/Mentor-150x150.jpg" alt="Motives for Mentoring: How Online Publishing Will Benefit" /></a><a href="http://www.zemanta.com/blog/motives-for-mentoring-how-online-publishing-will-benefit/" class="zem_rp_title">Motives for Mentoring: How Online Publishing Will Benefit</a></li><li data-position="3" data-poid="in-22017" data-post-type="none"><a href="http://www.zemanta.com/blog/fred-wilson-startups-taking-chance/" class="zem_rp_thumbnail"><img src="http://www.zemanta.com/blog/wp-content/uploads/2013/07/Fred-150x150.jpg" alt="Zemanta Investor Fred Wilson on Startups and Taking a Chance" /></a><a href="http://www.zemanta.com/blog/fred-wilson-startups-taking-chance/" class="zem_rp_title">Zemanta Investor Fred Wilson on Startups and Taking a Chance</a></li><li data-position="4" data-poid="in-23309" data-post-type="none"><a href="http://www.zemanta.com/blog/audience-buildinthe-right-way-to-ask-for-favors-online/" class="zem_rp_thumbnail"><img src="http://www.zemanta.com/blog/wp-content/uploads/2013/08/followers-150x150.jpg" alt="Audience Building: The Right Way to Ask for Favors Online" /></a><a href="http://www.zemanta.com/blog/audience-buildinthe-right-way-to-ask-for-favors-online/" class="zem_rp_title">Audience Building: The Right Way to Ask for Favors Online</a></li><li data-position="5" data-poid="in-22044" data-post-type="none"><a href="http://www.zemanta.com/blog/zemanta-is-hiring-software-engineers-and-tech-leads/" class="zem_rp_thumbnail"><img src="http://www.zemanta.com/blog/wp-content/uploads/2013/08/WhyWorkAtZemanta-150x150.jpg" alt="Zemanta Is Hiring: Software Engineers and Tech Leads" /></a><a href="http://www.zemanta.com/blog/zemanta-is-hiring-software-engineers-and-tech-leads/" class="zem_rp_title">Zemanta Is Hiring: Software Engineers and Tech Leads</a></li></ul></div><script type="text/javascript">window._zem_rp_callback_widget_exists ? window._zem_rp_callback_widget_exists() : false;</script></div>
+	</section>
+	<footer>
+		<a href="#" class="top">Back to top</a>
+		More in <a href="http://www.zemanta.com/blog/category/technology/" title="View all posts in Technology" rel="category tag">Technology</a><span class="gap">|</span><a href="http://www.zemanta.com/blog/tag/google/" rel="tag">Google</a>, <a href="http://www.zemanta.com/blog/tag/readability/" rel="tag">Readability</a>, <a href="http://www.zemanta.com/blog/tag/rss/" rel="tag">RSS</a>, <a href="http://www.zemanta.com/blog/tag/social-media/" rel="tag">Social media</a>, <a href="http://www.zemanta.com/blog/tag/web-scraping/" rel="tag">Web scraping</a>, <a href="http://www.zemanta.com/blog/tag/zemanta/" rel="tag">Zemanta</a>	</footer>
+	</article>						<section class="post-author-vcard">
+	<img alt='' src='http://1.gravatar.com/avatar/11069ea4526454fab5398554dce6571f?s=80&amp;d=http%3A%2F%2F0.gravatar.com%2Favatar%2F06ee7a02ab6f3be0c965234c5c3a15c0%3Fs%3D80%26d%3Dhttp%253A%252F%252F0.gravatar.com%252Favatar%252Fad516503a11cd5ca435acc9bb6523536%253Fs%253D32%26r%3DG&amp;r=G' class='post-author-photo avatar-80 photo' height='80' width='80' />
+		<h3 class="fn"><a href="http://www.zemanta.com/blog/author/swizec/" rel="author">Swizec</a></h3>
+	
+	<p>A geek with a hat. 
+
+I write blogs people read, launch things people share, fix startup prototypes.</p>
+	<ul class="social">
+					<li><a href="http://twitter.com/Swizec" class="twitter" rel="nofollow" target="_blank">Twitter</a></li>
+							<li><a href="http://www.linkedin.com/in/swizec" class="linkedin" rel="nofollow" target="_blank">LinkedIn</a></li>
+					</ul>
+
+</section>			
+			<div id="zemanta-newsletter-single">
+				<p id="znewsletter-title-single">Subscribe to newsletter</p>
+				<form id="znewsletter-single" action="http://zemanta.us2.list-manage1.com/subscribe/post?u=124a44dc0f24a8ab137fa8617&amp;id=92b4669f84" method="post" target="_blank">
+					<input type="email" id="znewsletter-input-single" name="EMAIL" value="enter email" />
+				</form>
+			</div>
+			
+<div id="disqus_thread">
+                    <div id="dsq-content">
+
+
+            <ul id="dsq-comments">
+                    <li class="post pingback">
+        <p>Pingback: <a href='http://www.zemanta.com/blog/12-most-trending-zemanta-posts-from-2012/' rel='external nofollow' class='url'>12 Most Trending Zemanta Posts from 2012 - Zemanta Blog</a></p>
+    </li>
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3816">
+        <div id="dsq-comment-header-3816" class="dsq-comment-header">
+            <cite id="dsq-cite-3816">
+http://www.techotalk.com/                <span id="dsq-author-user-3816">Rohit kothari</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3816" class="dsq-comment-body">
+            <div id="dsq-comment-message-3816" class="dsq-comment-message"><p>i guess scraping is best as it reduce website speed  </p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3790">
+        <div id="dsq-comment-header-3790" class="dsq-comment-header">
+            <cite id="dsq-cite-3790">
+http://www.techotalk.com/                <span id="dsq-author-user-3790">Rohit kothari</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3790" class="dsq-comment-body">
+            <div id="dsq-comment-message-3790" class="dsq-comment-message"><p>i guess scraping is best as it reduce website speed  </p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3815">
+        <div id="dsq-comment-header-3815" class="dsq-comment-header">
+            <cite id="dsq-cite-3815">
+http://www.webscio.net/                <span id="dsq-author-user-3815">Martin B.</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3815" class="dsq-comment-body">
+            <div id="dsq-comment-message-3815" class="dsq-comment-message"><p>Hehe, can only sympatize with the post.. Have done several years of blog crawling/scraping and it&#8217;s a real hell.. Tried using RSS excerpts, but sometimes people just post different content in their feeds that doesn&#8217;t appear on the actual site at all.. I think in the end the best approach was doing some simplistic machine learning to figure out where articles start based on several permalinks &#8211; though even then things may differ if the HTML is not constructed too cleanly, with weird images, dates, tags appearing where they shouldn&#8217;t.. </p>
+<p>And yes, it&#8217;s SO easy for humans it&#8217;s just annoying <img src='http://www.zemanta.com/blog/wp-includes/images/smilies/icon_smile.gif' alt=':)' class='wp-smiley' /> </p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3789">
+        <div id="dsq-comment-header-3789" class="dsq-comment-header">
+            <cite id="dsq-cite-3789">
+http://www.webscio.net/                <span id="dsq-author-user-3789">Martin B.</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3789" class="dsq-comment-body">
+            <div id="dsq-comment-message-3789" class="dsq-comment-message"><p>Hehe, can only sympatize with the post.. Have done several years of blog crawling/scraping and it&#8217;s a real hell.. Tried using RSS excerpts, but sometimes people just post different content in their feeds that doesn&#8217;t appear on the actual site at all.. I think in the end the best approach was doing some simplistic machine learning to figure out where articles start based on several permalinks &#8211; though even then things may differ if the HTML is not constructed too cleanly, with weird images, dates, tags appearing where they shouldn&#8217;t.. </p>
+<p>And yes, it&#8217;s SO easy for humans it&#8217;s just annoying <img src='http://www.zemanta.com/blog/wp-includes/images/smilies/icon_smile.gif' alt=':)' class='wp-smiley' /> </p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3814">
+        <div id="dsq-comment-header-3814" class="dsq-comment-header">
+            <cite id="dsq-cite-3814">
+http://blog.databigbang.com                <span id="dsq-author-user-3814">Sebastian Wain</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3814" class="dsq-comment-body">
+            <div id="dsq-comment-message-3814" class="dsq-comment-message"><p>That is right but those 300 characters help you to identify where the content is. The Google Reader NoAPI is just another trick in this space.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3788">
+        <div id="dsq-comment-header-3788" class="dsq-comment-header">
+            <cite id="dsq-cite-3788">
+http://blog.databigbang.com                <span id="dsq-author-user-3788">Sebastian Wain</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3788" class="dsq-comment-body">
+            <div id="dsq-comment-message-3788" class="dsq-comment-message"><p>That is right but those 300 characters help you to identify where the content is. The Google Reader NoAPI is just another trick in this space.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3813">
+        <div id="dsq-comment-header-3813" class="dsq-comment-header">
+            <cite id="dsq-cite-3813">
+                <span id="dsq-author-user-3813">Anonymous</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3813" class="dsq-comment-body">
+            <div id="dsq-comment-message-3813" class="dsq-comment-message"><p>yes, but do you get full text for feed that has only first 300 characters of each post?</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3787">
+        <div id="dsq-comment-header-3787" class="dsq-comment-header">
+            <cite id="dsq-cite-3787">
+                <span id="dsq-author-user-3787">Anonymous</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3787" class="dsq-comment-body">
+            <div id="dsq-comment-message-3787" class="dsq-comment-message"><p>yes, but do you get full text for feed that has only first 300 characters of each post?</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3812">
+        <div id="dsq-comment-header-3812" class="dsq-comment-header">
+            <cite id="dsq-cite-3812">
+http://swizec.com                <span id="dsq-author-user-3812">Swizec</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3812" class="dsq-comment-body">
+            <div id="dsq-comment-message-3812" class="dsq-comment-message"><p>The problem is, what if you aren&#8217;t? Can&#8217;t just add custom css selectors for every website you want to support &#8230; and what if it gets redesigned?</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3786">
+        <div id="dsq-comment-header-3786" class="dsq-comment-header">
+            <cite id="dsq-cite-3786">
+http://swizec.com                <span id="dsq-author-user-3786">Swizec</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3786" class="dsq-comment-body">
+            <div id="dsq-comment-message-3786" class="dsq-comment-message"><p>The problem is, what if you aren&#8217;t? Can&#8217;t just add custom css selectors for every website you want to support &#8230; and what if it gets redesigned?</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3811">
+        <div id="dsq-comment-header-3811" class="dsq-comment-header">
+            <cite id="dsq-cite-3811">
+http://swizec.com                <span id="dsq-author-user-3811">Swizec</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3811" class="dsq-comment-body">
+            <div id="dsq-comment-message-3811" class="dsq-comment-message"><p>What&#8217;s the actual difference? I mean, what kind of information retrieval are you doing that a human would need help with beyond just a clean text or data?</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3785">
+        <div id="dsq-comment-header-3785" class="dsq-comment-header">
+            <cite id="dsq-cite-3785">
+http://swizec.com                <span id="dsq-author-user-3785">Swizec</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3785" class="dsq-comment-body">
+            <div id="dsq-comment-message-3785" class="dsq-comment-message"><p>What&#8217;s the actual difference? I mean, what kind of information retrieval are you doing that a human would need help with beyond just a clean text or data?</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3810">
+        <div id="dsq-comment-header-3810" class="dsq-comment-header">
+            <cite id="dsq-cite-3810">
+http://swizec.com                <span id="dsq-author-user-3810">Swizec</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3810" class="dsq-comment-body">
+            <div id="dsq-comment-message-3810" class="dsq-comment-message"><p>Ah yes, the problem of even accessing the website, let alone getting the content out.</p>
+<p>Forgot to touch on that one in the post, thanks for mentioning it <img src='http://www.zemanta.com/blog/wp-includes/images/smilies/icon_smile.gif' alt=':)' class='wp-smiley' /> </p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3784">
+        <div id="dsq-comment-header-3784" class="dsq-comment-header">
+            <cite id="dsq-cite-3784">
+http://swizec.com                <span id="dsq-author-user-3784">Swizec</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3784" class="dsq-comment-body">
+            <div id="dsq-comment-message-3784" class="dsq-comment-message"><p>Ah yes, the problem of even accessing the website, let alone getting the content out.</p>
+<p>Forgot to touch on that one in the post, thanks for mentioning it <img src='http://www.zemanta.com/blog/wp-includes/images/smilies/icon_smile.gif' alt=':)' class='wp-smiley' /> </p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3809">
+        <div id="dsq-comment-header-3809" class="dsq-comment-header">
+            <cite id="dsq-cite-3809">
+http://feedity.com/                <span id="dsq-author-user-3809">Feedity</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3809" class="dsq-comment-body">
+            <div id="dsq-comment-message-3809" class="dsq-comment-message"><p>We have a home-brewed scraper and parser (written in C#) at Feedity - http://feedity.com and let me tell you &#8211; it&#8217;s one thing to scrape data but to derive information out of it is not as easy.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3783">
+        <div id="dsq-comment-header-3783" class="dsq-comment-header">
+            <cite id="dsq-cite-3783">
+http://feedity.com/                <span id="dsq-author-user-3783">Feedity</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3783" class="dsq-comment-body">
+            <div id="dsq-comment-message-3783" class="dsq-comment-message"><p>We have a home-brewed scraper and parser (written in C#) at Feedity - http://feedity.com and let me tell you &#8211; it&#8217;s one thing to scrape data but to derive information out of it is not as easy.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3808">
+        <div id="dsq-comment-header-3808" class="dsq-comment-header">
+            <cite id="dsq-cite-3808">
+http://twitter.com/mark_ellul                <span id="dsq-author-user-3808">Mark Ellul</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3808" class="dsq-comment-body">
+            <div id="dsq-comment-message-3808" class="dsq-comment-message"><p>I used to use Scrapy for my scraping needs http://scrapy.org/</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3782">
+        <div id="dsq-comment-header-3782" class="dsq-comment-header">
+            <cite id="dsq-cite-3782">
+http://twitter.com/mark_ellul                <span id="dsq-author-user-3782">Mark Ellul</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3782" class="dsq-comment-body">
+            <div id="dsq-comment-message-3782" class="dsq-comment-message"><p>I used to use Scrapy for my scraping needs http://scrapy.org/</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3807">
+        <div id="dsq-comment-header-3807" class="dsq-comment-header">
+            <cite id="dsq-cite-3807">
+                <span id="dsq-author-user-3807">Anonymous</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3807" class="dsq-comment-body">
+            <div id="dsq-comment-message-3807" class="dsq-comment-message"><p>I scrape a *lot* of websites and have used a wide variety of tools/techniques over the years.  The first thing I check for is a sitemap of any kind, often websites will have a root /sitemap.xml even though it&#8217;s not linked from any where.  Depending on the website / your scraping objective, a sitemap.xml can save a lot of time.  I wish I&#8217;d started explicitly looking for them a long time.</p>
+<p>I&#8217;m a big fan of python&#8217;s lxml library, I&#8217;ve found scraping it with XPath to be faster (both to write the code as well as run the code) than BeautifulSoup.  But I won&#8217;t hesitate to use BeautifulSoup if its better for any given site or page section.</p>
+<p> 9 times out of 10 I use an http proxy between my scraper code and the website.  The proxy does verbose logging and I often have it cache the responses when the site I&#8217;m scraping is especially slow or has a shitty (read: annoying) implementation of auth tokens / session management.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3781">
+        <div id="dsq-comment-header-3781" class="dsq-comment-header">
+            <cite id="dsq-cite-3781">
+                <span id="dsq-author-user-3781">Anonymous</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3781" class="dsq-comment-body">
+            <div id="dsq-comment-message-3781" class="dsq-comment-message"><p>I scrape a *lot* of websites and have used a wide variety of tools/techniques over the years.  The first thing I check for is a sitemap of any kind, often websites will have a root /sitemap.xml even though it&#8217;s not linked from any where.  Depending on the website / your scraping objective, a sitemap.xml can save a lot of time.  I wish I&#8217;d started explicitly looking for them a long time.</p>
+<p>I&#8217;m a big fan of python&#8217;s lxml library, I&#8217;ve found scraping it with XPath to be faster (both to write the code as well as run the code) than BeautifulSoup.  But I won&#8217;t hesitate to use BeautifulSoup if its better for any given site or page section.</p>
+<p> 9 times out of 10 I use an http proxy between my scraper code and the website.  The proxy does verbose logging and I often have it cache the responses when the site I&#8217;m scraping is especially slow or has a shitty (read: annoying) implementation of auth tokens / session management.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3806">
+        <div id="dsq-comment-header-3806" class="dsq-comment-header">
+            <cite id="dsq-cite-3806">
+http://blog.databigbang.com                <span id="dsq-author-user-3806">Sebastian Wain</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3806" class="dsq-comment-body">
+            <div id="dsq-comment-message-3806" class="dsq-comment-message"><p>From my experience lxml.html is better thant BeautifulSoup.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3805">
+        <div id="dsq-comment-header-3805" class="dsq-comment-header">
+            <cite id="dsq-cite-3805">
+http://blog.databigbang.com                <span id="dsq-author-user-3805">Sebastian Wain</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3805" class="dsq-comment-body">
+            <div id="dsq-comment-message-3805" class="dsq-comment-message"><p>Yes.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3780">
+        <div id="dsq-comment-header-3780" class="dsq-comment-header">
+            <cite id="dsq-cite-3780">
+http://blog.databigbang.com                <span id="dsq-author-user-3780">Sebastian Wain</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3780" class="dsq-comment-body">
+            <div id="dsq-comment-message-3780" class="dsq-comment-message"><p>Yes.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3804">
+        <div id="dsq-comment-header-3804" class="dsq-comment-header">
+            <cite id="dsq-cite-3804">
+                <span id="dsq-author-user-3804">Anonymous</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3804" class="dsq-comment-body">
+            <div id="dsq-comment-message-3804" class="dsq-comment-message"><p>how? you are trying to solve the golden grail of computer science. How to get computers to interpret what you want when you cant be bothered to figure it out for yourself. That isnt meant to be derogatory in any way <img src='http://www.zemanta.com/blog/wp-includes/images/smilies/icon_biggrin.gif' alt=':D' class='wp-smiley' /> </p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3779">
+        <div id="dsq-comment-header-3779" class="dsq-comment-header">
+            <cite id="dsq-cite-3779">
+                <span id="dsq-author-user-3779">Anonymous</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3779" class="dsq-comment-body">
+            <div id="dsq-comment-message-3779" class="dsq-comment-message"><p>how? you are trying to solve the golden grail of computer science. How to get computers to interpret what you want when you cant be bothered to figure it out for yourself. That isnt meant to be derogatory in any way <img src='http://www.zemanta.com/blog/wp-includes/images/smilies/icon_biggrin.gif' alt=':D' class='wp-smiley' /> </p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3803">
+        <div id="dsq-comment-header-3803" class="dsq-comment-header">
+            <cite id="dsq-cite-3803">
+http://blog.databigbang.com                <span id="dsq-author-user-3803">Sebastian Wain</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3803" class="dsq-comment-body">
+            <div id="dsq-comment-message-3803" class="dsq-comment-message"><p>It is impossible to create a generic scraper because it is an undecidable problem, you can just use heuristics or specific markup (like HTML5 article)</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3802">
+        <div id="dsq-comment-header-3802" class="dsq-comment-header">
+            <cite id="dsq-cite-3802">
+http://blog.databigbang.com                <span id="dsq-author-user-3802">Sebastian Wain</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3802" class="dsq-comment-body">
+            <div id="dsq-comment-message-3802" class="dsq-comment-message"><p>It is impossible to create a generic scraper because it is an undecidable problem, you can just use heuristics or specific markup (like HTML5 article)</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3778">
+        <div id="dsq-comment-header-3778" class="dsq-comment-header">
+            <cite id="dsq-cite-3778">
+http://blog.databigbang.com                <span id="dsq-author-user-3778">Sebastian Wain</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3778" class="dsq-comment-body">
+            <div id="dsq-comment-message-3778" class="dsq-comment-message"><p>It is impossible to create a generic scraper because it is an undecidable problem, you can just use heuristics or specific markup (like HTML5 article)</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3801">
+        <div id="dsq-comment-header-3801" class="dsq-comment-header">
+            <cite id="dsq-cite-3801">
+http://blog.databigbang.com                <span id="dsq-author-user-3801">Sebastian Wain</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3801" class="dsq-comment-body">
+            <div id="dsq-comment-message-3801" class="dsq-comment-message"><p>The formal one for the future is to use the HTML5 article element/tag: <br />
+<a href="http://dev.w3.org/html5/spec/Overview.html#the-article-element" rel="nofollow">http://dev.w3.org/html5/spec/Overview.html#the-article-element</a></p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3800">
+        <div id="dsq-comment-header-3800" class="dsq-comment-header">
+            <cite id="dsq-cite-3800">
+http://blog.databigbang.com                <span id="dsq-author-user-3800">Sebastian Wain</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3800" class="dsq-comment-body">
+            <div id="dsq-comment-message-3800" class="dsq-comment-message"><p>The formal one for the future is to use the HTML5 article element/tag: <br />
+<a href="http://dev.w3.org/html5/spec/Overview.html#the-article-element" rel="nofollow">http://dev.w3.org/html5/spec/Overview.html#the-article-element</a></p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3777">
+        <div id="dsq-comment-header-3777" class="dsq-comment-header">
+            <cite id="dsq-cite-3777">
+http://blog.databigbang.com                <span id="dsq-author-user-3777">Sebastian Wain</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3777" class="dsq-comment-body">
+            <div id="dsq-comment-message-3777" class="dsq-comment-message"><p>The formal one for the future is to use the HTML5 article element/tag: <br />
+<a href="http://dev.w3.org/html5/spec/Overview.html#the-article-element" rel="nofollow">http://dev.w3.org/html5/spec/Overview.html#the-article-element</a></p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3799">
+        <div id="dsq-comment-header-3799" class="dsq-comment-header">
+            <cite id="dsq-cite-3799">
+                <span id="dsq-author-user-3799">Me</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3799" class="dsq-comment-body">
+            <div id="dsq-comment-message-3799" class="dsq-comment-message"><p>&#8220;Scrape all the things&#8221; would have been better, IMO. </p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3776">
+        <div id="dsq-comment-header-3776" class="dsq-comment-header">
+            <cite id="dsq-cite-3776">
+                <span id="dsq-author-user-3776">Me</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3776" class="dsq-comment-body">
+            <div id="dsq-comment-message-3776" class="dsq-comment-message"><p>&#8220;Scrape all the things&#8221; would have been better, IMO. </p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3798">
+        <div id="dsq-comment-header-3798" class="dsq-comment-header">
+            <cite id="dsq-cite-3798">
+                <span id="dsq-author-user-3798">Scrapey Scrape</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3798" class="dsq-comment-body">
+            <div id="dsq-comment-message-3798" class="dsq-comment-message"><p>If you&#8217;re writing a scraper that&#8217;s customized for a particular site, and that site uses the same template throughout, such as in a blog with a consistent theme, you just need to find the right css selectors for the things you want to scrape and run that through BeautifulSoup.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3775">
+        <div id="dsq-comment-header-3775" class="dsq-comment-header">
+            <cite id="dsq-cite-3775">
+                <span id="dsq-author-user-3775">Scrapey Scrape</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3775" class="dsq-comment-body">
+            <div id="dsq-comment-message-3775" class="dsq-comment-message"><p>If you&#8217;re writing a scraper that&#8217;s customized for a particular site, and that site uses the same template throughout, such as in a blog with a consistent theme, you just need to find the right css selectors for the things you want to scrape and run that through BeautifulSoup.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3797">
+        <div id="dsq-comment-header-3797" class="dsq-comment-header">
+            <cite id="dsq-cite-3797">
+                <span id="dsq-author-user-3797">Anonymous</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3797" class="dsq-comment-body">
+            <div id="dsq-comment-message-3797" class="dsq-comment-message"><p>does that work even if the feed is not full feed?</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3774">
+        <div id="dsq-comment-header-3774" class="dsq-comment-header">
+            <cite id="dsq-cite-3774">
+                <span id="dsq-author-user-3774">Anonymous</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3774" class="dsq-comment-body">
+            <div id="dsq-comment-message-3774" class="dsq-comment-message"><p>does that work even if the feed is not full feed?</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3796">
+        <div id="dsq-comment-header-3796" class="dsq-comment-header">
+            <cite id="dsq-cite-3796">
+                <span id="dsq-author-user-3796">Anonymous</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3796" class="dsq-comment-body">
+            <div id="dsq-comment-message-3796" class="dsq-comment-message"><p>good luck with that one <img src='http://www.zemanta.com/blog/wp-includes/images/smilies/icon_smile.gif' alt=':)' class='wp-smiley' /><br />
+btw: use BoilerPipe as a fall-back, it&#8217;s good enough</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3773">
+        <div id="dsq-comment-header-3773" class="dsq-comment-header">
+            <cite id="dsq-cite-3773">
+                <span id="dsq-author-user-3773">Anonymous</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3773" class="dsq-comment-body">
+            <div id="dsq-comment-message-3773" class="dsq-comment-message"><p>good luck with that one <img src='http://www.zemanta.com/blog/wp-includes/images/smilies/icon_smile.gif' alt=':)' class='wp-smiley' /><br />
+btw: use BoilerPipe as a fall-back, it&#8217;s good enough</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3795">
+        <div id="dsq-comment-header-3795" class="dsq-comment-header">
+            <cite id="dsq-cite-3795">
+                <span id="dsq-author-user-3795">Twirrim</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3795" class="dsq-comment-body">
+            <div id="dsq-comment-message-3795" class="dsq-comment-message"><p>OOn the subject of using regex to parse html (a very bad idea as personal experience has taught me ) <a href="http://stackoverflow.com/questions/1732348/regex-match-open-tags-except-xhtml-self-contained-tags/1732454#1732454" rel="nofollow">http://stackoverflow.com/questions/1732348/regex-match-open-tags-except-xhtml-self-contained-tags/1732454#1732454</a></p>
+<p>For what it&#8217;s worth, the BeautifulSoup libraries for python are brilliant and make life a lot easier. </p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3772">
+        <div id="dsq-comment-header-3772" class="dsq-comment-header">
+            <cite id="dsq-cite-3772">
+                <span id="dsq-author-user-3772">Twirrim</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3772" class="dsq-comment-body">
+            <div id="dsq-comment-message-3772" class="dsq-comment-message"><p>OOn the subject of using regex to parse html (a very bad idea as personal experience has taught me ) <a href="http://stackoverflow.com/questions/1732348/regex-match-open-tags-except-xhtml-self-contained-tags/1732454#1732454" rel="nofollow">http://stackoverflow.com/questions/1732348/regex-match-open-tags-except-xhtml-self-contained-tags/1732454#1732454</a></p>
+<p>For what it&#8217;s worth, the BeautifulSoup libraries for python are brilliant and make life a lot easier. </p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3794">
+        <div id="dsq-comment-header-3794" class="dsq-comment-header">
+            <cite id="dsq-cite-3794">
+http://twitter.com/valejo                <span id="dsq-author-user-3794">Tre Jones</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3794" class="dsq-comment-body">
+            <div id="dsq-comment-message-3794" class="dsq-comment-message"><p> Another idea: watch out for Instapaper tags. <a href="http://www.instapaper.com/publishers" rel="nofollow">http://www.instapaper.com/publishers</a></p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3793">
+        <div id="dsq-comment-header-3793" class="dsq-comment-header">
+            <cite id="dsq-cite-3793">
+http://twitter.com/valejo                <span id="dsq-author-user-3793">Tre Jones</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3793" class="dsq-comment-body">
+            <div id="dsq-comment-message-3793" class="dsq-comment-message"><p> Another idea: watch out for Instapaper tags. <a href="http://www.instapaper.com/publishers" rel="nofollow">http://www.instapaper.com/publishers</a></p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3771">
+        <div id="dsq-comment-header-3771" class="dsq-comment-header">
+            <cite id="dsq-cite-3771">
+http://twitter.com/valejo                <span id="dsq-author-user-3771">Tre Jones</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3771" class="dsq-comment-body">
+            <div id="dsq-comment-message-3771" class="dsq-comment-message"><p> Another idea: watch out for Instapaper tags. <a href="http://www.instapaper.com/publishers" rel="nofollow">http://www.instapaper.com/publishers</a></p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3792">
+        <div id="dsq-comment-header-3792" class="dsq-comment-header">
+            <cite id="dsq-cite-3792">
+http://twitter.com/avalaxy                <span id="dsq-author-user-3792">Leon Cullens</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3792" class="dsq-comment-body">
+            <div id="dsq-comment-message-3792" class="dsq-comment-message"><p>I ran into the same problem, and I can confirm that it&#8217;s nearly impossible to create a generic scraper that will correctly scrape the content of lots of different websites.</p>
+<p>Personally I&#8217;m doing all the sites one-by-one using regular expressions, DOM traversal and RSS parsers.</p>
+<p>Maybe one day I will find a fail-safe solution that can do this for me, but I think that this will only happen when the web agrees to use one standard format to display content.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3770">
+        <div id="dsq-comment-header-3770" class="dsq-comment-header">
+            <cite id="dsq-cite-3770">
+http://twitter.com/avalaxy                <span id="dsq-author-user-3770">Leon Cullens</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3770" class="dsq-comment-body">
+            <div id="dsq-comment-message-3770" class="dsq-comment-message"><p>I ran into the same problem, and I can confirm that it&#8217;s nearly impossible to create a generic scraper that will correctly scrape the content of lots of different websites.</p>
+<p>Personally I&#8217;m doing all the sites one-by-one using regular expressions, DOM traversal and RSS parsers.</p>
+<p>Maybe one day I will find a fail-safe solution that can do this for me, but I think that this will only happen when the web agrees to use one standard format to display content.</p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment even thread-even depth-1" id="dsq-comment-3791">
+        <div id="dsq-comment-header-3791" class="dsq-comment-header">
+            <cite id="dsq-cite-3791">
+http://blog.databigbang.com                <span id="dsq-author-user-3791">Sebastian Wain</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3791" class="dsq-comment-body">
+            <div id="dsq-comment-message-3791" class="dsq-comment-message"><p>I have another alternative to retrieve historic RSSs beyond the actual one. Using Google Reader &#8220;NoAPI&#8221;. You can take a look at my article on that: <br />
+<a href="http://blog.databigbang.com/extraction-of-main-text-content/" rel="nofollow">http://blog.databigbang.com/extraction-of-main-text-content/</a></p>
+</div>
+        </div>
+    </li>
+
+    </li>
+    <li class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-3769">
+        <div id="dsq-comment-header-3769" class="dsq-comment-header">
+            <cite id="dsq-cite-3769">
+http://blog.databigbang.com                <span id="dsq-author-user-3769">Sebastian Wain</span>
+            </cite>
+        </div>
+        <div id="dsq-comment-body-3769" class="dsq-comment-body">
+            <div id="dsq-comment-message-3769" class="dsq-comment-message"><p>I have another alternative to retrieve historic RSSs beyond the actual one. Using Google Reader &#8220;NoAPI&#8221;. You can take a look at my article on that: <br />
+<a href="http://blog.databigbang.com/extraction-of-main-text-content/" rel="nofollow">http://blog.databigbang.com/extraction-of-main-text-content/</a></p>
+</div>
+        </div>
+    </li>
+
+    </li>
+            </ul>
+
+
+        </div>
+
+    </div>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+    var disqus_url = 'http://www.zemanta.com/blog/the-uncanny-valley-of-web-scraping/';
+    var disqus_identifier = '12092 http://www.zemanta.com/fruitblog/?p=401';
+    var disqus_container_id = 'disqus_thread';
+    var disqus_domain = 'disqus.com';
+    var disqus_shortname = 'z-blog';
+    var disqus_title = "The uncanny valley of web scraping";
+        var disqus_config = function () {
+        var config = this; // Access to the config object
+
+        /*
+           All currently supported events:
+            * preData — fires just before we request for initial data
+            * preInit - fires after we get initial data but before we load any dependencies
+            * onInit  - fires when all dependencies are resolved but before dtpl template is rendered
+            * afterRender - fires when template is rendered but before we show it
+            * onReady - everything is done
+         */
+
+        config.callbacks.preData.push(function() {
+            // clear out the container (its filled for SEO/legacy purposes)
+            document.getElementById(disqus_container_id).innerHTML = '';
+        });
+                config.callbacks.onReady.push(function() {
+            // sync comments in the background so we don't block the page
+            var script = document.createElement('script');
+            script.async = true;
+            script.src = '?cf_action=sync_comments&post_id=12092';
+
+            var firstScript = document.getElementsByTagName( "script" )[0];
+            firstScript.parentNode.insertBefore(script, firstScript);
+        });
+                    };
+    var facebookXdReceiverPath = 'http://www.zemanta.com/blog/wp-content/plugins/disqus-comment-system/xd_receiver.htm';
+/* ]]> */
+</script>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+    var DsqLocal = {
+        'trackbacks': [
+            {
+                'author_name':    "12 Most Trending Zemanta Posts from 2012 - Zemanta Blog",
+                'author_url':    "http:\/\/www.zemanta.com\/blog\/12-most-trending-zemanta-posts-from-2012\/",
+                'date':            "01\/04\/2013 12:38 PM",
+                'excerpt':        "[...] 8. The Uncanny Valley of Web Scraping [...] ",
+                'type':            "pingback"            }
+        ],
+        'trackback_url': "http:\/\/www.zemanta.com\/blog\/the-uncanny-valley-of-web-scraping\/trackback\/"    };
+/* ]]> */
+</script>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+        dsq.src = 'http' + '://' + disqus_shortname + '.' + 'disqus.com' + '/embed.js?pname=wordpress&pver=2.73';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+/* ]]> */
+</script>
+		</div>
+		<div class="connecting"></div>
+	</div>
+</div>
+<script type="text/javascript" src="http://content.zemanta.com/static/js/ping.js"></script>
+
+<!--		<footer id="footer">
+			<div class="wrap">
+				<div class="talk">
+					<h2><a target="_blank" href="http://support.zemanta.com/customer/portal/questions/new" rel="nofollow">Let's talk.</a></h2>
+
+					<div class="social">
+						<a href="http://twitter.com/zemanta/" class="twitter" target="_blank" rel="nofollow">Twitter</a>
+						<a href="http://facebook.com/zemanta/" class="facebook" target="_blank" rel="nofollow">Facebook</a>
+					</div>
+
+					<nav>
+						<ul>
+							<li><a href="http://www.zemanta.com/blog/">Zemanta Blog</a></li>
+						</ul>
+					</nav>
+				</div>
+			</div><
+
+			<div class="black-stripe-yellow-paint">
+				<div class="wrap">
+					<a href="http://www.zemanta.com/blog" class="logo">Zemanta</a>
+					<div class="subwrap">
+						<nav class="secondary"><ul id="menu-secondary" class=""><li id="menu-item-10844" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10844"><a href="http://www.zemantamedia.com/">For Advertisers</a></li>
+<li id="menu-item-10845" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10845"><a href="http://www.zemanta.com/download/">Downloads</a></li>
+<li id="menu-item-10846" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10846"><a href="http://developer.zemanta.com/">Developers</a></li>
+<li id="menu-item-10847" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10847"><a href="http://support.zemanta.com/">Support</a></li>
+<li id="menu-item-10848" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10848"><a href="mailto:info@zemanta.com">Contact Us</a></li>
+</ul></nav>						<p class="copyrights">&copy; 2007-2013 Zemanta. All rights reserved. <a href="http://www.zemanta.com/tos/">Terms</a> / <a href="http://www.zemanta.com/privacy/">Privacy</a> / Built in Ljubljana & NYC</p>
+					</div>
+				</div>
+			</div>
+		</footer>-->
+<div id="footer">
+	<div id="information">			
+		<div class="info-container">
+			<div id="section">
+				<span class="heading">Products</span>
+				<ul>
+					<li><a href="http://www.zemanta.com/blog/zemanta-for-publishers-and-networks">For Publishers</a></li>
+					<li><a href="http://www.zemanta.com/blog/marketers-and-advertisers/">For Advertisers</a></li>
+					<li><a href="http://www.zemanta.com/blog/related-posts-for-bloggers/">For Bloggers</a></li>
+				<ul>
+			</div>
+			<div id="section">
+				<span class="heading">About</span>
+				<ul>
+					<li><a href="http://www.zemanta.com/blog/">Blog</a></li>
+					<li><a href="http://support.zemanta.com">Support</a></li>
+					<li><a href="http://www.zemanta.com/about">About Us</a></li>
+					<li><a href="http://www.zemanta.com/blog/related-posts-terms-of-service/">Legal</a></li>					
+					<li><a href="http://www.zemanta.com/blog/careers/">Careers</a></li>					
+				<ul>
+
+			</div>
+			<div id="section">
+				<span class="heading">Connect</span>
+				<ul>
+					<li><a href="http://www.twitter.com/zemanta">Twitter</a></li>
+					<li><a href="http://www.facebook.com/zemanta">Facebook</a></li>
+					<li><a href="https://plus.google.com/116204432985434991442/posts">Google+</a></li>
+					<li><a href="http://www.slideshare.net/zemanta">Slideshare</a></li>
+				<ul>				
+			</div>
+			<div id="section">
+				<span class="heading">Contact</span>			
+				<ul>
+					<li><a href="mailto:info@zemanta.com">info@zemanta.com</a></li>
+				<ul>							
+			</div>
+		</div>
+	</div>
+	<div id="logo"><img src="http://www.zemanta.com/blog/wp-content/themes/zblog/images/zlogo.png">
+		<p class="built">Trusted Content Discovery</p><p class="built small">Built in Ljubljana & NYC</p>
+	</div>
+</div>
+
+
+	</div>
+
+    <script type="text/javascript">
+    // <![CDATA[
+        var disqus_shortname = 'z-blog';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('rel'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) url = url[0];
+                    else url = url[1]
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script'); s.async = true;
+            s.type = 'text/javascript';
+                        s.src = 'http' + '://' + 'disqus.com/forums/' + disqus_shortname + '/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    //]]>
+    </script>
+<script type="text/javascript">
+		  window.___gcfg = {lang: "en"};
+		  (function() {
+		    var po = document.createElement("script"); po.type = "text/javascript"; po.async = true;
+		    po.src = "https://apis.google.com/js/plusone.js";
+		    var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(po, s);
+		  })();
+		</script>	<div style="display:none">
+	<div class="grofile-hash-map-11069ea4526454fab5398554dce6571f">
+	</div>
+	</div>
+<script type='text/javascript' src='https://platform.linkedin.com/in.js?ver=3.4.2'></script>
+<script type='text/javascript' src='https://platform.twitter.com/widgets.js?ver=3.4.2'></script>
+<script type='text/javascript' src='http://www.zemanta.com/blog/wp-content/plugins/contact-form-7/includes/js/jquery.form.min.js?ver=3.32.0-2013.04.03'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var _wpcf7 = {"loaderUrl":"http:\/\/www.zemanta.com\/blog\/wp-content\/plugins\/contact-form-7\/images\/ajax-loader.gif","sending":"Sending ..."};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://www.zemanta.com/blog/wp-content/plugins/contact-form-7/includes/js/scripts.js?ver=3.4'></script>
+<script type='text/javascript' src='http://s0.wp.com/wp-content/js/devicepx-jetpack.js?ver=201341'></script>
+
+	<script src="http://stats.wordpress.com/e-201341.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	st_go({v:'ext',j:'1:2.0.2',blog:'39372466',post:'12092'});
+	var load_cmc = function(){linktracker_init(39372466,12092,2);};
+	if ( typeof addLoadEvent != 'undefined' ) addLoadEvent(load_cmc);
+	else load_cmc();
+	</script>
+<style type='text/css'>img#wpstats{display:none}</style><script type='text/javascript'>
+    var _sf_async_config={};
+    /** CONFIGURATION START **/
+    _sf_async_config.uid = 48686;
+    _sf_async_config.domain = 'zemanta.com';
+    _sf_async_config.useCanonical = true;
+    _sf_async_config.sections = 'Change this to your Section name';  //CHANGE THIS
+    _sf_async_config.authors = 'Change this to your Author name';    //CHANGE THIS
+    /** CONFIGURATION END **/
+    (function(){
+      function loadChartbeat() {
+        window._sf_endpt=(new Date()).getTime();
+        var e = document.createElement('script');
+        e.setAttribute('language', 'javascript');
+        e.setAttribute('type', 'text/javascript');
+        e.setAttribute('src', '//static.chartbeat.com/js/chartbeat.js');
+        document.body.appendChild(e);
+      }
+      var oldonload = window.onload;
+      window.onload = (typeof window.onload != 'function') ?
+         loadChartbeat : function() { oldonload(); loadChartbeat(); };
+    })();
+</script>
+  
+<!-- ClickTale Bottom part -->
+
+<script type='text/javascript'>
+
+document.write(unescape("%3Cscript%20src='"+
+(document.location.protocol=='https:'?
+"https://clicktalecdn.sslcs.cdngc.net/www14/ptc/db48ff3b-ef7c-4926-b429-fe061bc79da0.js":
+"http://cdn.clicktale.net/www14/ptc/db48ff3b-ef7c-4926-b429-fe061bc79da0.js")+"'%20type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<!-- ClickTale end of Bottom part -->
+</body>
+</html>

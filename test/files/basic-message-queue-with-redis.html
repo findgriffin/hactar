@@ -1,0 +1,159 @@
+<!doctype html>
+
+  
+  
+<title>Basic Message Queue with Redis | Flask (A Python Microframework)</title>
+<meta charset=utf-8>
+<link rel=stylesheet type=text/css href="/static/style.css">
+<link rel="shortcut icon" href="/static/favicon.ico">
+<script type=text/javascript
+  src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+  <link href="/snippets/recent.atom" rel="alternate" title="Recent Flask Snippets" type="application/atom+xml">
+  <style type=text/css>
+    h1 { background-image: url(/static/snippets.png); }
+  </style>
+
+  <link href="/snippets/snippets/73/comments.atom" rel="alternate" title="Snippet Comments" type="application/atom+xml">
+
+<div class=box>
+  
+  <h1><span>Flask Snippets</span></h1>
+
+  <p class=nav>
+    <a href="/">overview</a> //
+    <a href="/docs/">docs</a> //
+    <a href="/community/">community</a> //
+    <a href="/snippets/">snippets</a> //
+    <a href="/extensions/">extensions</a> //
+    <a href="/search/">search</a>
+  
+  
+  <h2>Basic Message Queue with Redis</h2>
+  <p class=snippet-author>By Armin Ronacher
+    filed in <a href="/snippets/category/utilities/">Utilities</a>
+    
+  <p>For all your queuing needs there is <a href="http://pypi.python.org/pypi/Flask-Celery">Flask-Celery</a> but if you just want a very basic queue functionality to get started you can build yourself something on top of redis very easily.</p>
+<h2>Connecting to Redis</h2>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">redis</span> <span class="kn">import</span> <span class="n">Redis</span>
+<span class="n">redis</span> <span class="o">=</span> <span class="n">Redis</span><span class="p">()</span>
+</pre></div>
+
+<h2>The Configuration</h2>
+<p>For all this to work you need to define the redis key that should be used for queuing in your app config:</p>
+<div class="highlight"><pre><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;REDIS_QUEUE_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;my_queue&#39;</span>
+</pre></div>
+
+<h2>The Decorator</h2>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span>
+<span class="kn">from</span> <span class="nn">pickle</span> <span class="kn">import</span> <span class="n">loads</span><span class="p">,</span> <span class="n">dumps</span>
+
+
+<span class="k">class</span> <span class="nc">DelayedResult</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rv</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">return_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rv</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">rv</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">rv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_rv</span> <span class="o">=</span> <span class="n">loads</span><span class="p">(</span><span class="n">rv</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rv</span>
+
+
+<span class="k">def</span> <span class="nf">queuefunc</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">delay</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">qkey</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;REDIS_QUEUE_KEY&#39;</span><span class="p">]</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">:result:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">qkey</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">()))</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">dumps</span><span class="p">((</span><span class="n">f</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">))</span>
+        <span class="n">redis</span><span class="o">.</span><span class="n">rpush</span><span class="p">(</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;REDIS_QUEUE_KEY&#39;</span><span class="p">],</span> <span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">DelayedResult</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">delay</span> <span class="o">=</span> <span class="n">delay</span>
+    <span class="k">return</span> <span class="n">f</span>
+</pre></div>
+
+<h2>The Queue Runner</h2>
+<p>The queue runner is a simple function that runs in a while loop and processes entries from a list key in redis.  Whenever something is added on there it will pop one item off the list, deserialize it, run the function and put the result into redis for a few seconds (by default 500).  If the return value is <code>None</code> we don't store anything because in that case the assumption is that the return value is not interesting.</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">queue_daemon</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">rv_ttl</span><span class="o">=</span><span class="mi">500</span><span class="p">):</span>
+    <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">blpop</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;REDIS_QUEUE_KEY&#39;</span><span class="p">])</span>
+        <span class="n">func</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">loads</span><span class="p">(</span><span class="n">msg</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rv</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">rv</span> <span class="o">=</span> <span class="n">e</span>
+        <span class="k">if</span> <span class="n">rv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">redis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">dumps</span><span class="p">(</span><span class="n">rv</span><span class="p">))</span>
+            <span class="n">redis</span><span class="o">.</span><span class="n">expire</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">rv_ttl</span><span class="p">)</span>
+</pre></div>
+
+<p>To run the daemon you can write a simple script like this:</p>
+<div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
+<span class="kn">from</span> <span class="nn">yourapp</span> <span class="kn">import</span> <span class="n">app</span>
+<span class="kn">from</span> <span class="nn">that_queue_module</span> <span class="kn">import</span> <span class="n">queue_daemon</span>
+<span class="n">queue_daemon</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+</pre></div>
+
+<h2>Running Functions through the Queue</h2>
+<p>To define a function to be run through the queue you need to use the <code>@queuefunc</code> decorator:</p>
+<div class="highlight"><pre><span class="nd">@queuefunc</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</pre></div>
+
+<p>When you call it normally it will be executed synchronously and in the same process.  If you however call <code>add.delay(a, b)</code> it will send off the request to call this function to the queue and return you a <code>QueueResult</code> object.  This also will need an active request context.  Here an example from a python shell:</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">yourapp</span> <span class="kn">import</span> <span class="n">app</span><span class="p">,</span> <span class="n">add</span>
+<span class="gp">&gt;&gt;&gt; </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ctx</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">test_request_context</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ctx</span><span class="o">.</span><span class="n">push</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rv</span> <span class="o">=</span> <span class="n">add</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rv</span><span class="o">.</span><span class="n">return_value</span>
+<span class="go">3</span>
+</pre></div>
+
+<p><code>rv.return_value</code> will be <code>None</code> until the key is available.  Usually you will want to poll for a result over HTTP or not at all, so the <code>return_value</code> attribute is only really useful for testing.</p>
+<p>If you want to poll this result the <code>rv</code> object has a <code>key</code> attribute which is the redis key corresponding to the result:</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">rv</span><span class="o">.</span><span class="n">key</span>
+<span class="go">&#39;my_queue:result:7d43370c-0f98-4e98-9d4b-1cdaf7362eb5&#39;</span>
+</pre></div>
+
+<p>Here is how you could poll for this via HTTP:</p>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">session</span><span class="p">,</span> <span class="n">abort</span><span class="p">,</span> <span class="n">jsonify</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/add&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_numbers</span><span class="p">():</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">b</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span>
+    <span class="n">rv</span> <span class="o">=</span> <span class="n">add</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="n">session</span><span class="p">[</span><span class="s">&#39;add_result_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rv</span><span class="o">.</span><span class="n">key</span>
+    <span class="k">return</span> <span class="s">&#39;Waiting for result...&#39;</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/add-result&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">add_numbers_result</span><span class="p">():</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;add_result_key&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">ready</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">rv</span> <span class="o">=</span> <span class="n">DelayedResult</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rv</span><span class="o">.</span><span class="n">return_value</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">ready</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">redis</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">session</span><span class="p">[</span><span class="s">&#39;add_result_key&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">ready</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">rv</span><span class="o">.</span><span class="n">return_value</span><span class="p">)</span>
+</pre></div>
+
+<p>First you let the user access <code>/add</code> to do something, then you can use JavaScript to poll <code>/add-result</code>.  Note that once successfully polled the result is deleted from the redis server.</p>
+
+  <p><small>This snippet by Armin Ronacher can be used freely for
+    anything you like. Consider it public domain.</small>
+  
+
+  <p class=footer>
+    &copy; Copyright 2010 by <a href=http://lucumr.pocoo.org/>Armin Ronacher</a> //
+    
+    <a href="/login/">sign in</a>
+    
+</div>

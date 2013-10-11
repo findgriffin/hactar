@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+
+<head> 
+<meta charset="utf-8">
+<title>Coding Horror: Go That Way, Really Fast</title> 
+<link rel="stylesheet" href="http://www.codinghorror.com/blog/styles-site.css" type="text/css" /> 
+<link rel="stylesheet" href="http://www.codinghorror.com/blog/styles-site-mobile.css" type="text/css" media="handheld" /> 
+<link rel="stylesheet" href="http://www.codinghorror.com/blog/styles-site-print.css" type="text/css" media="print" /> 
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://feeds.feedburner.com/codinghorror/" /> 
+<link rel="canonical" href="http://www.codinghorror.com/blog/2010/09/go-that-way-really-fast.html">
+<link rel="apple-touch-icon" href="http://www.codinghorror.com/.a/6a0120a85dcdae970b017615c1941f970c-pi">
+
+<script> 
+var TPApp = {};
+TPApp.app_uri = "http://www.typepad.com/";
+</script> 
+
+<link rel="shortcut icon" href="/favicon.ico" /> 
+
+<link rel="stylesheet" type="text/css" href="http://static.nrelate.com/common_js/0.02.0/nrelate-panels-all.min.css" />
+
+</head>
+
+<div id="header"> 
+
+<div style="float:left; "> 
+<a href="http://www.codinghorror.com/blog/"><img src="http://www.codinghorror.com/blog/images/coding-horror-official-logo-small.png" alt="I &lt;3 Steve McConnell" height="91" width="100"></a>
+</div> 
+<div style="float:left; margin-top:10px;"> 
+<a href="http://www.codinghorror.com/blog/"><img alt="Coding Horror" src="http://www.codinghorror.com/blog/images/coding-horror-text.png" height="25" width="275"></a><br/> 
+<span class="description">programming and human factors<br/>by Jeff Atwood</span> 
+</div> 
+
+<div style="float:right; margin-top:20px;" id="searchbox"> 
+<form action="http://www.google.com" id="cse-search-box">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-6424649804324178:5453723522" />
+    <input type="hidden" name="ie" value="UTF-8" />
+    <input type="text" name="q" size="55" />
+    <input type="submit" name="sa" value="Search" />
+  </div>
+</form>
+
+<script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+
+</div> 
+
+</div> <!-- header -->
+
+<div id="container"> 
+<div class="blog"> 
+<div class="blogbody"> 
+
+<h2 class="title"><a href="http://www.codinghorror.com/blog/2010/09/go-that-way-really-fast.html" class="title-link">Go That Way, Really Fast</a></h2> 
+
+<h3 class="date">September 12, 2010</h3> 
+
+<p>
+When it comes to running Stack Overflow, <a href="http://stackoverflow.com/about/management">the company</a>, I take all my business advice from one person, and one person alone: <b>Curtis Armstrong</b>.
+<p>
+<a href="http://www.imdb.com/name/nm0035664/"><img alt="Curtis Armstrong" title="Curtis Armstrong" src="http://www.codinghorror.com/.a/6a0120a85dcdae970b01348740aa43970c-800wi" border="0" /></a>
+<p>
+More specifically, Curtis Armstrong as <b>Charles De Mar</b> from the 1985 absurdist teen comedy classic, <a href="http://www.imdb.com/title/tt0088794/">Better Off Dead</a>. When asked for advice on how to ski down a particularly treacherous mountain, he replied:
+<p>
+<a href="http://www.youtube.com/watch?v=lEHZJNQ5Y4A"><img alt="Go that way, really fast. If something gets in your way... turn." title="Go that way, really fast. If something gets in your way... turn." src="http://www.codinghorror.com/.a/6a0120a85dcdae970b0133f4205ea0970b-800wi" /></a>
+<p>
+<b>Go that way, <i>really</i> fast. If something gets in your way &hellip; turn.</b>
+<p>
+(I recommend watching <a href="http://www.youtube.com/watch?v=lEHZJNQ5Y4A">the video clip</a>, or, better yet, <a href="http://www.amazon.com/dp/B00005JKFA/?tag=codihorr-20">the entire movie</a>. It's brilliant in ways I can't possibly explain here.)
+<p>
+In the five months since we <a href="http://blog.stackoverflow.com/2010/05/announcing-our-series-a/">announced our funding</a>, we have &hellip;
+<p>
+<ul>
+<li>Built an <a href="http://www.codinghorror.com/blog/2010/05/on-working-remotely.html">international team</a>
+<li>Created an entirely new open, democratic process for creating Q&A sites at <a href="http://area51.stackexchange.com/faq">Area 51</a>
+<li>Launched ~24 new community-driven <a href="http://stackexchange.com/sites">Stack Exchange network sites</a>
+<li>Implemented <a href="http://blog.stackoverflow.com/2010/07/new-per-site-metas/">per-site meta discussion</a> and <a href="http://blog.stackoverflow.com/2010/08/chat-now-in-public-beta/">per-site real time chat</a>
+<li>Rolled out new versions of <a href="http://careers.stackoverflow.com/">Careers</a> and <a href="http://careers.stackoverflow.com/Jobs">Jobs</a>
+<li>Built and open-sourced a tool for exploring and sharing all our creative commons data in the <a href="http://odata.stackexchange.com/">Stack Exchange Data Explorer</a>
+<li>Finalized V1 of the <a href="http://stackapps.com/">Stack Exchange API</a>, for building your own apps against our Q&A platform
+</ul>
+<p>
+&hellip; and honestly, I'm a little worried we're <i>still not going fast enough</i>.
+<p>
+There are any number of Stack Overflow engine clones out there already, and I say more power to 'em. I'm proud to have something worth copying. If we do nothing else except help lead the world away from the ancient, creaky, horribly broken bulletin board model of phpBB and vBulletin -- attempting to get information out of those things is like <b>panning for gold in a neverending river of sewage</b> -- then that is more than I could have ever hoped for. 
+<p>
+It is our stated goal as a company to live in harmony with the web, by only doing things that we believe make the internet better, at least in some small way. No, seriously. It's in writing and everything, I swear! We're not here to subvert or own anyone or anything. We just love community, and we love getting great answers to our questions. So if something gets in our way while doing that, well, we're not gonna fight you. <b>We'll just turn</b>. And keep going forward, really fast. Which is why those clones better move quick if they want to keep up with us. 
+<p>
+While I like to think that having Charles De Mar as a business advisor is unique to our company, the idea that speed is important is hardly original to us. For example, certain Google projects also appear to understand <a href="http://www.codinghorror.com/blog/2007/02/boyds-law-of-iteration.html">Boyd's Law of Iteration</a>.
+<p>
+<blockquote>
+Boyd decided that the primary determinant to winning dogfights was not observing, orienting, planning, or acting better. The primary determinant to winning dogfights was observing, orienting, planning, and acting <i>faster</i>. In other words, how quickly one could iterate. <i>Speed of iteration</i>, Boyd suggested, beats <i>quality of iteration</i>.
+</blockquote>
+<p>
+Speed of iteration -- the <a href="http://en.wikipedia.org/wiki/Google_Chrome">Google Chrome</a> project has it.
+<p>
+<table cellpadding="4" cellspacing=4" width="400">
+<tr><td>1.0</td><td>December 11, 2008</td></tr>
+<tr><td>2.0</td><td>May 24, 2009</td></tr>
+<tr><td>3.0</td><td>October 12, 2009</td></tr>
+<tr><td>4.0</td><td>January 25, 2010</td></tr>
+<tr><td>5.0</td><td>May 25, 2010</td></tr>
+<tr><td>6.0</td><td>September 2, 2010</td></tr>
+</table>
+<p>
+Chrome was a completely respectable browser in V1 and V2. The entire project has moved forward so fast that it now is, at least in my humble opinion, the best browser on the planet. Google went from nothing, no web browser at all, to best-of-breed in <b>under two years</b>. Meanwhile, Internet Explorer took longer than the entire development period of Chrome to go from version 7 to version 8. And by the time Internet Explorer 9 ships -- even though it's actually looking like Microsoft's best, most competent technical upgrade of the browser yet -- it will be completely outclassed at launch by both Firefox and Chrome.
+<p>
+The <a href="http://en.wikipedia.org/wiki/Android_(operating_system)">Google Android</a> project is another example. Android doesn't have to be better than the iPhone (and it most <i>definitely</i> isn't; it's been mediocre at best until recent versions). They just need to be <i>faster at improving</i>. Google is pushing out <a href="http://en.wikipedia.org/wiki/Android_(operating_system)#Update_history">Froyos and Gingerbreads and Honeycombs</a> with incredible, breakneck speed. Yes, Apple has indisputably better taste -- and an impeccably controlled experience. But at their current rate of progress, they'll be playing second or third fiddle to Google in the mobile space inside a few years. It's inevitable.
+<p>
+So, until further notice, we'll be following the same strategy as the Android and Chrome teams. <b>We're going to go that way, <i>really</i> fast. And if something gets in our way, we'll turn.</b>
+<p>
+ 
+<p>
+
+
+ 
+<div class="posted">Posted by Jeff Atwood</div> 
+
+<div id="nrelate_related_placeholder"></div> <script async type="text/javascript"
+src="http://static.nrelate.com/rcw_js/0.50.0/loader.min.js"></script>
+
+<div class="footernav">
+  
+  <div style="float:left;"><a rel="prev" href="http://www.codinghorror.com/blog/2010/08/vampires-programmers-versus-werewolves-sysadmins.html">&laquo;&nbsp;Vampires (Programmers) versus Werewolves (Sysadmins)</a></div> 
+  
+  
+  <div style="float:right;"><a rel="next" href="http://www.codinghorror.com/blog/2010/09/revisiting-solid-state-hard-drives.html">Revisiting Solid State Hard Drives&nbsp;&raquo;</a></div> 
+  
+</div>
+
+</div> <!-- blogbody -->
+
+
+
+
+<div class="comments-head" id="comments">40 Comments</div> 
+
+
+  <div class="comments-body berenguel"> 
+  <p>Fast iteration is what in the end gets the best results (if backed by constant revision!). It is like continous improvement: <a href="http://www.mostlymaths.net/2010/05/doing-your-best-8-tips-on-continuous.html" rel="nofollow">http://www.mostlymaths.net/2010/05/doing-your-best-8-tips-on-continuous.html</a> for one-man (or woman) projects, only in a big scale</p>
+
+<p>Ruben</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/berenguel" href="http://profile.typepad.com/berenguel">Berenguel</a> on September 12, 2010  1:29 AM</span> 
+  </div>
+
+  <div class="comments-body jvt"> 
+  <p>&quot;If everything seems under control, you&#39;re just not going fast enough.&quot;<br />
+<i>Mario Andretti</i><br />
+see also: <a href="http://www.quotationspage.com/quote/36794.html" rel="nofollow">http://www.quotationspage.com/quote/36794.html</a></p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/verhart" href="http://profile.typepad.com/verhart">JVT</a> on September 12, 2010  1:54 AM</span> 
+  </div>
+
+  <div class="comments-body davidheff"> 
+  <p>Yeah it really is amazing how Google built Chrome from scratch in only 2 years.  I can&#39;t imagine how they did it they must be so clever.  And new major versions every few months - WOW!  Each new version is so much better than the previous it&#39;s incredible.  Now that they are up to verison 6 they are nearly as good as IE which is at version 8.  Insightful stuff Jeff.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/davidheff" href="http://profile.typepad.com/davidheff">Davidheff</a> on September 12, 2010  1:59 AM</span> 
+  </div>
+
+  <div class="comments-body asjo"> 
+  <p><i>Google went from nothing, no web browser at all, to best-of-breed in under two years.</i></p>
+
+<p>To be fair, Google did not go from exactly nothing: By choosing the Free Software road, they were able to take advantage of the years of developement put into KHTML/WebKit by the KDE (and later, Safari-) developers.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/asjo" href="http://profile.typepad.com/asjo">asjo</a> on September 12, 2010  3:09 AM</span> 
+  </div>
+
+  <div class="comments-body john_ferguson"> 
+  <p>I think Joel already wrote about this :) fire and move. Fire and move. Fire and move. Fire and move</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/johnferguson1" href="http://profile.typepad.com/johnferguson1">John Ferguson</a> on September 12, 2010  3:47 AM</span> 
+  </div>
+
+  <div class="comments-body kaurkuut"> 
+  <p>Google isn&#39;t fast with improving Android, not where it counts anyway.<br />
+The paid Android Market is limited to a handful of countries that doesn&#39;t include mine for example (Estonia). Apple had the app store working within months after its US release, but google hasn&#39;t even announced any plans and it&#39;s been 2 years since its launch.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/kaurkuut" href="http://profile.typepad.com/kaurkuut">KaurKuut</a> on September 12, 2010  4:02 AM</span> 
+  </div>
+
+  <div class="comments-body amirouchebk"> 
+  <p>Google has made it clear from the beginning that they handled and mastered their software release cycle through agile development practices and other SCRUM related jazz; That&#39;s not a big news. Seeing it in action, is big news. Moreover one may argue that having someone good to catch (iPhone, IExplorer, Firefx, Java Browser...) makes it an even better / motivating project. <br />
+Eventually what I mean is : Google has the ressources to go fast <b>while</b> not doing big mistakes.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/amirouchebk" href="http://profile.typepad.com/amirouchebk">Amirouchebk</a> on September 12, 2010  5:45 AM</span> 
+  </div>
+
+  <div class="comments-body david_harris"> 
+  <p>It&#39;s a lot easier to develop a product once the user testing has been done for you. You already know what users want. Being the 60th software package within a certain genre means you can go really fast.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/davidharris1" href="http://profile.typepad.com/davidharris1">David Harris</a> on September 12, 2010  5:50 AM</span> 
+  </div>
+
+  <div class="comments-body j_col"> 
+  <p>Google have enormous pools of talent at their disposal.  It&#39;s pretty easy to move fast when you are driving a sports car.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/j_col" href="http://profile.typepad.com/j_col">j_col</a> on September 12, 2010  8:21 AM</span> 
+  </div>
+
+  <div class="comments-body ddelmoli"> 
+  <p>Love the movie reference.  I agree with the approach btw, with one extra caveat - stay focussed and try to keep your goal in mind.  Going fast to some people means piling on more and more features in shorter and shorter cycles until you overwhelm your customers and your ability to provide support to them.  Chrome seems to have succeeded because they&#39;ve included a heavy dose of refactoring into their cycles.</p>
+
+<p>FWIW I&#39;m concerned that StackOverflow has piled on too many features / options - I no longer know which of the 24 sites I should visit for my question, I don&#39;t know or want to think about which OpenID provider I want to use - I don&#39;t know if my ID on one stackoverflow site is the same on all of them, does my reputation apply across all sites, etc.</p>
+
+<p>I keep trying - because I like the concept, but it seems to be getting more complicated, not easier to use...</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/ddelmoli" href="http://profile.typepad.com/ddelmoli">Ddelmoli</a> on September 12, 2010  8:42 AM</span> 
+  </div>
+
+  <div class="comments-body francesco_gallarotti"> 
+  <p>&quot;ancient, creaky, horribly broken bulletin board model of phpBB and vBulletin&quot; -- I am sure you must have written tons of articles before about this... Can anyone point me in the direction of such explanations?</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/gallarotti" href="http://profile.typepad.com/gallarotti">Francesco Gallarotti</a> on September 12, 2010 11:25 AM</span> 
+  </div>
+
+  <div class="comments-body sam"> 
+  <p>When most people step on the accelerator to go faster than everyone else, they get a speeding ticket, or end up distributed across the freeway in bite-size pieces.</p>
+
+<p>Going faster can be a definite win, no argument there, but make sure you&#39;re driving a frikkin&#39; Ferrari F1 on a closed circuit, with damn good brakes, back-up engineers and no 3-year olds playing Cops and Robbers in the pits!</p>
+
+<p>I can&#39;t even begin to describe the number of software projects I&#39;ve been on that have hit a 3-metre thick reinforced concrete wall at 250kmh.<br />
+</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/samueldavid" href="http://profile.typepad.com/samueldavid">Sam</a> on September 12, 2010  5:09 PM</span> 
+  </div>
+
+  <div class="comments-body account_deleted"> 
+  <p>The <em>turning</em> is the important part. Running faster or slower depends on what kind of race you&#39;re in (marathon, 100m). Of course, the terminology is different: when you are going slowly, it&#39;s not really a turn, it&#39;s more like a <em>jump</em>. The important thing is to leave the good ideas of the past behind, and not reminisce.</p>
+
+<p>More on that: <a href="http://www.obsidiana.com.br/blog/?p=533" rel="nofollow">Jumper</a>  <br />
+</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/6p01310f2c3a64970c" href="http://profile.typepad.com/6p01310f2c3a64970c">Account Deleted</a> on September 12, 2010  6:25 PM</span> 
+  </div>
+
+  <div class="comments-body tdibble"> 
+  <blockquote>
+Speed of iteration -- the Google Chrome project has it.
+
+<p>1.0	December 11, 2008<br />
+2.0	May 24, 2009<br />
+3.0	October 12, 2009<br />
+4.0	January 25, 2010<br />
+5.0	May 25, 2010<br />
+6.0	September 2, 2010</p>
+
+</blockquote>
+
+<p>I&#39;d call that &quot;speed of version number inflation&quot; more than speed of iteration.  The current build is hardly akin to a 2.0 release.  Still impressive, but calling it &quot;6.0&quot; implies 6 major design variations, and IMHO does the project a major disservice.  They have stayed the same course the whole time, and have a good product to show for it.</p>
+
+<p>In any case, yeah, fast iterations are important when your customer base is geeks of the world.  They understand and overlook imperfections.  I don&#39;t think you&#39;re as right about Android/iPhone though.  Google is making significant progress there, but they are also accruing some significant technical debt and their triple user bases (carriers, manufacturers, then customers) keep them from servicing that debt at any manageable rate.  They will need to &quot;turn&quot; soon, and momentum has a funny way of upending vehicles which turn too quickly.<br />
+</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/tdibble" href="http://profile.typepad.com/tdibble">Tdibble</a> on September 12, 2010  8:25 PM</span> 
+  </div>
+
+  <div class="comments-body harriv"> 
+  <p>How long it took for Google to get version 1.0 out?<br />
+</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/harriv" href="http://profile.typepad.com/harriv">Harriv</a> on September 12, 2010 10:15 PM</span> 
+  </div>
+
+  <div class="comments-body account_deleted"> 
+  <p>TBH I&#39;ll rather get a stackoverflow CMS, even a paid one (like vbulletin) than dealing with clones.</p>
+
+<p>And I wouldnt use google&#39;s products as an example, since anyone could do amazing stuff if surrounded by some of the best engineers in the world and a budget numbered in the billions.</p>
+
+<p>Mozilla with its lack of income and stand-alone platform is way more impressive: Firefox4 runs way faster than chrome does in my PC<br />
+</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/6p0120a898d38d970b" href="http://profile.typepad.com/6p0120a898d38d970b">Account Deleted</a> on September 12, 2010 11:14 PM</span> 
+  </div>
+
+  <div class="comments-body daniel_hughes"> 
+  <p>You have come a long way from your initial view on android which was, (from memory) &quot;it has about as much change as linux on the desktop.&quot;</p>
+
+<p>A blog entry about why you were wrong, and what google did with android which has made it so successful would be an interesting read.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/danielhughes" href="http://profile.typepad.com/danielhughes">Daniel Hughes</a> on September 12, 2010 11:21 PM</span> 
+  </div>
+
+  <div class="comments-body arek_skuza"> 
+  <p>Thank you for this post it is very great and I like it because it has special value in my culture. I was trying to mention some things which are import to startup building process: <a href="http://www.arekskuza.com/index.php/2010/07/think-global-start-up-in-poland/." rel="nofollow">http://www.arekskuza.com/index.php/2010/07/think-global-start-up-in-poland/.</a></p>
+
+<p>I think speed influence young companies the most. Also, speed comes from motivation, culture and vision. This is kind of hard to build in 9-5pm work culture. You mentioned very important point.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/skuza" href="http://profile.typepad.com/skuza">Arek Skuza</a> on September 13, 2010  1:42 AM</span> 
+  </div>
+
+  <div class="comments-body powerlord"> 
+  <p>&quot;If we do nothing else except help lead the world away from the ancient, creaky, horribly broken bulletin board model of phpBB and vBulletin -- attempting to get information out of those things is like panning for gold in a neverending river of sewage -- then that is more than I could have ever hoped for. &quot;</p>
+
+<p>Just because a product doesn&#39;t meet your needs doesn&#39;t mean the product doesn&#39;t meet the needs of someone else.  phpBB and vBulletin are good for holding conversations, but not at Q&amp;A.</p>
+
+<p>Similarly, StackExchange is good for having Q&amp;A, but not good for conversations.</p>
+
+<p>You seem to be aware that SE isn&#39;t good for conversation, as you in turn added chat to Meta.SO... chat rooms which looks suspiciously like a non-threaded bulletin board system (i.e. phpBB) topic masquerading as a real-time chat.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/powerlord" href="http://profile.typepad.com/powerlord">Powerlord</a> on September 13, 2010  8:21 AM</span> 
+  </div>
+
+  <div class="comments-body josh_kehn"> 
+  <p>The only reason Chrome was developed so fast is because it&#39;s a browser with very little else. Bookmarking sucks, history searching sucks, and it crashes constantly.</p>
+
+<p>Releasing a buggy simplistic product quickly should be not a sign of success but rather a lack of foresight. </p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/joshkehn" href="http://profile.typepad.com/joshkehn">Josh Kehn</a> on September 13, 2010  8:57 AM</span> 
+  </div>
+
+  <div class="comments-body cleansingsite"> 
+  <p>I remember that movie, things were a lot simpler back then.</p>
+
+<p><a href="http://www.cleansingsite.info/627/do-i-need-a-parasite-cleanse-how-do-remove-parasites" rel="nofollow">http://www.cleansingsite.info/627/do-i-need-a-parasite-cleanse-how-do-remove-parasites</a></p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/cleansingsite" href="http://profile.typepad.com/cleansingsite">CleansingSite</a> on September 13, 2010 12:25 PM</span> 
+  </div>
+
+  <div class="comments-body abl3030"> 
+  <p>I very much appreciated this post...I couldn&#39;t help but laugh aloud and pass the link onto my manager and co-workers. We&#39;re definitely going to check the movie out asap; we hadn&#39;t heard of it, but we&#39;re more than intrigued. </p>
+
+<p>Concerning the post, speed of iteration is greatly important to a successful implementation of a new innovation, especially software, as you demonstrate with examples.  I was not familiar with the term prior to this blog post, but the background story is certainly remarkable (and I thoroughly enjoyed your February 7, 2007 post on Boyd&#39;s law of iteration).  I linked to your blog from avc.com, a blog I&#39;ve started following of late as I begin my career with a web startup.  </p>
+
+<p>I had a few thoughts after reading this post: </p>
+
+<p>When you&#39;re developing, what are the ways in which you encourage a culture within the development team that values speed of iteration above all else?  Can the fear of mistakes be overriden? And are their hidden advantages to be implemented, like the effect of hydraulics in the F-86&#39;s superiority over the MiG-15? Our team is small (but growing) and so I&#39;m curious if you had any advice to help us maximize our iteration speed.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/abl3030" href="http://profile.typepad.com/abl3030">Abl3030</a> on September 13, 2010  1:34 PM</span> 
+  </div>
+
+  <div class="comments-body arkh"> 
+  <p>&quot;the best browser on the planet&quot; until they unable the development of a NoScript plugin, they&#39;re not.</p>
+
+<p>The problem being that it enables the user to do what they don&#39;t want : stop selected javascript easily by the user (so ads and trackers which are Google&#39;s money-makers).</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/arkh" href="http://profile.typepad.com/arkh">Arkh</a> on September 13, 2010  3:32 PM</span> 
+  </div>
+
+  <div class="comments-body lora"> 
+  <p>very nice, i like your blog<br />
+<a href="http://www.etoiledevenus.com" rel="nofollow">astrologie</a></p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/pusicatdelire" href="http://profile.typepad.com/pusicatdelire">lora</a> on September 14, 2010  5:29 AM</span> 
+  </div>
+
+  <div class="comments-body tannyo"> 
+  <p>I believe iterative development makes for a better product. It&#39;s much easier to debug a small number of changes than a large block. But, you must be willing every so often to throw away your code base as cruft will creap in making it much harder to modify. Just look at IE with its Trident rendering engine for an example. I had a boss that believed in agile development. He believed the user got a better experience. At the same time he also believed that it took three major code revisions before you came up with the correct product. That&#39;s not major changes to the UI, he and I believe that those should always be iterative, but a major rewrite of the underlying code.</p>
+
+<p>Some large corporations don&#39;t believe in agile development and use waterfall methodologies because they think waterfall is easier to audit. The problem is that the user often doesn&#39;t get what they need to do their job. These same large corporations often believe that the cost of doing an upgrade is too high so they should do less upgrades. This means that they are often willing to &quot;live&quot; with non-critical bugs which reduces user productivity.</p>
+
+<p>So keep up with a fast iteration cycle, just remember to do a major revamp of your code every so often.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/tannyo1" href="http://profile.typepad.com/tannyo1">Tannyo</a> on September 14, 2010 11:05 AM</span> 
+  </div>
+
+  <div class="comments-body manaf_ar"> 
+  <p>Thanks for the great post ,,,</p>
+
+<p>I read your article a couple of days ago and i was just reading the Fire And Motion article on joelonsoftware.com (what can I say, I&#39;m just a starter) and i noticed the your strategy seem to be similar to Joel&#39;s Fire And Motion strategy in the part where you have to move forward, specially in these lines :</p>
+
+<p>&quot;Fire and Motion, for small companies like mine, means two things. You have to have time on your side, and you have to move forward every day&quot;</p>
+
+<p>So I though I would let you know :)</p>
+
+<p>Note: (up to this point from the comment i didn&#39;t know that Joel Spolsky is the CEO of SO or the fact that you two know each other, I was reading about the guy and when I saw his picture I was like &quot;I&#39;ve seen this guy&#39;s face before, oh wait isn&#39;t this the guy from the SO team&quot; so i went to the SO team page only to find out that he&#39;s the CEO of SO)</p>
+
+<p>--------<br />
+I decided to keep the comment unchanged so that everyone reading this can enjoy some laughter moments.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/manafar" href="http://profile.typepad.com/manafar">Manaf_AR</a> on September 14, 2010 11:37 AM</span> 
+  </div>
+
+  <div class="comments-body robert_goldman"> 
+  <p>I&#39;d argue &quot;improving fast&quot; does not inevitably lead to &quot;eventually dominating.&quot;</p>
+
+<p>Your two Google examples make this point well.  It&#39;s clear that Google Chrome translates speed of development to domination, but that&#39;s because what&#39;s a good browser is pretty well established, there&#39;s a good foundation, and the direction seems pretty clear (support the new web applications --- as opposed to the old web pages --- better).</p>
+
+<p>Google Android seems like a much more dodgy claim.  The problem is that Google Android has no strong central personality like the iPhone or like Google Chrome.  So it doesn&#39;t have a strong sense of identity, and I think there&#39;s a real good chance that the direction is just wrong.  Google Android could win, or it could turn out to be the linux of the mobile space.  Yes, linux dominates for servers, but as an individual PC OS, it&#39;s a perpetual also ran.  Even if Ubuntu goes like a bat out of hell, I doubt it will ever give MacOS much to sweat about.  There&#39;s no central focus to ensure that all the effort poured into Linux (or Google Android) will end up fixing the problems with the user experience.   There&#39;s been a ton of time poured into linux, and some totally excellent stuff has been produced.  But plugging a new peripheral in is still likely to be a horrid experience, your laptop is still likely not to hibernate properly, you may have to jump through hoops backward to get the wifi to work, etc.</p>
+
+<p>Chris De Mar didn&#39;t just say &quot;go really fast,&quot; he also said &quot;go <i>that way</i>.&quot;  If you can&#39;t tell this way from that way, going really fast isn&#39;t going to help.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/robertgoldman" href="http://profile.typepad.com/robertgoldman">Robert Goldman</a> on September 14, 2010  1:50 PM</span> 
+  </div>
+
+  <div class="comments-body marijane"> 
+  <blockquote>Google is pushing out Froyos and Gingerbreads and Honeycombs with incredible, breakneck speed. Yes, Apple has indisputably better taste -- and an impeccably controlled experience. But at their current rate of progress, they&#39;ll be playing second or third fiddle to Google in the mobile space inside a few years. It&#39;s inevitable.</blockquote>
+
+<p>I agree with Robert Goldman that this seems like a dodgy claim.  Not just for the reasons he cites, but because it completely omits the role of the carriers.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/marijane1" href="http://profile.typepad.com/marijane1">Marijane</a> on September 14, 2010  2:20 PM</span> 
+  </div>
+
+  <div class="comments-body juergen_szolay"> 
+  <p>Does it sound only to me, like it is doing speed just for the sake of doing speed? Shouldn&#39;t iteration be something focused mainly on improvement? <br />
+If speed is the motivator it may be that you do iterations for things which would not be worth to make a new version. Ending up in &quot;senseless&quot; versioning. Just to show that you are fast.</p>
+
+<p>It should stay like you iterate for improvements and of course you will not be afraid to go fast if you have a lot to improve and like to do it in smaller steps (not to let someone wait too long for an important feature).</p>
+
+<p>And I would not compare software iteration with car racing. Because at car racing exceeding the limit of control might end lethally.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/szolay" href="http://profile.typepad.com/szolay">Juergen Szolay</a> on September 15, 2010  1:52 AM</span> 
+  </div>
+
+  <div class="comments-body account_deleted"> 
+  <p>Iterations can also be done for refactoring. Unless of course, nobody wants to clean the code up.</p>
+
+<p>I&#39;ll have to wait and see if the Android claim comes through through. The IPhone is so successful because Apple made it easy to develop and distribute applications, if one has a Mac. In a sense, the third party application developers helped make the IPhone more useful and more adaptive to the needs of the IPhone users.</p>
+
+<p>Google has to match that at the very least. At the very least, developing for Android doesn&#39;t require a specific computer.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/6p0134876293f0970c" href="http://profile.typepad.com/6p0134876293f0970c">Account Deleted</a> on September 15, 2010 12:48 PM</span> 
+  </div>
+
+  <div class="comments-body joren_vermijs"> 
+  <p>Chrome was my favorite browser from the moment it came out. Sure, it used an outdated rendering engine (Webkit 3 I think), and sure, it had no support for extensions and whatever. It did have great performance though.</p>
+
+<p>But most importantly, it had by far the best user interface of any browser. Dragging tabs to other windows is absolutely brilliant, and not indicating the operation with obscure arrows, but directly, makes it complete.</p>
+
+<p>No other browser I&#39;ve seen can claim this. And now, Chrome does support all the ultra popular features I never use anyway.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/vermijs" href="http://profile.typepad.com/vermijs">Joren Vermijs</a> on September 15, 2010  5:05 PM</span> 
+  </div>
+
+  <div class="comments-body account_deleted"> 
+  <p>Chrome is my favorite browser and thanks to Google for the new version. I think they have a good team of great minds and they know how to play on the pitch of internet world.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/6p0133f34e5af9970b" href="http://profile.typepad.com/6p0133f34e5af9970b">Account Deleted</a> on September 17, 2010  2:12 AM</span> 
+  </div>
+
+  <div class="comments-body skip_knox"> 
+  <p>Or, to quote Jim Seymour from way back in the 1980s:  &quot;Anything worth doing is worth doing badly.&quot;</p>
+
+<p>He made essentially the same points you did. You&#39;re in good company!</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/skipknox" href="http://profile.typepad.com/skipknox">Skip Knox</a> on September 17, 2010  9:01 AM</span> 
+  </div>
+
+  <div class="comments-body robert_goldman"> 
+  <p>@Lie-siu.blogspot.com</p>
+
+<p>Even if the Google folks get their Eclipse-based development environment up and excellent, I think there are still a bunch of reasons why the iPhone might win:</p>
+
+<p>1.  The environment to which you develop is not well controlled.  Unlike with the iPlatform, you don&#39;t have a clue what hardware you&#39;re going to find yourself deployed on.  As far as appearance is concerned, this is as bad as writing software to run in a browser, and I think we&#39;ve all had browser experiences where the author&#39;s expectation of our window size is just horribly off what we actually had.  Plus you have to worry about all the possible hardware variations (with camera, without camera, with gps, without gps, with keyboard....).</p>
+
+<p>2.  There is no unified user experience.  Even within the suite of software Google supplies, I am never sure whether that button I need to press is going to be on the menu or down at the bottom of the menu.  I&#39;m never sure how gracefully the keyboard will work as an alternative form of input, etc.</p>
+
+<p>3.  The Android Market.  If you&#39;ve used it and iTunes, then you know how horrible this is.  Yes, it&#39;s all open and wonderful that way, but it&#39;s like shopping in a bazaar in a country that has inadequate consumer protection.  Only without the charming interpersonal interaction.</p>
+
+<p>4.  The OS upgrade process is hell (if you have upgraded both an Android device and one of Apple&#39;s, you know what I mean).  This is largely because</p>
+
+<p>5.  There is no iTunes.  Yeah it&#39;s a walled marketplace.  But it&#39;s also a reliable desktop synchronization tool.  Android bets that those are unnecessary.  I don&#39;t think so....</p>
+
+<p>Some of these can be dissolved by iteration, but others... nope.  It&#39;s like hoping that GNOME will eventually turn into the Mac Desktop.  That will <i>never happen</i>.  For my compute servers, I can live with GNOME or KDE.  For my day to day work, I&#39;ll take Mac OSX in a heartbeat, and I don&#39;t think any number of KDE or GNOME releases will change things, no matter how fast they come.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/robertgoldman" href="http://profile.typepad.com/robertgoldman">Robert Goldman</a> on September 17, 2010  2:32 PM</span> 
+  </div>
+
+  <div class="comments-body bobbykjack"> 
+  <p>I&#39;m not surprised that Google, as a company, can innovate at the speed of lightning compared with the incredibly slow pace of the clunky old Microsoft. The former has grown up developing for the web, where updates can be released several times a day. The latter grew up writing shrink-wrapped software, released every three years or so. That puts Google&#39;s speed of iteration about one or two THOUSAND times greater than Microsoft&#39;s. Granted, those iterations include far, far smaller changes, but that&#39;s the whole point: small improvements done quickly are much, much better than big improvements done slowly since turns can be made so much more often.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/bobbykjack" href="http://profile.typepad.com/bobbykjack">Bobbykjack</a> on September 22, 2010  5:21 AM</span> 
+  </div>
+
+  <div class="comments-body edward_chick"> 
+  <p>To be fair, it is more like shipping faster then they are actually very fast at developing. </p>
+
+<p>Chrome uses Webkit, Andriod uses Linux, both took YEARS before they get mature to a state that is used by Google. of coz google did a fair bit in JS engine V8. But it is nothing compare to a gigantic work of Webkit. </p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/edwardchick" href="http://profile.typepad.com/edwardchick">Edward Chick</a> on September 23, 2010  7:04 AM</span> 
+  </div>
+
+  <div class="comments-body kevin_powick"> 
+  <p> JA wrote: <i>&quot;We&#39;re not here to subvert or own anyone or anything. We just love community&quot;</i></p>
+
+<p>Yeah, right.  And just how much of that <b>Love (money)</b> are you sharing with the community?  Specifically, monetizing the QA sites that come out of Area 51.</p>
+
+<p>It&#39;s a great model, really.  Get people to propose ideas.  Have them do all the legwork to build interest.  If it looks like there might be interest, beta the site.  If it hits critical mass, then bingo!  We have a winner.  If not, oh well, we didn&#39;t do any work anyway.</p>
+
+<p>It looks like it&#39;s going to be quite successful, so props to your team.  I just don&#39;t understand why people don&#39;t see Area 51 for what it is.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/powick" href="http://profile.typepad.com/powick">Kevin Powick</a> on September 25, 2010  7:18 PM</span> 
+  </div>
+
+  <div class="comments-body remigiusz_samosiuk"> 
+  <p>&quot;open, democratic process for creating Q&amp;A sites at Area 51&quot;</p>
+
+<p>Yeah, right. That&#39;s why one person can close the proposal.<br />
+<a href="http://area51.stackexchange.com/proposals/2868/apocalyptic-defense" rel="nofollow">http://area51.stackexchange.com/proposals/2868/apocalyptic-defense</a><br />
+</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/remigiusz" href="http://profile.typepad.com/remigiusz">Remigiusz Samosiuk</a> on September 29, 2010 12:15 AM</span> 
+  </div>
+
+  <div class="comments-body account_deleted"> 
+  <p>good site</p>
+
+<p><a href="http://www.debtserviceuk.com/category/debt-planning " rel="nofollow dofollow">Debt Credit</a><br />
+   </p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/6p0147e194d510970b" href="http://profile.typepad.com/6p0147e194d510970b">Account Deleted</a> on January 14, 2011 12:20 PM</span> 
+  </div>
+
+  <div class="comments-body richard_morrisroe"> 
+  <p>I just discovered your blog today, and slowly realised that you were the person behind the stack exchange family of sites. Thank you so much for these resources, they have helped me hugely with R, general programming, LateX and Ubuntu. Thanks.</p>
+  <span class="comments-post" style="margin-left:20px"><a rel="nofollow" target="_blank" title="http://profile.typepad.com/morrisroe" href="http://profile.typepad.com/morrisroe">Richard Morrisroe</a> on February  2, 2011 11:44 AM</span> 
+  </div>
+	
+
+
+
+<div id="endcomments"></div> 
+
+
+
+	<p class="comments-closed">
+		The comments to this entry are closed.
+	</p>
+
+
+
+</div> <!-- blog -->
+
+<div id="footer">Content &copy; 2013 <a rel="author" href="https://profiles.google.com/codinghorror1">Jeff Atwood</a>.  Logo image used with permission of the author. &copy; 1993 Steven C. McConnell. All Rights Reserved.</div>  
+
+</div> <!-- container -->
+
+<div id="links"> 
+
+
+<div class="side">
+<div class="sidetitle">Newer &raquo;</div>
+<a href="http://www.codinghorror.com/blog/2010/09/revisiting-solid-state-hard-drives.html">Revisiting Solid State Hard Drives</a>
+</div>
+
+
+
+<div class="side">
+<div class="sidetitle" style="padding-top:5px">&laquo; Older</div>
+<a href="http://www.codinghorror.com/blog/2010/08/vampires-programmers-versus-werewolves-sysadmins.html">Vampires (Programmers) versus Werewolves (Sysadmins)</a>
+</div> 
+
+ 
+<p></p> 
+
+<div class="side"> 
+<!-- 
+
+<a href="http://www.codinghorror.com/blog/">Home</a> &nbsp; &nbsp; <a href="http://www.codinghorror.com/blog/archives.html">Browse All Posts</a> 
+<p></p> 
+
+-->
+
+<div style="margin-bottom:15px">
+<a href="http://www.slickedit.com/go.php?c=codinghorror&d=se_product" rel="nofollow"><img alt="Celebrate SlickEdit's 25th Anniversary with 25% off SlickEdit 2013 Purchases"  src="http://www.codinghorror.com/.a/6a0120a85dcdae970b019affb67f79970d-800wi" width="208" height="177" /></a><br/>
+<div style="text-align:center"><a href="http://www.slickedit.com/go.php?c=codinghorror&d=se_product" rel="nofollow">Trial download</a> SlickEdit today!</div>
+</div>
+ 
+<!--
+<div id="influads_block" class="influads_block" style="width:208px !important; align:center;"> </div> 
+
+<script async>
+(function(){var acc='acc_843d584_pub';var st='css';var or='130';var e=document.getElementsByTagName('script')[0];var d=document.createElement('script');d.src=('https:' == document.location.protocol ?'https://' : 'http://') +'engine.influads.com/show/'+or+'/'+st+'/'+acc;d.type='text/javascript';d.async=true;d.defer=true; e.parentNode.insertBefore(d,e);})();
+</script>
+-->
+
+<div id="hireme" class="hireme codinghorror" style="min-height:220px"></div>
+<script async>
+    setTimeout(function () {
+        var a = document.createElement("script");
+        var b = document.getElementsByTagName('script')[0];
+        a.src = "http://careers.stackoverflow.com/ad/js";
+        a.async = true; 
+        a.type = "text/javascript"; 
+        b.parentNode.insertBefore(a, b);
+    }, 5);
+</script>
+
+
+
+
+<p></p> 
+<div class="sidetitle">Resources</div> 
+<a href="/blog/2004/02/about-me.html">About Me</a><br/>
+<a href="http://twitter.com/codinghorror">@codinghorror</a><br/>
+<a href="http://www.discourse.org">discourse.org</a><br/>
+<a href="http://stackexchange.com">stackexchange.com</a><br/>
+<a href="/blog/2004/02/recommended-reading-for-developers.html">Recommended Reading</a>
+<p></p>
+<div class="syndicate"> 
+<a href="http://feeds.feedburner.com/codinghorror" rel="alternate" type="application/rss+xml"><img src="http://www.feedburner.com/fb/images/pub/feed-icon16x16.png" width=16 height=16 alt="" style="vertical-align:middle;border:0"/>&nbsp;Subscribe in a reader</a> 
+<br/> 
+<a href="http://feedburner.google.com/fb/a/mailverify?uri=codinghorror&amp;loc=en_US"><img src="/blog/images/mail.png" width=16 height=16 alt="" style="vertical-align:middle;border:0"/>&nbsp;Subscribe via email</a> 
+<p></p>
+<div class="side"> 
+Coding Horror has been continuously published since 2004. Browse the <b><a href="http://www.codinghorror.com/blog/archives.html">complete post archives</a></b>.
+</div> 
+<p></p> 
+<table style="border-spacing:0px">
+<tr>
+<td style="padding-right:10px">
+<img src="http://feeds.feedburner.com/~fc/codinghorror?bg=EEEEEE&amp;fg=111111&amp;anim=0" height="26" width="88" style="border:0" alt="Count of RSS readers" /> 
+</td>
+<td style="padding-bottom:8px">
+<a href="http://my.statcounter.com/project/standard/stats.php?project_id=2600027&amp;guest=1">Traffic Stats</a> 
+</td>
+</tr>
+</table>
+</div> 
+
+
+</div>
+
+</div> <!-- links -->
+ 
+<script> 
+x=window.document.getElementsByTagName('div'); for(var i = 0; i < x.length; i++) { if (x[i].className == "comments-body") { if (x[i].innerHTML.search(/jeff atwood<\/a>/i) != -1) { x[i].style.backgroundColor = "#FFECC7"; } } }
+</script>
+
+<script>
+var sc_project=2600027; 
+var sc_invisible=0; 
+var sc_partition=25; 
+var sc_security="dcff5548"; 
+</script> 
+ 
+<script async src="http://www.statcounter.com/counter/counter.js"></script> 
+<noscript><a href="http://www.statcounter.com/"><img  src="http://c26.statcounter.com/counter.php?sc_project=2600027&amp;java=0&amp;security=dcff5548&amp;invisible=0" alt="web metrics"></a> </noscript> 
+
+<!-- Begin comScore Tag -->
+<script>
+document.write(unescape("%3Cscript src='" + (document.location.protocol == "https:" ? "https://sb" : "http://b") + ".scorecardresearch.com/beacon.js'%3E%3C/script%3E"));
+</script>
+<script>
+COMSCORE.beacon({
+  c1: 2,
+  c2: "6035669",
+  c3: "",
+  c4: "http://www.codinghorror.com/blog/2010/09/go-that-way-really-fast.html",
+  c5: "",
+  c6: "",
+  c15: ""
+});
+</script>
+<noscript>
+  <img src="http://b.scorecardresearch.com/b?c1=2&c2=6035669&c3=&c4=http%3A%2F%2Fwww.codinghorror.com%2Fblog%2F2010%2F09%2Fgo-that-way-really-fast.html&c5=&c6=&c15=&cv=1.3&cj=1" style="display:none" width="0" height="0" alt="" />
+</noscript>
+<!-- End comScore Tag -->
+<!-- ph=1 -->

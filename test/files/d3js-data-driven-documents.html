@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="canonical" href="http://d3js.org/">
+<title>D3.js - Data-Driven Documents</title>
+<style>
+
+@import url(style.css);
+
+#examples {
+  width: 960px;
+  height: 378px;
+  margin-bottom: 2em;
+}
+
+.example img {
+  float: left;
+  margin-bottom: 13px;
+  width: 226px;
+  height: 180px;
+  border: solid 2px #ccc;
+}
+
+.example:hover img {
+  border-color: steelblue;
+}
+
+.example:not(:nth-child(4n)) img {
+  margin-right: 13px;
+}
+
+</style>
+
+<div id="body">
+
+<header>‍
+  <b><a href="./">Overview</a></b>
+  <a style="margin-left:1em;" href="https://github.com/mbostock/d3/wiki/Gallery">Examples</a>
+  <a style="margin-left:1em;" href="https://github.com/mbostock/d3/wiki">Documentation</a>
+  <a style="margin-left:1em;" href="https://github.com/mbostock/d3">Source</a>
+</header>
+
+<h1>Data-Driven Documents</h1>
+
+<div id="examples"></div>
+
+<script src="d3.v3.min.js?3.0.0rc1"></script>
+<script>
+
+var examples = [
+{name: "box", url: "http://mbostock.github.com/d3/ex/box.html"},
+{name: "bubble", url: "http://mbostock.github.com/d3/ex/bubble.html"},
+{name: "bullet", url: "http://mbostock.github.com/d3/ex/bullet.html"},
+{name: "calendar", url: "http://mbostock.github.com/d3/ex/calendar.html"},
+{name: "cartogram", url: "http://mbostock.github.com/d3/ex/cartogram.html"},
+{name: "chord", url: "http://mbostock.github.com/d3/ex/chord.html"},
+{name: "cluster", url: "http://mbostock.github.com/d3/ex/cluster.html"},
+{name: "force", url: "http://mbostock.github.com/d3/ex/force.html"},
+{name: "pack", url: "http://mbostock.github.com/d3/ex/pack.html"},
+{name: "population", url: "http://mbostock.github.com/d3/ex/population.html"},
+{name: "stack", url: "http://mbostock.github.com/d3/ex/stack.html"},
+{name: "stream", url: "http://mbostock.github.com/d3/ex/stream.html"},
+{name: "sunburst", url: "http://mbostock.github.com/d3/ex/sunburst.html"},
+{name: "tree", url: "http://mbostock.github.com/d3/ex/tree.html"},
+{name: "treemap", url: "http://mbostock.github.com/d3/ex/treemap.html"},
+{name: "voronoi", url: "http://mbostock.github.com/d3/ex/voronoi.html"},
+{name: "bundle", url: "http://mbostock.github.com/d3/talk/20111116/bundle.html"},
+{name: "airports-all", url: "http://mbostock.github.com/d3/talk/20111116/airports-all.html"},
+{name: "airports", url: "http://mbostock.github.com/d3/talk/20111116/airports.html"},
+{name: "iris-parallel", url: "http://mbostock.github.com/d3/talk/20111116/iris-parallel.html"},
+{name: "iris-splom", url: "http://mbostock.github.com/d3/talk/20111116/iris-splom.html"},
+{name: "pack-hierarchy", url: "http://mbostock.github.com/d3/talk/20111116/pack-hierarchy.html"},
+{name: "bar-hierarchy", url: "http://mbostock.github.com/d3/talk/20111116/bar-hierarchy.html"},
+{name: "gears", url: "http://mbostock.github.com/d3/talk/20111116/gears.html"},
+{name: "force-collision", url: "http://mbostock.github.com/d3/talk/20111018/collision.html"},
+{name: "force-collapsible", url: "http://mbostock.github.com/d3/talk/20111116/force-collapsible.html"},
+{name: "force-states", url: "http://mbostock.github.com/d3/talk/20111018/force-states.html"},
+{name: "azimuthal", url: "http://mbostock.github.com/d3/talk/20111018/azimuthal.html"},
+{name: "choropleth", url: "http://mbostock.github.com/d3/talk/20111018/choropleth.html"},
+{name: "tree-zoom", url: "http://mbostock.github.com/d3/talk/20111018/tree.html"},
+{name: "treemap-zoom", url: "http://mbostock.github.com/d3/talk/20111018/treemap.html"},
+{name: "partition-zoom", url: "http://mbostock.github.com/d3/talk/20111018/partition.html"},
+{name: "area-gradient", url: "http://mbostock.github.com/d3/talk/20111018/area-gradient.html"},
+{name: "flight-calendar", url: "http://mbostock.github.com/d3/talk/20111018/calendar.html"},
+{name: "cluster-radial", url: "http://mbostock.github.com/d3/talk/20111018/cluster.html"},
+{name: "sankey", url: "http://bost.ocks.org/mike/sankey/"},
+{name: "fisheye", url: "http://bost.ocks.org/mike/fisheye/"},
+{name: "hive", url: "http://bost.ocks.org/mike/hive/"},
+{name: "miserables", url: "http://bost.ocks.org/mike/miserables/"},
+{name: "nations", url: "http://bost.ocks.org/mike/nations/"},
+{name: "uber", url: "http://bost.ocks.org/mike/uberdata/"},
+{name: "bezier", url: "http://www.jasondavies.com/animated-bezier/"},
+{name: "coffee", url: "http://www.jasondavies.com/coffee-wheel/"},
+{name: "collatz", url: "http://www.jasondavies.com/collatz-graph/"},
+{name: "parsets", url: "http://www.jasondavies.com/parallel-sets/"},
+{name: "cloud", url: "http://www.jasondavies.com/wordcloud/"},
+{name: "facebook-ipo", url: "http://www.nytimes.com/interactive/2012/05/17/business/dealbook/how-the-facebook-offering-compares.html"},
+{name: "budget", url: "http://www.nytimes.com/interactive/2012/02/13/us/politics/2013-budget-proposal-graphic.html"},
+{name: "koalas", url: "http://www.koalastothemax.com/"},
+{name: "particles", url: "http://bl.ocks.org/1062544"},
+{name: "indented-tree", url: "http://bl.ocks.org/1093025"},
+{name: "ronded-rect", url: "http://bl.ocks.org/1123639"},
+{name: "sperm", url: "http://bl.ocks.org/1136236"},
+{name: "show-reel", url: "http://bl.ocks.org/1256572"},
+{name: "debt", url: "http://bl.ocks.org/1308257"},
+{name: "force-labels", url: "http://bl.ocks.org/1377729"},
+{name: "illusion", url: "http://bl.ocks.org/1386444"},
+{name: "voronoi-picker", url: "http://bl.ocks.org/1405439"},
+{name: "map-zoom", url: "http://bl.ocks.org/2206590"},
+{name: "rain", url: "http://bl.ocks.org/849853"},
+{name: "color", url: "http://color.method.ac/"},
+{name: "nutrient", url: "http://exposedata.com/parallel/"},
+{name: "hn", url: "http://hn.metamx.com/"},
+{name: "world", url: "http://projects.flowingdata.com/life-expectancy/"},
+{name: "slope", url: "http://skedasis.com/d3/slopegraph/"},
+{name: "ncaa", url: "http://thepowerrank.com/visual/NCAA_Tournament_Predictions"},
+{name: "cubism", url: "http://square.github.com/cubism/"},
+{name: "crossfilter", url: "http://square.github.com/crossfilter/"},
+{name: "windhistory", url: "http://windhistory.com/"},
+{name: "lcf", url: "http://www.christophermanning.org/projects/building-cubic-hamiltonian-graphs-from-lcf-notation/"},
+{name: "force-voronoi", url: "http://www.christophermanning.org/projects/voronoi-diagram-with-force-directed-nodes-and-delaunay-links/"},
+{name: "house-heatmap", url: "http://trends.truliablog.com/2011/09/house-hunter-by-day-not-so-much-after-midnight/"},
+{name: "house-map", url: "http://trends.truliablog.com/2012/02/where-are-house-hunters-searching/"},
+{name: "open-budget", url: "http://marcinignac.com/projects/open-budget/"}
+];
+
+function shuffle(array) {
+  var m = array.length, t, i;
+
+  // While there remain elements to shuffle…
+  while (m) {
+
+    // Pick a remaining element…
+    i = Math.floor(Math.random() * m--);
+
+    // And swap it with the current element.
+    t = array[m];
+    array[m] = array[i];
+    array[i] = t;
+  }
+
+  return array;
+}
+
+d3.select("#examples").selectAll(".example")
+    .data(shuffle(examples).slice(0, 8))
+  .enter().append("a")
+    .attr("class", "example")
+    .attr("href", function(d) { return d.url; })
+  .append("img")
+    .attr("src", function(d) { return "ex/" + d.name + ".png"; });
+
+</script>
+
+<p><aside>See <a href="https://github.com/mbostock/d3/wiki/Gallery">more examples</a>.</aside>
+
+<p><b>D3.js</b> is a JavaScript library for manipulating documents based on data. <b>D3</b> helps you bring data to life using HTML, SVG and CSS. D3’s emphasis on web standards gives you the full capabilities of modern browsers without tying yourself to a proprietary framework, combining powerful visualization components and a data-driven approach to DOM manipulation.
+
+<p>Download the latest version here:
+
+<ul>
+  <li><a href="d3.v3.zip">d3.v3.zip</a>
+</ul>
+
+<p>Or, to link directly to the latest release, copy this snippet:
+
+<pre><code class="html">&lt;script src="http://d3js.org/d3.v3.min.js" charset="utf-8">&lt;/script></code></pre>
+
+<p>The <a href="https://github.com/mbostock/d3">full source and tests</a> are also available <a href="https://github.com/mbostock/d3/zipball/master">for download</a> on GitHub.
+
+<h2><a name="introduction" href="#introduction">#</a>Introduction</h2>
+
+<p><aside>Read <a href="https://github.com/mbostock/d3/wiki/Tutorials">more tutorials</a>.</aside>
+
+<p><b>D3</b> allows you to bind arbitrary data to a Document Object Model (DOM), and then apply data-driven transformations to the document. For example, you can use D3 to generate an HTML table from an array of numbers. Or, use the same data to create an interactive SVG bar chart with smooth transitions and interaction.
+
+<p>D3 is not a monolithic framework that seeks to provide every conceivable feature. Instead, D3 solves the crux of the problem: efficient manipulation of documents based on data. This avoids proprietary representation and affords extraordinary flexibility, exposing the full capabilities of web standards such as CSS3, HTML5 and SVG. With minimal overhead, D3 is extremely fast, supporting large datasets and dynamic behaviors for interaction and animation. D3’s functional style allows code reuse through a diverse collection of <a href="https://github.com/mbostock/d3/wiki/API-Reference">components</a> and <a href="https://github.com/d3/d3-plugins">plugins</a>.
+
+<h2><a name="selections" href="#selections">#</a>Selections</h2>
+
+<p><aside>Read <a href="https://github.com/mbostock/d3/wiki/Selections">more about selections</a>.</aside>
+
+<p>Modifying documents using the <a href="http://www.w3.org/DOM/DOMTR">W3C DOM API</a> is tedious: the method names are verbose, and the imperative approach requires manual iteration and bookkeeping of temporary state. For example, to change the text color of paragraph elements:
+
+<pre><code>var paragraphs = document.getElementsByTagName("p");
+for (var i = 0; i &lt; paragraphs.length; i++) {
+  var paragraph = paragraphs.item(i);
+  paragraph.style.setProperty("color", "white", null);
+}</code></pre>
+
+<p>D3 employs a declarative approach, operating on arbitrary sets of nodes called <i>selections</i>. For example, you can rewrite the above loop as:
+
+<pre><code>d3.selectAll("p").style("color", "white");</code></pre>
+
+<p>Yet, you can still manipulate individual nodes as needed:
+
+<pre><code>d3.select("body").style("background-color", "black");</code></pre>
+
+<p>Selectors are defined by the <a href="http://www.w3.org/TR/selectors-api/">W3C Selectors API</a> and supported natively by modern browsers. Backwards-compatibility for older browsers can be provided by <a href="http://sizzlejs.com/">Sizzle</a>. The above examples select nodes by tag name (<code>"p"</code> and <code>"body"</code>, respectively). Elements may be selected using a variety of predicates, including containment, attribute values, class and ID.
+
+<p>D3 provides numerous methods for mutating nodes: setting attributes or styles; registering event listeners; adding, removing or sorting nodes; and changing HTML or text content. These suffice for the vast majority of needs. Direct access to the underlying DOM is also possible, as each D3 selection is simply an array of nodes.
+
+<h2><a name="properties" href="#properties">#</a>Dynamic Properties</h2>
+
+<p>Readers familiar with other DOM frameworks such as <a href="http://jquery.com/">jQuery</a> or <a href="http://www.prototypejs.org/">Prototype</a> should immediately recognize similarities with D3. Yet styles, attributes, and other properties can be specified as <i>functions of data</i> in D3, not just simple constants. Despite their apparent simplicity, these functions can be surprisingly powerful; the <code>d3.geo.path</code> function, for example, projects <a href="http://geojson.org/">geographic coordinates</a> into SVG <a href="http://www.w3.org/TR/SVG/paths.html#PathData">path data</a>. D3 provides many built-in reusable functions and function factories, such as <a href="https://github.com/mbostock/d3/wiki/SVG-Shapes">graphical primitives</a> for area, line and pie charts.
+
+<p>For example, to randomly color paragraphs:
+
+<pre><code>d3.selectAll("p").style("color", function() {
+  return "hsl(" + Math.random() * 360 + ",100%,50%)";
+});</code></pre>
+
+<p>To alternate shades of gray for even and odd nodes:
+
+<pre><code>d3.selectAll("p").style("color", function(d, i) {
+  return i % 2 ? "#fff" : "#eee";
+});</code></pre>
+
+<p>Computed properties often refer to bound data. Data is specified as an array of values, and each value is passed as the first argument (<code>d</code>) to selection functions. With the default join-by-index, the first element in the data array is passed to the first node in the selection, the second element to the second node, and so on. For example, if you bind an array of numbers to paragraph elements, you can use these numbers to compute dynamic font sizes:
+
+<pre><code>d3.selectAll("p")
+    .data([4, 8, 15, 16, 23, 42])
+    .style("font-size", function(d) { return d + "px"; });</code></pre>
+
+<p>Once the data has been bound to the document, you can omit the <code>data</code> operator; D3 will retrieve the previously-bound data. This allows you to recompute properties without rebinding.
+
+<h2><a name="enter-exit" href="#enter-exit">#</a>Enter and Exit</h2>
+
+<p><aside>Read <a href="http://bost.ocks.org/mike/join/">more about data joins</a>.</aside>
+
+<p>Using D3’s <i>enter</i> and <i>exit</i> selections, you can create new nodes for incoming data and remove outgoing nodes that are no longer needed.
+
+<p>When data is bound to a selection, each element in the data array is paired with the corresponding node in the selection. If there are fewer nodes than data, the extra data elements form the enter selection, which you can instantiate by appending to the <code>enter</code> selection. For example:
+
+<pre><code>d3.select("body").selectAll("p")
+    .data([4, 8, 15, 16, 23, 42])
+  .enter().append("p")
+    .text(function(d) { return "I’m number " + d + "!"; });</code></pre>
+
+<p>Updating nodes are the default selection—the result of the <code>data</code> operator. Thus, if you forget about the enter and exit selections, you will automatically select only the elements for which there exists corresponding data. A common pattern is to break the initial selection into three parts: the updating nodes to modify, the entering nodes to add, and the exiting nodes to remove.
+
+<pre><code>// Update…
+var p = d3.select("body").selectAll("p")
+    .data([4, 8, 15, 16, 23, 42])
+    .text(String);
+
+// Enter…
+p.enter().append("p")
+    .text(String);
+
+// Exit…
+p.exit().remove();</code></pre>
+
+<p>By handling these three cases separately, you specify precisely which operations run on which nodes. This improves performance and offers greater control over transitions. For example, with a bar chart you might initialize entering bars using the old scale, and then transition entering bars to the new scale along with the updating and exiting bars.
+
+<p>D3 lets you transform documents based on data; this includes both creating and destroying elements. D3 allows you to change an existing document in response to user interaction, animation over time, or even asynchronous notification from a third-party. A hybrid approach is even possible, where the document is initially rendered on the server, and updated on the client via D3.
+
+<h2><a name="transformation" href="#transformation">#</a>Transformation, not Representation</h2>
+
+<p>D3 is not a new graphical representation. Unlike <a href="http://processing.org/">Processing</a>, <a href="http://raphaeljs.com/">Raphaël</a>, or <a href="http://vis.stanford.edu/protovis/">Protovis</a>, the vocabulary of marks comes directly from web standards: HTML, SVG and CSS. For example, you can create SVG elements using D3 and style them with external stylesheets. You can use composite filter effects, dashed strokes and clipping. If browser vendors introduce new features tomorrow, you’ll be able to use them immediately—no toolkit update required. And, if you decide in the future to use a toolkit other than D3, you can take your knowledge of standards with you!
+
+<p>Best of all, D3 is easy to debug using the browser’s built-in element inspector: the nodes that you manipulate with D3 are exactly those that the browser understands natively.
+
+<h2><a name="transitions" href="#transitions">#</a>Transitions</h2>
+
+<p>D3’s focus on transformation extends naturally to animated transitions. Transitions gradually interpolate styles and attributes over time. Tweening can be controlled via easing functions such as “elastic”, “cubic-in-out” and “linear”. D3’s interpolators support both primitives, such as numbers and numbers embedded within strings (font sizes, path data, <i>etc.</i>), and compound values. You can even extend D3’s interpolator registry to support complex properties and data structures.
+
+<p>For example, to fade the background of the page to black:
+
+<pre><code>d3.select("body").transition()
+    .style("background-color", "black");</code></pre>
+
+<p>Or, to resize circles in a symbol map with a staggered delay:
+
+<pre><code>d3.selectAll("circle").transition()
+    .duration(750)
+    .delay(function(d, i) { return i * 10; })
+    .attr("r", function(d) { return Math.sqrt(d * scale); });</code></pre>
+
+<p>By modifying only the attributes that actually change, D3 reduces overhead and allows greater graphical complexity at high frame rates. D3 also allows sequencing of complex transitions via events. And, you can still use CSS3 transitions; D3 does not replace the browser’s toolbox, but exposes it in a way that is easier to use.
+
+<p>Want to learn more? Read <a href="https://github.com/mbostock/d3/wiki/Tutorials">these tutorials</a>.
+
+<footer>
+  <aside>Released under <a href="http://opensource.org/licenses/BSD-3-Clause">BSD license</a>.</aside>
+  Copyright 2012 <a href="http://bost.ocks.org/mike/" rel="author">Michael Bostock</a>
+</footer>
+
+</div>
+
+<a href="https://github.com/mbostock/d3"><img style="position:absolute;top:0;right:0;border:0;" width="149" height="149" src="forkme.png" alt="Fork me on GitHub"></a>
+
+<script src="highlight.v0.min.js"></script>
