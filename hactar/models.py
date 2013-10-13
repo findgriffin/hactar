@@ -102,8 +102,10 @@ class Meme(db.Model):
     
     @property
     def markup(self):
-        return markdown.markdown(self.text)
-
+        html = markdown.markdown(self.text)
+        # this will fail for
+        new_html = html.replace('<ul>', '<ul class="circle">')
+        return new_html
     def __str__(self):
         return 'meme: %s|%s|%s|%s' % (self.text, self.heading, 
                 self.added, self.modified)

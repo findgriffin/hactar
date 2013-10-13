@@ -1,0 +1,58 @@
+Web scraping
+ is one of those 
+&#8220;Bah, I can do that in a weekend!&#8221;
+problems. What could possibly be so difficult about going to a website and deciding what the actual content is?
+Social Media Outposts (Photo credit: the tartanpodcast)
+Then you try.
+It doesn&#8217;t work.
+After a bit of digging you realize this is actually a pretty tough problem &#8211; but surely there&#8217;s a library for this, right? I mean, with so many products needing this, surely someone&#8217;s already solved this problem?
+They have!
+A bunch of libraries exist, ranging from advanced algorithm implementations, like 
+boilerpipe
+, to a car crash of hand tuned heuristics, like 
+Readability
+.
+Most of them 
+extract
+ the meat of the article perfectly. Very few actually miss anything. But it 
+feels
+wrong. It just doesn&#8217;t look exactly like what you consider content as a human.
+Maybe there&#8217;s the 
+&#8220;&lt;tags&gt; by &lt;author&gt; at &lt;time&gt;&#8221;
+ line left on the top, maybe it&#8217;s on the bottom, perhaps there&#8217;s a bit of cruft strewn in here and there &#8230; Most scrapers deal with this to varying degrees of success, sometimes they&#8217;re better on blogposts, sometimes on news sites, sometimes something else completely.
+Sometimes the website is so weird a scraper will just give up and decide the first two paragraphs aren&#8217;t content.Granted, a lot of blog writers could do with just cutting away the first few paragraphs, but that&#8217;s beside the point.
+Your content indexer, article previewer or full RSS builder are going no where fast. And you&#8217;reway past that 
+weekend project
+phase too!
+Easy for humans
+This task is so easy for humans we notice every little detail. While extracting most of the content with a bit of cruft works perfectly well for indexing and data mining &#8211; showing that to a user will only end in tears.
+It&#8217;s a bit like drawing hands or faces &#8211; unless you get it within 5% of perfection it just looks 
+wrong
+. You&#8217;re almost better off drawing it at 80% within perfection and calling it a cartoon.
+The 
+uncanny valley
+ of article extraction!
+The closer you are to perfection, the less subconscious clues users will get to pick out the content themselves and the more jarring the difference between what they expect and what they get.
+Now what?
+Instead of relying just on what scraping algorithms say, you should help them out with as much knowledge of the website you can get.
+1.
+ If there is a full 
+RSS feed
+, why are you even scraping? The content in there is usually clean. (the story of translating an url to an RSS url will come another day)
+2.
+ Without a full RSS feed you can still learn a lot about the start of the article from looking at the excerpt published in an RSS. Clean up the html, take the published excerpt, then go on a search through 
+the DOM
+ to look for an approximate match &#8211; voila, the beginning of your article!
+3.
+ Sometimes you can achieve a lot by relying on good old 
+regular expressions
+ and hand-tuned heuristics. A lot of those erroneous first and last lines look very similar. Just write a regex to detect a few variations of those and clean them out.
+4.
+ Another reasonable approach is guessing which articles come from the same website (hint: not just the same domain). These have almost the same cruft around every article. You can run a clustering algorithm on these and figure out what are the bits your scrapers are usually leaving in or missing &#8211; then just fix for those.
+Zemanta
+ uses a combination of these to create article previews in their widget and I have to say, until I talked with the guys about this blogpost it didn&#8217;t even cross my mind those had to be scraped (even though I&#8217;ve tried solving the same problem myself). And that&#8217;s how it&#8217;s supposed to be!
+It 
+is
+possible to make a content extractor worthy of a human observer, just not easy.
+For those more technically inclined &#8211; all of this is explained in great detail over at 
+Toma Kova?i?&#8217;s blog
