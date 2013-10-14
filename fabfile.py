@@ -84,6 +84,7 @@ def test_config():
 def test_running():
     wget = cuisine.run('wget http://localhost:8080')
     assert 'index.html' in wget
+    cuisine.run('rm index.html')
     cuisine.mode_sudo()
     redis = cuisine.run('/etc/init.d/redis-server status')
     assert 'is running' in redis
