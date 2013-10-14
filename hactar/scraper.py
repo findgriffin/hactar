@@ -3,6 +3,10 @@ import re
 import json
 import datetime
 import os
+import HTMLParser
+
+html_parser = HTMLParser.HTMLParser()
+unescape = html_parser.unescape
 
 from requests import get, post, ConnectionError
 import BeautifulSoup as bs
@@ -47,7 +51,7 @@ def scrape_html(content):
     """Scrape the page content and return the title (for now)"""
     soup = bs.BeautifulSoup(content)
     texts = soup.findAll(text=True)
-    title = soup.title.string
+    title = unescape(soup.title.string.strip())
     page_text = filter(visible, texts)
     content = u' '.join(page_text)
     return content, title

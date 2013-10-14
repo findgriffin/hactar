@@ -26,6 +26,8 @@ class Handler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 class TestScraper(BaseTest):
 
     _multiprocess_can_split = False
+    def mock_uri(self, name):
+        return 'http://localhost:%s/test/files/%s.html' % (PORT, name)
 
     @classmethod
     def setUpClass(cls):
@@ -81,9 +83,15 @@ class TestScraper(BaseTest):
     def test_crawl_html(self):
         """Crawl a page"""
         self.login()
-        uri = 'http://localhost:%s/test/files/rfc2910.html' % PORT
         title = u'RFC 2910 - Internet Printing Protocol/1.1: Encoding and Transport'
-        crawled = scraper.get_data(uri)
+        crawled = scraper.get_data(self.mock_uri('rfc2910'))
+        self.assertEquals(crawled['title'], title)
+
+    def test_crawl_ampersand(self):
+        """Crawl a page"""
+        self.login()
+        title = u'Data & Web Dev at Datalicious - Go - Stack Overflow Careers 2.0'
+        crawled = scraper.get_data(self.mock_uri('data-web-dev-datalicious'))
         self.assertEquals(crawled['title'], title)
 
     @classmethod
