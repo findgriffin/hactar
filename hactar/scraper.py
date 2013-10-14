@@ -53,7 +53,7 @@ def scrape_html(content):
     texts = soup.findAll(text=True)
     title = unescape(soup.title.string.strip())
     page_text = filter(visible, texts)
-    content = u' '.join(page_text)
+    content = unescape(u' '.join(page_text))
     return content, title
 
 
