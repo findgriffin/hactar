@@ -135,7 +135,7 @@ def is_uri(uri):
         return None
     return uri
 
-class Event(db.Model):
+class Action(db.Model):
     """ A event, something that the user may do or has done."""
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     text = db.Column(db.Text())
