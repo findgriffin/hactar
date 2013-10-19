@@ -2,6 +2,8 @@
 
 from sqlalchemy.exc import IntegrityError
 from flask import Flask, redirect, session, g, url_for
+from flask.ext.script import Manager
+from flask.ext.migrate import Migrate, MigrateCommand
 from hactar.models import db, setup
 
 # create our little application :)
@@ -55,5 +57,8 @@ if __name__ == '__main__':
     import sys
     if sys.argv[-1] == 'clean':
         init_db(app)
+    migrate = Migrate(app, db)
+    manager = Manager(app)
+    manager.add_command('db', MigrateCommand)
     app.index_service = setup('develop')
-    app.run()
+    manager.run()
