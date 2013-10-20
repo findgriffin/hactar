@@ -145,6 +145,7 @@ class Action(db.Model):
     start_time = db.Column(db.DateTime())
     finish_time = db.Column(db.DateTime())
     priority = db.Column(db.Integer())
+    points = db.Column(db.Integer())
     _dict = None
     
     def __init__(self, text, due=None, start_time=None, finish_time=None):
