@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block body %}
+  {% if session.logged_in %}
+  <form action="{{ url_for('action_handler', action=action.id) }}" method="post" class=add-action>
+      <dl>
+        <dt><h4>{{ action.heading }}</h4>
+        <dt>Why is this important?
+        <dd><textarea name=why rows=20 style="width: 100%;">{{ action.text }}</textarea>
+        <dd><input type="checkbox" name="delete" value="Delete">delete</input>
+        <dd><input type=submit value=Update>
+      </dl>
+  </form>
+  {% else %}
+    {% if action.uri %}
+      <h4><a href="{{ action.uri }}">{{ action.heading }}</a></h4>
+    {% else %}
+      <h2>{{ action.title }}</h2>
+    {% endif %}
+    {{ action.markup|safe }}
+  {% endif %}
+  <small>
+  modified:{{ action.modified|reldatetime }} &nbsp
+  added:{{ action.added|reldatetime }} 
+  </small>
+{% endblock %}

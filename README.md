@@ -39,8 +39,20 @@ or title may only exist once.
 
 Information is only useful if it leads to *outcomes* in the real world, hence
 hactar stores **actions**. Actions are anything that the user does, has done,
-is doing or will do. A **task** is an action that should occur in the future.
+is doing or will do. 
 
+The various fields of an action can often be left blank. 
+
+A **task** is an action with a 'due' date/time.
+
+* A task is completed when it has a finish time.
+* A task may also have a start time, points or priority.
+
+An **event** is an action with a start and/or finish time and has 3 states:
+
+* latent
+* ongoing
+* complete
 
 In the future **memes** and **actions** may be linked (eg. actions may have
 sub-actions).

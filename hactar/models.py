@@ -144,11 +144,12 @@ class Action(db.Model):
     due = db.Column(db.DateTime())
     start_time = db.Column(db.DateTime())
     finish_time = db.Column(db.DateTime())
-    priority = db.Column(db.Integer())
-    points = db.Column(db.Integer())
+    priority = db.Column(db.Integer(), default=0)
+    points = db.Column(db.Integer(), default=0)
     _dict = None
     
-    def __init__(self, text, due=None, start_time=None, finish_time=None):
+    def __init__(self, text, due=None, start_time=None, finish_time=None,
+            priority=None, points=None):
         self.text = text
         if due is not None:
             self.due = int(due)
@@ -156,8 +157,61 @@ class Action(db.Model):
             self.start_time = int(start_time)
         if finish_time is not None:
             self.finish_time = int(finish_time)
+        if priority is not None:
+            self.priority = int(priority)
+        if points is not None:
+            self.points = int(points)
         self.added = time.time()
         self.modified = self.added
+
+    @property
+    def is_task(self):
+        """Check if this event is a task (has a due time)"""
+        return self.due is not None
+            
+    @property
+    def completed(self):
+        """Check if this event is completed or not (has a finish time)"""
+        return self.finish_time is not None
+
+    @property
+    def duration(self):
+        """The time this action took, or None if that cannot be determined."""
+        if self.start_time is not None and self.finish_time is not None:
+            return self.finish_time - self.start_time
+        else:
+            return None
+
+    @property
+    def latent(self):
+        if self.start_time is None:
+            if self.is_task and not self.completed:
+                return True
+
+
+
+
+    @property
+    def ongoing(self):
+        """Return true if this event has started but not finished."""
+        now = dtime.now()
+        if self.start_time is None:
+            return None
+        elif self.start_time < now and not self.complete:
+            return True
+        else:
+            return False
+
+    @property
+    def completed(self):
+        """Return true if the finish time is in the past"""
+        now = dtime.now()
+        if self.finish_time is None:
+            return None
+        elif self.finish_time < now:
+            return True
+        else:
+            return False
 
     def dictify(self):
         """Return a dictionary representation of this event"""
