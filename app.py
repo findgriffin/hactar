@@ -58,6 +58,7 @@ if __name__ == '__main__':
     import sys
     if sys.argv[-1] == 'clean':
         init_db(app)
+        exit(0)
     migrate = Migrate(app, db)
     manager = Manager(app)
     manager.add_command('db', MigrateCommand)
