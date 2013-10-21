@@ -14,6 +14,7 @@ app.config.from_envvar('HACTAR_SETTINGS', silent=True)
 with app.app_context():
     import hactar.errors
     import hactar.memes
+    import hactar.actions
     import hactar.filters
     import hactar.login
 

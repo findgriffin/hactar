@@ -89,7 +89,7 @@ def post_actions():
         abort(401)
     # TODO
     try:
-        newaction = action(text=text, uri=uri)
+        newaction = Action(text=text, uri=uri)
         db.session.add(newaction)
         db.session.commit()
         flash('New action was successfully added')
@@ -111,8 +111,8 @@ def search_actions(terms):
     filtered = Action.search_query(terms)
     return filtered.order_by(Action.modified.desc())
 
-def get_memes():
-    """Get the latest memes"""
+def get_actions():
+    """Get the latest actions"""
 # this produces an SAWarning when db is empty (empty sequence)
     return Action.query.order_by(Action.modified.desc()).limit(10)
 
