@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
   {% if session.logged_in and not searched %}
-    <form action="{{ url_for('memes') }}" method="post">
+    <form action="{{ url_for('actions') }}" method="post">
         <dl><h5>What?</h5>
         <dd><input type=text name=what id="what" style="width: 100%;" value="http://">
         <dd><textarea name=why id="why" rows=5 style="width: 100%;">Why?</textarea>
@@ -9,35 +9,34 @@
       </dl>
     </form>
   {% endif %}
-  <ul class=memes>
-  {% for meme in memes %}
+  <ul class=actions>
+  {% for action in actions %}
       <li>
       
-        {% if meme.uri %}
-       <h4><a href="{{ meme.uri }}" target="_blank">{{ meme.heading }}</a>
+        {% if action.uri %}
+       <h4><a href="{{ action.uri }}" target="_blank">{{ action.heading }}</a>
         {% else %}
-       <h4>{{ meme.title }}
+       <h4>{{ action.title }}
         {% endif %} 
-        <a href="{{ url_for('meme_handler', meme=meme.id) }}">
+        <a href="{{ url_for('action_handler', action=action.id) }}">
         {% if session.logged_in %}(edit){% else %}(view){% endif %}</a>
         <small style="text-align:right;float:right">
-            {{ meme.modified|reldatetime }}</small></h4>
-    {{ meme.markup|safe }}
-    {% if meme.checked %} 
-    <small>status: {{ meme.status_code|status }} {{ meme.checked|reldatetime }} </small>
+            {{ action.modified|reldatetime }}</small></h4>
+    {{ action.markup|safe }}
+    {% if action.checked %} 
+    <small>status: {{ action.status_code|status }} {{ action.checked|reldatetime }} </small>
     {% endif %}
   {% else %}
-    {% if session.logged_in and searched %}
-      <form action="{{ url_for('memes') }}" method="post">
+    {% if session.logged_in %}
+      <form action="{{ url_for('actions') }}" method="post">
           <dl><h5>What?</h5>
           <dd><input type=text name=what id="what" style="width: 100%;"
-          value="{{ searched }}">
           <dd><textarea name=why id="why" rows=5 style="width: 100%;">Why?</textarea>
           <dd><input type=submit value=Add>
         </dl>
       </form>
     {% else %}
-      <li><em>Unbelievable. No memes here so far</em>
+      <li><em>Unbelievable. No actions here so far</em>
     {% endif %}
   {% endfor %}
   </ul>

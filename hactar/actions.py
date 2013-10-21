@@ -1,4 +1,4 @@
-"""Views to handle individual and collections of memes"""
+"""Views to handle individual and collections of actions"""
 
 from sqlalchemy.exc import IntegrityError
 from flask import current_app, request, session, redirect, url_for, abort, \
@@ -27,7 +27,7 @@ def actions(json=False):
     else:
         return render_template('actions.html', actions=mlist, searched=terms)
 
-def memes_handler():
+def actions_handler():
     """Call the various helper methods, be used by api and html"""
     if request.method == 'POST':
         post_actions()
@@ -105,44 +105,44 @@ def post_actions():
         else:
             abort(500)
 
-def search_memes(terms):
+def search_actions(terms):
     """Return a query with the memes containing terms"""
     current_app.logger.debug('looking for memes with terms: %s' % terms)
-    filtered = Meme.search_query(terms)
-    return filtered.order_by(Meme.modified.desc())
+    filtered = Action.search_query(terms)
+    return filtered.order_by(Action.modified.desc())
 
 def get_memes():
     """Get the latest memes"""
 # this produces an SAWarning when db is empty (empty sequence)
-    return Meme.query.order_by(Meme.modified.desc()).limit(10)
+    return Action.query.order_by(Action.modified.desc()).limit(10)
 
 
-def update_meme(meme):
-    """Update a meme (i.e. implement an edit to a meme)"""
+def update_action(action):
+    """Update a action (i.e. implement an edit to a action)"""
     if not session.get('logged_in'):
         abort(401)
-    current_app.logger.debug('updating meme: %s' % meme)
+    current_app.logger.debug('updating action: %s' % action)
     current_app.logger.debug('session: %s' % session.items())
     text = unicode(request.form['why'])
     try:
-        first = Meme.query.filter(Meme.id == int(meme)).first_or_404()
+        first = action.query.filter(action.id == int(action)).first_or_404()
         first.text = text
         first.modified = dtime.now()
         db.session.commit()
-        flash('Meme successfully modified')
+        flash('action successfully modified')
     except ValueError as err:
         db.session.rollback()
         flash(err.message)
     return first
 
-def update_content(meme):
-    """Update a memes content (for use by crawler)"""
+def update_content(action):
+    """Update a actions content (for use by crawler)"""
     form = request.form
     if not session.get('logged_in'):
         abort(401)
     try:
-        current_app.logger.debug('updating content: %s' % meme)
-        first = Meme.query.filter(Meme.id == int(meme)).first_or_404()
+        current_app.logger.debug('updating content: %s' % action)
+        first = action.query.filter(action.id == int(action)).first_or_404()
         if 'status_code' in form:
             first.checked = dtime.now()
             for key, val in form.items():
@@ -153,7 +153,7 @@ def update_content(meme):
         else:
             abort(400)
         db.session.commit()
-        flash('Meme successfully modified')
+        flash('action successfully modified')
     except ValueError as err:
         db.session.rollback()
         flash(err.message)
