@@ -4,6 +4,7 @@ Database models (using SQLAlchemy) for the hactar application.
 from hashlib import sha1
 import time
 import datetime
+from dateutil.parser import parse
 import json
 
 import markdown
@@ -121,6 +122,7 @@ class Meme(db.Model):
                 value = unicode(getattr(self, field.name))
                 self._dict[field.name] = value
         return self._dict
+
 def is_uri(uri):
     """ Check that the given URI is valid. Raise an exception if it is not."""
     parts = uri.split('/')
@@ -148,15 +150,15 @@ class Action(db.Model):
     points = db.Column(db.Integer(), default=0)
     _dict = None
     
-    def __init__(self, text, due=None, start_time=None, finish_time=None,
+    def __init__(self, text, due=None, start=None, finish=None,
             priority=None, points=None):
         self.text = text
         if due is not None:
-            self.due = int(due)
-        if start_time is not None:
-            self.start_time = int(start_time)
-        if finish_time is not None:
-            self.finish_time = int(finish_time)
+            self.due = parse(due)
+        if start is not None:
+            self.start_time = parse(start)
+        if finish is not None:
+            self.finish_time = parse(finish)
         if priority is not None:
             self.priority = int(priority)
         if points is not None:
@@ -187,9 +189,6 @@ class Action(db.Model):
         if self.start_time is None:
             if self.is_task and not self.completed:
                 return True
-
-
-
 
     @property
     def ongoing(self):

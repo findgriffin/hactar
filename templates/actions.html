@@ -1,10 +1,13 @@
 {% extends "layout.html" %}
 {% block body %}
-  {% if session.logged_in and not searched %}
+  {% if session.logged_in %}
     <form action="{{ url_for('actions') }}" method="post">
         <dl><h5>What?</h5>
-        <dd><input type=text name=what id="what" style="width: 100%;" value="http://">
-        <dd><textarea name=why id="why" rows=5 style="width: 100%;">Why?</textarea>
+        <dd><input type=text name=what id="what" style="width: 100%;">
+        <dd><input type=text name=due id="due" style="width: 20%;" value="due">
+        <dd><input type=text name=start id="start" style="width: 20%;" value="start">
+        <dd><input type=text name=finish id="finish" style="width: 20%;" value="finish">
+        <dd><input type=text name=points id="points" style="width: 20%;" value="0">
         <dd><input type=submit value=Add>
       </dl>
     </form>
@@ -27,17 +30,7 @@
     <small>status: {{ action.status_code|status }} {{ action.checked|reldatetime }} </small>
     {% endif %}
   {% else %}
-    {% if session.logged_in %}
-      <form action="{{ url_for('actions') }}" method="post">
-          <dl><h5>What?</h5>
-          <dd><input type=text name=what id="what" style="width: 100%;"
-          <dd><textarea name=why id="why" rows=5 style="width: 100%;">Why?</textarea>
-          <dd><input type=submit value=Add>
-        </dl>
-      </form>
-    {% else %}
       <li><em>Unbelievable. No actions here so far</em>
-    {% endif %}
   {% endfor %}
   </ul>
 {% endblock %}

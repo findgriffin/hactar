@@ -87,9 +87,14 @@ def post_actions():
     """This is actually kind of the home page."""
     if not session.get('logged_in'):
         abort(401)
-    # TODO
+    newargs = {}
+    newargs['text'] = unicode(request.form['what'])
+    newargs['start'] = unicode(request.form['start'])
+    newargs['finish'] = unicode(request.form['finish'])
+    newargs['points'] = unicode(request.form['points'])
+    
     try:
-        newaction = Action(text=text, uri=uri)
+        newaction = Action(**newargs)
         db.session.add(newaction)
         db.session.commit()
         flash('New action was successfully added')
