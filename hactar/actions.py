@@ -1,11 +1,13 @@
 """Views to handle individual and collections of actions"""
 
+from datetime import datetime as dtime
+from dateutil.parser import parse
+
 from sqlalchemy.exc import IntegrityError
 from flask import current_app, request, session, redirect, url_for, abort, \
      render_template, flash, jsonify, get_flashed_messages
 
 from hactar.models import Action, db
-from datetime import datetime as dtime
 
 @current_app.route('/api/actions', methods=['GET', 'POST'])
 def api_actions():
@@ -88,11 +90,16 @@ def post_actions():
     if not session.get('logged_in'):
         abort(401)
     newargs = {}
-    newargs['text'] = unicode(request.form['what'])
-    newargs['start'] = unicode(request.form['start'])
-    newargs['finish'] = unicode(request.form['finish'])
-    newargs['points'] = unicode(request.form['points'])
-    
+    form = request.form
+    def parse_date_field(name):
+        try:
+            newargs[name] = parse(form[name])
+        except ValueError:
+            flash('Unable to parse %s date: %s' % (name, form[name]))
+    newargs['text'] = unicode(form['what'])
+    parse_date_field('due')
+    parse_date_field('start')
+    parse_date_field('finish')
     try:
         newaction = Action(**newargs)
         db.session.add(newaction)

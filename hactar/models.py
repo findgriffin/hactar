@@ -154,16 +154,16 @@ class Action(db.Model):
             priority=None, points=None):
         self.text = text
         if due is not None:
-            self.due = parse(due)
+            self.due = due
         if start is not None:
-            self.start_time = parse(start)
+            self.start_time = start
         if finish is not None:
-            self.finish_time = parse(finish)
+            self.finish_time = finish
         if priority is not None:
             self.priority = int(priority)
         if points is not None:
             self.points = int(points)
-        self.added = time.time()
+        self.added = datetime.datetime.now()
         self.modified = self.added
 
     @property
