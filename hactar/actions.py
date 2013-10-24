@@ -139,7 +139,7 @@ def update_action(action):
     current_app.logger.debug('session: %s' % session.items())
     text = unicode(request.form['why'])
     try:
-        first = action.query.filter(action.id == int(action)).first_or_404()
+        first = Action.query.filter(Action.id == int(action)).first_or_404()
         first.text = text
         first.modified = dtime.now()
         db.session.commit()
@@ -156,7 +156,7 @@ def update_content(action):
         abort(401)
     try:
         current_app.logger.debug('updating content: %s' % action)
-        first = action.query.filter(action.id == int(action)).first_or_404()
+        first = Action.query.filter(Action.id == int(action)).first_or_404()
         if 'status_code' in form:
             first.checked = dtime.now()
             for key, val in form.items():
