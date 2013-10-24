@@ -175,7 +175,7 @@ class Action(db.Model):
             
     @property
     def completed(self):
-        """Check if this event is completed or not (has a finish time)"""
+        """Return None if there is no finish time."""
         return self.finish_time is not None
 
     @property
@@ -191,6 +191,8 @@ class Action(db.Model):
         if self.start_time is None:
             if self.is_task and not self.completed:
                 return True
+            else:
+                return False
         elif self.start_time > dtime.now():
             return True
         else:
@@ -200,19 +202,17 @@ class Action(db.Model):
     def ongoing(self):
         """Return true if this event has started but not finished."""
         now = dtime.now()
-        if self.start_time is None:
-            return None
-        elif self.start_time < now and not self.completed:
-            return True
-        else:
+        if self.latent or self.completed or not self.is_task:
             return False
+        else:
+            return True
 
     @property
     def completed(self):
-        """Return true if the finish time is in the past"""
+        """Return true if there is a finish time and it is in the past."""
         now = dtime.now()
         if self.finish_time is None:
-            return None
+            return False
         elif self.finish_time < now:
             return True
         else:

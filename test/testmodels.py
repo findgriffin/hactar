@@ -105,10 +105,10 @@ class TestActionModel(TestCase):
         self.assertEqual(action0.start_time, None)
         self.assertEqual(action0.finish_time, None)
         self.assertEqual(action0.is_task, False)
-        self.assertEqual(action0.completed, None)
+        self.assertEqual(action0.completed, False)
         self.assertEqual(action0.duration, None)
-        self.assertEqual(action0.latent, None)
-        self.assertEqual(action0.ongoing, None)
+        self.assertEqual(action0.latent, False)
+        self.assertEqual(action0.ongoing, False)
 
     def test_latent(self):
         due_date = get_day(1)
@@ -118,10 +118,10 @@ class TestActionModel(TestCase):
         self.assertEqual(action0.start_time, None)
         self.assertEqual(action0.finish_time, None)
         self.assertEqual(action0.is_task, True)
-        self.assertEqual(action0.completed, None)
+        self.assertEqual(action0.completed, False)
         self.assertEqual(action0.duration, None)
         self.assertEqual(action0.latent, True)
-        self.assertEqual(action0.ongoing, None)
+        self.assertEqual(action0.ongoing, False)
 
     def test_ongoing(self):
         due_date = get_day(1)
@@ -132,7 +132,7 @@ class TestActionModel(TestCase):
         self.assertEqual(action0.start_time, start_date)
         self.assertEqual(action0.finish_time, None)
         self.assertEqual(action0.is_task, True)
-        self.assertEqual(action0.completed, None)
+        self.assertEqual(action0.completed, False)
         self.assertEqual(action0.duration, None)
         self.assertEqual(action0.latent, False)
         self.assertEqual(action0.ongoing, True)
