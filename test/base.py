@@ -146,14 +146,19 @@ class BaseActionTest(BaseTest):
             msg = u'New action was successfully added'
             self.assertEquals([msg], rjson['flashes'])
         self.assertEqual(resp.status_code, 200)
-        action_id = 1
-        if last:
+        # 1 is True evaluates to False, do it this way so we can pass in an int
+        # in place of last=False when required.
+        if last is True: # this 
+            action_id = len(rjson['actions'])
             action = rjson['actions'][0]
             self.assertIsInstance(action, dict, msg='no action found in: %s' %
                     rjson)
             self.assertEqual(action_id, int(action['id']))
-        else:
+        elif type(last) == int:
+            action_id = last
             action = self.get_action(rjson, action_id)
+        else:
+            raise ValueError('need an action_id or last=True')
         self.assertEquals(len(action.keys()), 9)
         self.assertEquals(text, action['text'])
         now = int(time.time())

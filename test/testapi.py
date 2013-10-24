@@ -165,24 +165,23 @@ class TestActionApi(BaseActionTest):
     def test_add_action(self):
         """Test adding actions (with api)"""
         self.login()
-        rv0 = self.client.post('/api/actions', data=dict( what=self.uri0, why=self.desc0,
+        rv0 = self.client.post('/api/actions', data=dict(what=self.text0), 
+                follow_redirects=True)
+        self.check_action_json(rv0, self.text0)
+        rv1 = self.client.post('/api/actions', data=dict( what=self.text1,
         ), follow_redirects=True)
-        self.check_action_json(rv0, self.uri0, self.desc0)
-        rv1 = self.client.post('/api/actions', data=dict( what=self.uri1, why=self.desc1,
+        self.check_action_json(rv1, self.text0, new=True, last=1)
+        self.check_action_json(rv1, self.text1)
+        rv2 = self.client.post('/api/actions', data=dict( what=self.text2,
         ), follow_redirects=True)
-        self.check_action_json(rv1, self.uri0, self.desc0, new=True, last=False)
-        self.check_action_json(rv1, self.uri1, self.desc1)
-        rv2 = self.client.post('/api/actions', data=dict( what=self.uri2, why=self.desc2,
-        ), follow_redirects=True)
-        self.check_action_json(rv2, self.uri0, self.desc0, new=True, last=False)
-        self.check_action_json(rv2, self.uri1, self.desc1, new=True, last=False)
-        self.check_action_json(rv2, self.uri2, self.desc2)
+        self.check_action_json(rv2, self.text0, new=True, last=1)
+        self.check_action_json(rv2, self.text1, new=True, last=2)
+        self.check_action_json(rv2, self.text2)
         extra =['four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'
                 'eleven', 'twelve', 'thirteen', 'fourteen'] 
         for num in extra:
-            self.client.post('/api/actions', data=dict(what=num, why='action %s' %
-                num), follow_redirects=True)
-
+            self.client.post('/api/actions', data=dict(what='event %s' % num), 
+                    follow_redirects=True)
         rv3 = self.client.get('/api/actions', follow_redirects=True)
         rjson = json.loads(rv3.data)
         self.assertEqual(len(rjson['actions']), 10)
