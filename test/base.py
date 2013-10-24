@@ -5,6 +5,8 @@ import re
 import json
 import time
 from dateutil.parser import parse
+from datetime import datetime as dtime
+from datetime import timedelta as tdelta
 
 from flask.ext.testing import TestCase
 
@@ -125,4 +127,46 @@ class BaseMemeTest(BaseTest):
         return meme_id
 
 class BaseActionTest(BaseTest):
-    pass
+    text0 = 'an event'
+    text1 = 'another event'
+    text2 = 'yet another event'
+
+    def get_action(self, rjson, action_id):
+        for action in rjson['actions']:
+            if int(action['id']) == action_id:
+                return action
+        raise AssertionError('action: %s not in response:%s' % (action_id, rjson))
+
+    def check_action_json(self, resp, text, new=True, flash=None,
+            last=True):
+        rjson = json.loads(resp.data)
+        isuri =  hactar.models.is_uri(what)
+        if flash:
+            self.assertEquals([flash], rjson['flashes'])
+        elif last and new:
+            msg = u'New action was successfully added'
+            self.assertEquals([msg], rjson['flashes'])
+        self.assertEqual(resp.status_code, 200)
+        action_id = 1
+        if last:
+            action = rjson['actions'][0]
+            self.assertEquals(action_id, int(action['id']))
+        else:
+            action = self.get_action(rjson, action_id)
+        self.assertEquals(len(action.keys()), 9)
+        self.assertEquals(text, action['text'])
+        now = int(time.time())
+        added = parse(action['added'])
+        modified = parse(action['modified'])
+        if new:
+            self.assertEquals(added, modified, 
+                    msg='created / modified times are not equal %s' % action)
+        else:
+            self.assertTrue(modified > added, 
+                    msg='modified not later than added %s' % action)
+        return action_id
+
+def get_day(days=0):
+    today = dtime.now()
+    newday = today+tdelta(days=days)
+    return newday

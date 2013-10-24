@@ -1,9 +1,10 @@
 from unittest import TestCase
 import logging
 
-from hactar.models import Meme, is_uri
+from hactar.models import Meme, Action, is_uri
+from test.base import get_day
 
-class TestModels(TestCase):
+class TestMemeModel(TestCase):
     _multiprocess_can_split = True
 
     desc = 'a description here'
@@ -70,3 +71,44 @@ class TestModels(TestCase):
 
 
 
+class TestActionModel(TestCase):
+    text = 'an action'
+
+    def test_action_create(self):
+        action0 = Action(self.text)
+        self.assertEqual(action0.text, self.text)
+        self.assertEqual(action0.due, None)
+        self.assertEqual(action0.start_time, None)
+        self.assertEqual(action0.finish_time, None)
+        self.assertEqual(action0.is_task, False)
+        self.assertEqual(action0.completed, None)
+        self.assertEqual(action0.duration, None)
+        self.assertEqual(action0.latent, None)
+        self.assertEqual(action0.ongoing, None)
+
+    def test_action_latent(self):
+        due_date = get_day(1)
+        action0 = Action(self.text, due=due_date)
+        self.assertEqual(action0.text, self.text)
+        self.assertEqual(action0.due, due_date)
+        self.assertEqual(action0.start_time, None)
+        self.assertEqual(action0.finish_time, None)
+        self.assertEqual(action0.is_task, True)
+        self.assertEqual(action0.completed, None)
+        self.assertEqual(action0.duration, None)
+        self.assertEqual(action0.latent, True)
+        self.assertEqual(action0.ongoing, None)
+
+    def test_action_ongoing(self):
+        due_date = get_day(1)
+        start_date = get_day()
+        action0 = Action(self.text, due=due_date, start=start_date)
+        self.assertEqual(action0.text, self.text)
+        self.assertEqual(action0.due, due_date)
+        self.assertEqual(action0.start_time, start_date)
+        self.assertEqual(action0.finish_time, None)
+        self.assertEqual(action0.is_task, True)
+        self.assertEqual(action0.completed, None)
+        self.assertEqual(action0.duration, None)
+        self.assertEqual(action0.latent, False)
+        self.assertEqual(action0.ongoing, True)
