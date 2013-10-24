@@ -15,14 +15,6 @@ class BaseTest(TestCase):
 
     _multiprocess_can_split = False
 
-    uri0 = 'http://foobar.com'
-    desc0 = 'a description of foobar'
-    uri1 = 'http://stuff.com/somewhere'
-    desc1 = 'a description of stuff'
-    uri2 = 'http://more.com/somewhere'
-    desc2 = 'a description of more'
-    title0 = 'A title not a URI'
-    desc4 = 'a description of this "not-URI"'
 
     def create_app(self):
         import json
@@ -60,7 +52,17 @@ class BaseTest(TestCase):
     def logout(self):
         return self.client.get('/logout', follow_redirects=True)
 
-class BaseApi(BaseTest):
+
+class BaseMemeTest(BaseTest):
+
+    uri0 = 'http://foobar.com'
+    desc0 = 'a description of foobar'
+    uri1 = 'http://stuff.com/somewhere'
+    desc1 = 'a description of stuff'
+    uri2 = 'http://more.com/somewhere'
+    desc2 = 'a description of more'
+    title0 = 'A title not a URI'
+    desc4 = 'a description of this "not-URI"'
 
     def check_meme(self, resp, uri, desc, new=True, flash=None, isuri=True,
             logged_in=True):
@@ -121,3 +123,6 @@ class BaseApi(BaseTest):
             self.assertTrue(modified > added, 
                     msg='modified not later than added %s' % meme)
         return meme_id
+
+class BaseActionTest(BaseTest):
+    pass

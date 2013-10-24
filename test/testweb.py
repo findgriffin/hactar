@@ -7,9 +7,9 @@
 import json
 
 from app import app
-from base import BaseApi
+from base import BaseMemeTest
 
-class TestWeb(BaseApi):
+class TestWeb(BaseMemeTest):
 
     # testing functions
 

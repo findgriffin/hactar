@@ -2,9 +2,9 @@
 import json
 from dateutil.parser import parse
 
-from base import BaseApi
+from base import BaseMemeTest, BaseActionTest
 
-class TestMemeApi(BaseApi):
+class TestMemeApi(BaseMemeTest):
 
     # testing functions
     def test_empty_db(self):
@@ -153,7 +153,7 @@ class TestMemeApi(BaseApi):
         rv2 = self.client.get('/api/memes?q=duper', follow_redirects=True)
         self.check_meme_json(rv2, self.uri0, self.desc0, last=False)
 
-class TestActionApi(BaseApi):
+class TestActionApi(BaseActionTest):
 
     # testing functions
     def test_empty_db(self):
@@ -187,8 +187,8 @@ class TestActionApi(BaseApi):
         rjson = json.loads(rv3.data)
         self.assertEqual(len(rjson['actions']), 10)
 
-    def test_dup_memes(self):
-        """Test adding duplicate memes (with api)"""
+    def test_dup_actions(self):
+        """Test adding duplicate actions (with api)"""
         self.login()
         rv0 = self.client.post('/api/memes', data=dict( what=self.uri0, why=self.desc0,
         ), follow_redirects=True)
