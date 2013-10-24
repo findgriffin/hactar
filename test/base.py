@@ -140,7 +140,6 @@ class BaseActionTest(BaseTest):
     def check_action_json(self, resp, text, new=True, flash=None,
             last=True):
         rjson = json.loads(resp.data)
-        isuri =  hactar.models.is_uri(what)
         if flash:
             self.assertEquals([flash], rjson['flashes'])
         elif last and new:
@@ -150,7 +149,9 @@ class BaseActionTest(BaseTest):
         action_id = 1
         if last:
             action = rjson['actions'][0]
-            self.assertEquals(action_id, int(action['id']))
+            self.assertIsInstance(action, dict, msg='no action found in: %s' %
+                    rjson)
+            self.assertEqual(action_id, int(action['id']))
         else:
             action = self.get_action(rjson, action_id)
         self.assertEquals(len(action.keys()), 9)
