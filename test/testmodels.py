@@ -1,5 +1,6 @@
 from unittest import TestCase
 import logging
+from datetime import timedelta as tdelta
 
 from hactar.models import Meme, Action, is_uri
 from test.base import get_day
@@ -112,3 +113,19 @@ class TestActionModel(TestCase):
         self.assertEqual(action0.duration, None)
         self.assertEqual(action0.latent, False)
         self.assertEqual(action0.ongoing, True)
+
+    def test_action_completed(self):
+        due_date = get_day(-1)
+        start_date = get_day(-2)
+        finish_date = start_date + tdelta(days=1)
+        action0 = Action(self.text, due=due_date, start=start_date,
+                finish=finish_date)
+        self.assertEqual(action0.text, self.text)
+        self.assertEqual(action0.due, due_date)
+        self.assertEqual(action0.start_time, start_date)
+        self.assertEqual(action0.finish_time, finish_date)
+        self.assertEqual(action0.is_task, True)
+        self.assertEqual(action0.completed, True)
+        self.assertEqual(action0.duration, tdelta(days=1))
+        self.assertEqual(action0.latent, False)
+        self.assertEqual(action0.ongoing, False)
