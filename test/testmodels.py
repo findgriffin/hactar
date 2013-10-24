@@ -70,12 +70,35 @@ class TestMemeModel(TestCase):
         self.assertEqual(meme1.uri, None)
         self.assertEqual(meme1.text, self.desc)
 
+    def test_dictify(self):
+        meme1 = Meme(self.desc, self.title)
+        meme_dict = meme1.dictify()
+        fields = ['added', 'id', 'modified', 'checked',
+                'title', 'status_code', 'text', 'uri', 'content']
+        self.assertEqual(len(meme_dict.keys()), len(fields),
+                msg='wrong number of fields in %s' % meme_dict)
+        for field in fields:
+            self.assertIn(field, meme_dict, 
+                    msg='meme dict is missing field %s' % field)
+        self.assertEqual(meme_dict['text'], self.desc)
 
 
 class TestActionModel(TestCase):
     text = 'an action'
 
-    def test_action_create(self):
+    def test_dictify(self):
+        action0 = Action(self.text)
+        action_dict = action0.dictify()
+        fields = ['added', 'due', 'finish_time', 'id', 'modified', 'points',
+                'priority', 'start_time', 'text']
+        self.assertEqual(len(action_dict.keys()), len(fields),
+                msg='wrong number of fields in %s' % action_dict)
+        for field in fields:
+            self.assertIn(field, action_dict, 
+                    msg='action dict is missing field %s' % field)
+        self.assertEqual(action_dict['text'], self.text)
+
+    def test_create(self):
         action0 = Action(self.text)
         self.assertEqual(action0.text, self.text)
         self.assertEqual(action0.due, None)
@@ -87,7 +110,7 @@ class TestActionModel(TestCase):
         self.assertEqual(action0.latent, None)
         self.assertEqual(action0.ongoing, None)
 
-    def test_action_latent(self):
+    def test_latent(self):
         due_date = get_day(1)
         action0 = Action(self.text, due=due_date)
         self.assertEqual(action0.text, self.text)
@@ -100,7 +123,7 @@ class TestActionModel(TestCase):
         self.assertEqual(action0.latent, True)
         self.assertEqual(action0.ongoing, None)
 
-    def test_action_ongoing(self):
+    def test_ongoing(self):
         due_date = get_day(1)
         start_date = get_day()
         action0 = Action(self.text, due=due_date, start=start_date)
@@ -114,7 +137,7 @@ class TestActionModel(TestCase):
         self.assertEqual(action0.latent, False)
         self.assertEqual(action0.ongoing, True)
 
-    def test_action_completed(self):
+    def test_completed(self):
         due_date = get_day(-1)
         start_date = get_day(-2)
         finish_date = start_date + tdelta(days=1)
