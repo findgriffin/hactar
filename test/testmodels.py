@@ -40,7 +40,7 @@ class TestMemeModel(TestCase):
         self.assertFalse(is_uri('arthur.com'))
         self.assertFalse(is_uri('A worthy title'))
 
-    def test_meme_uri(self):
+    def test_uri(self):
         meme0 = Meme(self.desc, self.uri0)
         self.assertEqual(meme0.id, 518461505784485793L)
         self.assertEqual(meme0.sha1, '731f1fe19ff97a101945fa3b48039db508a71397')
@@ -48,7 +48,7 @@ class TestMemeModel(TestCase):
         self.assertEqual(meme0.text, self.desc)
         self.assertEqual(meme0.uri, self.uri0)
 
-    def test_meme_guess_uri(self):
+    def test_guess_uri(self):
         meme0 = Meme(self.desc, self.uri1)
         self.assertEqual(meme0.id, 439762162442543910L)
         self.assertEqual(meme0.sha1, '61a595b560ba3268e8006f81287456fbe957f3fc')
@@ -56,13 +56,13 @@ class TestMemeModel(TestCase):
         self.assertEqual(meme0.uri, 'http://'+self.uri1)
         self.assertEqual(meme0.text, self.desc)
 
-    def test_meme_errors(self):
+    def test_errors(self):
         with self.assertRaises(ValueError):
             Meme('oneworddescription', 'http://arthur.com')
         with self.assertRaises(TypeError):
             Meme('nouriortitle')
 
-    def test_meme_title(self):
+    def test_title(self):
         meme1 = Meme(self.desc, self.title)
         self.assertEqual(meme1.id, 614399577777769947L)
         self.assertEqual(meme1.sha1, '886c92927980ddbee13c129c1659cf70863de7d0')
