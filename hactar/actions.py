@@ -178,7 +178,7 @@ def delete_action(action):
     if not session.get('logged_in'):
         abort(401)
     try:
-        query = action.query.filter(action.id == int(action))
+        query = Action.query.filter(Action.id == int(action))
         query.first_or_404()
         query.delete()
         db.session.commit()

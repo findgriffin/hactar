@@ -186,38 +186,25 @@ class TestActionApi(BaseActionTest):
         rjson = json.loads(rv3.data)
         self.assertEqual(len(rjson['actions']), 10)
 
-    def test_dup_actions(self):
-        """Test adding duplicate actions (with api)"""
+    def test_delete(self):
+        """Test deleting a action (with api)"""
         self.login()
-        rv0 = self.client.post('/api/memes', data=dict( what=self.uri0, why=self.desc0,
-        ), follow_redirects=True)
-        self.check_meme_json(rv0, self.uri0, self.desc0)
-        rv1 = self.client.post('/api/memes', data=dict( what=self.uri0, why=self.desc1,
-        ), follow_redirects=True)
-        self.assertEqual(rv1.status_code, 200)
-        errstr = 'Meme with that URI or description already exists'
-        self.check_meme_json(rv1, self.uri0, self.desc0, flash=errstr)
-        self.assertNotIn('<br>%s' % self.desc1, rv1.data)
-
-    def test_delete_meme(self):
-        """Test deleting a meme (with api)"""
-        self.login()
-        rv0 = self.client.post('/api/memes', data=dict(what=self.uri0, why=self.desc0),
-            follow_redirects=True)
-        meme_id = self.check_meme_json(rv0, self.uri0, self.desc0, new=True)
-        rv1 = self.client.delete('/api/memes/%s' % meme_id)
+        rv0 = self.client.post('/api/actions', data=dict(what=self.text0), 
+                follow_redirects=True)
+        action_id = self.check_action_json(rv0, self.text0)
+        rv1 = self.client.delete('/api/actions/%s' % action_id)
         self.assertEquals(rv1.status_code, 200)
         self.assertEquals(json.loads(rv1.data), 
-                {unicode(meme_id): u'deleted', 'flashes': [u'Meme deleted']})
-        rv2 = self.client.get('/api/memes', follow_redirects=True)
+                {unicode(action_id): u'deleted', 'flashes': [u'action deleted']})
+        rv2 = self.client.get('/api/actions', follow_redirects=True)
         self.assertEquals(rv2.status_code, 200)
-        self.assertEquals({u'memes': [], u'flashes': []}, json.loads(rv2.data))
+        self.assertEquals({u'actions': [], u'flashes': []}, json.loads(rv2.data))
         # try to delete it again
-        rv4 = self.client.delete('/api/memes/%s' % meme_id, data=dict(
+        rv4 = self.client.delete('/api/actions/%s' % action_id, data=dict(
             delete='Delete'), follow_redirects=True)
         self.assertEquals(rv4.status_code, 404)
 
-    def test_search_memes(self):
+    def test_search(self):
         self.login()
         # add 3 memes to get us started
         rv0 = self.client.post('/api/memes', data=dict( what=self.uri0, why=self.desc0),
