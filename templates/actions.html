@@ -15,20 +15,18 @@
   <ul class=actions>
   {% for action in actions %}
       <li>
-      
-        {% if action.uri %}
-       <h4><a href="{{ action.uri }}" target="_blank">{{ action.heading }}</a>
-        {% else %}
-       <h4>{{ action.title }}
-        {% endif %} 
+       <h4>{{ action.text }}
         <a href="{{ url_for('action_handler', action=action.id) }}">
         {% if session.logged_in %}(edit){% else %}(view){% endif %}</a>
         <small style="text-align:right;float:right">
             {{ action.modified|reldatetime }}</small></h4>
-    {{ action.markup|safe }}
-    {% if action.checked %} 
-    <small>status: {{ action.status_code|status }} {{ action.checked|reldatetime }} </small>
-    {% endif %}
+      </li>
+      {% if action.due %} 
+      due: {{ action.due|reldatetime }} {% endif %}
+      {% if action.start_time %} 
+      started: {{ action.start_time|reldatetime }} {% endif %}
+      {% if action.finish_time %} 
+      finished: {{ action.finish_time|reldatetime }} {% endif %}
   {% else %}
       <li><em>Unbelievable. No actions here so far</em>
   {% endfor %}
