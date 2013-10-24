@@ -190,6 +190,10 @@ class Action(db.Model):
         if self.start_time is None:
             if self.is_task and not self.completed:
                 return True
+        elif self.start_time > dtime.now():
+            return True
+        else:
+            return False
 
     @property
     def ongoing(self):
@@ -197,7 +201,7 @@ class Action(db.Model):
         now = dtime.now()
         if self.start_time is None:
             return None
-        elif self.start_time < now and not self.complete:
+        elif self.start_time < now and not self.completed:
             return True
         else:
             return False
