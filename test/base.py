@@ -172,6 +172,29 @@ class BaseActionTest(BaseTest):
                     msg='modified not later than added %s' % action)
         return action_id
 
+    def check_action(self, resp, text, new=True, flash=None, logged_in=True):
+        if flash:
+            self.assertIn(flash, resp.data)
+        elif new:
+            msg = 'New action was successfully added'
+            self.assertIn(msg, resp.data)
+        now = 'just now'
+        self.assertEqual(resp.status_code, 200)
+        action_id = int(sha1(uri).hexdigest()[:15], 16)
+        if logged_in:
+            self.assertIn('<ahref="/actions/%s">(edit)</a>' % action_id,
+                    re.sub('\s+', '', resp.data))
+        else:
+            self.assertIn('<ahref="/actions/%s">(view)</a>' % action_id,
+                    re.sub('\s+', '', resp.data))
+        if isuri:
+            self.assertIn('<h4><a href="%s" target="_blank">%s</a>' % (uri, uri), resp.data)
+        else:
+            self.assertIn('<h4>%s' % uri, resp.data)
+        self.assertIn('<p>%s</p>' % desc, resp.data)
+        self.assertIn('%s</small></h4>' % now, resp.data)
+        return action_id
+
 def get_day(days=0):
     today = dtime.now()
     newday = today+tdelta(days=days)

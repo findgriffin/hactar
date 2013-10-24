@@ -7,9 +7,9 @@
 import json
 
 from app import app
-from base import BaseMemeTest
+from base import BaseMemeTest, BaseActionTest
 
-class TestWeb(BaseMemeTest):
+class TestMemeWeb(BaseMemeTest):
 
     # testing functions
 
@@ -17,6 +17,8 @@ class TestWeb(BaseMemeTest):
         """Start with a blank database."""
         rv = self.client.get('/memes')
         self.assertIn('No memes here so far', rv.data)
+        rv = self.client.get('/actions')
+        self.assertIn('No actions here so far', rv.data)
 
     def test_login_logout(self):
         """Make sure login and logout works"""
@@ -204,3 +206,21 @@ def hello_world():
         ), follow_redirects=True)
         self.check_meme(rv, self.uri0, 'This is a description:')
         self.assertIn(code_html, rv.data)
+
+class TestActionWeb(BaseActionTest):
+
+    def test_add_actions(self):
+        """Test adding some actions with flask"""
+        self.login()
+        rv0 = self.client.post('/actions', data=dict(what=self.text0), 
+                follow_redirects=True)
+        self.check_action(rv0, self.uri0, self.desc0)
+        rv1 = self.client.post('/actions', data=dict(what=self.text1), 
+                follow_redirects=True)
+        self.check_action(rv1, self.text0)
+        self.check_action(rv1, self.text1)
+        rv2 = self.client.post('/actions', data=dict(what=self.text2), 
+                follow_redirects=True)
+        self.check_action(rv2, self.text0)
+        self.check_action(rv2, self.text1)
+        self.check_action(rv2, self.text2)
