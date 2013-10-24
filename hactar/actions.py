@@ -83,7 +83,7 @@ def action_handler(action):
 
 def get_action(action_id):
     """Return either the action given by action_id or raise a 404""" 
-    return action.query.filter(action.id == int(action_id)).first_or_404()
+    return Action.query.filter(Action.id == int(action_id)).first_or_404()
     
 def post_actions():
     """This is actually kind of the home page."""
@@ -96,6 +96,8 @@ def post_actions():
             newargs[name] = parse(form[name])
         except ValueError:
             flash('Unable to parse %s date: %s' % (name, form[name]))
+        except KeyError:
+            pass
     newargs['text'] = unicode(form['what'])
     parse_date_field('due')
     parse_date_field('start')

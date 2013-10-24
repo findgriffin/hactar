@@ -224,6 +224,7 @@ class Action(db.Model):
             for field in self.__mapper__.columns:
                 value = unicode(getattr(self, field.name))
                 self._dict[field.name] = value
+        return self._dict
 
 def setup(context, session=None):
     """Setup the whooshalchemy index service"""
