@@ -150,6 +150,7 @@ class Action(db.Model):
     priority = db.Column(db.Integer(), default=0)
     points = db.Column(db.Integer(), default=0)
     _dict = None
+    __searchable__ = ['text']
     
     def __init__(self, text, due=None, start=None, finish=None,
             priority=None, points=None):
@@ -231,5 +232,6 @@ def setup(context, session=None):
     conf = json.load(open('config.json', 'rb'))[context]
     index_service = IndexService(conf, session=session)
     index_service.register_class(Meme)
+    index_service.register_class(Action)
     return index_service
 

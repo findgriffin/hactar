@@ -206,25 +206,25 @@ class TestActionApi(BaseActionTest):
 
     def test_search(self):
         self.login()
-        # add 3 memes to get us started
-        rv0 = self.client.post('/api/memes', data=dict( what=self.uri0, why=self.desc0),
+        # add 3 actions to get us started
+        rv0 = self.client.post('/api/actions', data=dict( what=self.text0),
             follow_redirects=True)
-        rv1 = self.client.post('/api/memes', data=dict( what=self.uri1, why=self.desc1),
+        rv1 = self.client.post('/api/actions', data=dict( what=self.text1),
             follow_redirects=True)
-        rv2 = self.client.post('/api/memes', data=dict( what=self.uri2, why=self.desc2),
+        rv2 = self.client.post('/api/actions', data=dict( what=self.text2),
             follow_redirects=True)
-        rv3 = self.client.get('/api/memes?q=description', follow_redirects=True)
-        self.check_meme_json(rv3, self.uri0, self.desc0, last=False)
-        self.check_meme_json(rv3, self.uri1, self.desc1, last=False)
-        self.check_meme_json(rv3, self.uri2, self.desc2, last=False)
-        rv4 = self.client.get('/api/memes?q=stuff', follow_redirects=True)
-        self.check_meme_json(rv4, self.uri1, self.desc1, last=False)
-        self.assertEqual(len(json.loads(rv4.data)['memes']), 1)
-        rv5 = self.client.get('/api/memes?q=more', follow_redirects=True)
-        self.check_meme_json(rv5, self.uri2, self.desc2, last=False)
-        self.assertEqual(len(json.loads(rv5.data)['memes']), 1)
-        rv6 = self.client.get('/api/memes?q=somewhere', follow_redirects=True)
-        self.assertEqual(len(json.loads(rv6.data)['memes']), 2)
+        rv3 = self.client.get('/api/actions?q=event', follow_redirects=True)
+        self.check_action_json(rv3, self.text0, last=1)
+        self.check_action_json(rv3, self.text1, last=2)
+        self.check_action_json(rv3, self.text2, last=3)
+        rv4 = self.client.get('/api/actions?q=cool', follow_redirects=True)
+        self.check_action_json(rv4, self.text0, last=1)
+        self.assertEqual(len(json.loads(rv4.data)['actions']), 1)
+        rv5 = self.client.get('/api/actions?q=fruity', follow_redirects=True)
+        self.check_action_json(rv5, self.text1, last=2)
+        self.assertEqual(len(json.loads(rv5.data)['actions']), 1)
+        rv6 = self.client.get('/api/actions?q=another', follow_redirects=True)
+        self.assertEqual(len(json.loads(rv6.data)['actions']), 2)
 
     def test_update_search(self):
         self.login()

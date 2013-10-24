@@ -127,8 +127,8 @@ class BaseMemeTest(BaseTest):
         return meme_id
 
 class BaseActionTest(BaseTest):
-    text0 = 'an event'
-    text1 = 'another event'
+    text0 = 'cool event'
+    text1 = 'another fruity event'
     text2 = 'yet another event'
 
     def get_action(self, rjson, action_id):
@@ -142,7 +142,7 @@ class BaseActionTest(BaseTest):
         rjson = json.loads(resp.data)
         if flash:
             self.assertEquals([flash], rjson['flashes'])
-        elif last and new:
+        elif last is True and new:
             msg = u'New action was successfully added'
             self.assertEquals([msg], rjson['flashes'])
         self.assertEqual(resp.status_code, 200)
