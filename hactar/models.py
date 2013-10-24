@@ -172,6 +172,14 @@ class Action(db.Model):
     def is_task(self):
         """Check if this event is a task (has a due time)"""
         return self.due is not None
+
+    @property
+    def is_event(self):
+        """Check if this event is a task (has a due time)"""
+        if self.start_time or self.finish_time:
+            return True
+        else:
+            return False
             
     @property
     def completed(self):
