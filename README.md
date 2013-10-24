@@ -45,14 +45,14 @@ The various fields of an action can often be left blank.
 
 A **task** is an action with a 'due' date/time.
 
-* A task is completed when it has a finish time.
+* A task is completed when it has a finish time that is in the past.
 * A task may also have a start time, points or priority.
 
 An **event** is an action with a start and/or finish time and has 3 states:
 
 * latent
 * ongoing
-* complete
+* completed
 
 In the future **memes** and **actions** may be linked (eg. actions may have
 sub-actions).
