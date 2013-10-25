@@ -214,13 +214,13 @@ class TestActionWeb(BaseActionTest):
         self.login()
         rv0 = self.client.post('/actions', data=dict(what=self.text0), 
                 follow_redirects=True)
-        self.check_action(rv0, self.uri0, self.desc0)
+        self.check_action(rv0, self.text0, 1)
         rv1 = self.client.post('/actions', data=dict(what=self.text1), 
                 follow_redirects=True)
-        self.check_action(rv1, self.text0)
-        self.check_action(rv1, self.text1)
+        self.check_action(rv1, self.text0, 1)
+        self.check_action(rv1, self.text1, 2)
         rv2 = self.client.post('/actions', data=dict(what=self.text2), 
                 follow_redirects=True)
-        self.check_action(rv2, self.text0)
-        self.check_action(rv2, self.text1)
-        self.check_action(rv2, self.text2)
+        self.check_action(rv2, self.text0, 1)
+        self.check_action(rv2, self.text1, 2)
+        self.check_action(rv2, self.text2, 3)
