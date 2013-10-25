@@ -241,3 +241,13 @@ class TestActionWeb(BaseActionTest):
         rv2 = self.client.get('/actions?q=event', follow_redirects=True)
         self.assertNotIn(self.text0, rv2.data)
         self.assertIn(self.text1, rv2.data)
+
+    def test_update_fail(self):
+        """Test updating a nonexistant action"""
+        self.login()
+        rv0 = self.client.post('/actions', data=dict(what=self.text0),
+            follow_redirects=True)
+        action_id = 2
+        rv1 = self.client.post('/actions/%s' % action_id, data=dict(what=self.text1),
+                follow_redirects=True)
+        self.assertEquals(404, rv1.status_code)
