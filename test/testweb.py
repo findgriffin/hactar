@@ -207,6 +207,9 @@ def hello_world():
         self.check_meme(rv, self.uri0, 'This is a description:')
         self.assertIn(code_html, rv.data)
 
+
+
+
 class TestActionWeb(BaseActionTest):
 
     def test_add_actions(self):
@@ -224,3 +227,17 @@ class TestActionWeb(BaseActionTest):
         self.check_action(rv2, self.text0, 1)
         self.check_action(rv2, self.text1, 2)
         self.check_action(rv2, self.text2, 3)
+
+    def test_update_search(self):
+        """Test updating and then searching for a action"""
+        self.login()
+        rv0 = self.client.post('/actions', data=dict(what=self.text0),
+            follow_redirects=True)
+        action_id = self.check_action(rv0, self.text0, 1)
+        rv1 = self.client.post('/actions/%s' % action_id, 
+                data=dict(what=self.text1), follow_redirects=True)
+        self.check_action(rv1, self.text1, 1, new=False,
+            flash='action successfully modified')
+        rv2 = self.client.get('/actions?q=event', follow_redirects=True)
+        self.assertNotIn(self.text0, rv2.data)
+        self.assertIn(self.text1, rv2.data)

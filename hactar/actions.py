@@ -137,7 +137,7 @@ def update_action(action):
         abort(401)
     current_app.logger.debug('updating action: %s' % action)
     current_app.logger.debug('session: %s' % session.items())
-    text = unicode(request.form['why'])
+    text = unicode(request.form['what'])
     try:
         first = Action.query.filter(Action.id == int(action)).first_or_404()
         first.text = text
