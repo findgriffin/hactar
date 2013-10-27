@@ -56,11 +56,3 @@ An **event** is an action with a start and/or finish time and has 3 states:
 
 In the future **memes** and **actions** may be linked (eg. actions may have
 sub-actions).
-
-Feature Priority
-----------------
- 1. Demagicify whoosh integration
- 1. Implement upgrading of db schema
- 1. Implement asynchronous/background tasks
- 1. Implement tasks (using google calendar API)
- 1. AJAXify (eg. update web page status)
