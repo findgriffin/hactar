@@ -133,8 +133,16 @@ def release():
 
 def rebuild():
     cuisine.mode_local()
-    backup_data()
-    cuisine.run('vagrant rebuild ' % env.host_string)
+    if 'production' in env.roles:
+        backup_data()
+        cuisine.run('vagrant rebuild %s' % env.host_string)
+    elif 'staging' in env.roles:
+        print 'destroying roger'
+        cuisine.run('vagrant destroy -f %s' % env.host_string)
+        print 'building roger'
+        cuisine.run('vagrant up %s' % env.host_string)
+    else:
+        raise ValueError('production or staging not in env.roles')
     restore_data()
     cuisine.mode_remote()
     release()
