@@ -39,7 +39,10 @@ def init_db(app):
         pass
     import os
     if os.path.exists(db_path(app)):
-        os.remove(db_path)
+        os.remove(db_path(app))
+    db_dir = os.path.sep.join(db_path(app).split(os.path.sep)[:-1])
+    if not os.path.exists(db_dir):
+        os.mkdir(db_dir)
     with app.test_request_context():
         db.create_all()
 
@@ -55,7 +58,7 @@ def config_app(application):
 
 def db_path(app):
     uri = app.config['SQLALCHEMY_DATABASE_URI']
-    return uri.lstrip('sqlite:///')
+    return uri.replace('sqlite:///', '')
 
 if __name__ == '__main__':
     config_app(app)
