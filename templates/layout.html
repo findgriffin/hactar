@@ -48,10 +48,17 @@
   <div class="three columns sidebar">
     <nav>
     <a href="{{ url_for('home') }}" style="text-decoration: none">
-        <h4>Hactar</h4></a>
+        <h2>Hactar</h2></a>
+          <a href="{{ url_for('memes') }}" style="text-decoration: none">memes</a>
+          <a href="{{ url_for('actions') }}" style="text-decoration: none">actions</a>
     <form id="newsearch" method="get" action="{{ url_for('memes') }}">
           <input type="text" id="searchq" name="q" value="search memes">
       </form>
+       <h4>
+         <ul>
+           
+         </ul>
+       </h4>
     {% if not session.logged_in %}
       {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
       <form action="{{ url_for('login') }}" method=post>
