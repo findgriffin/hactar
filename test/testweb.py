@@ -7,7 +7,7 @@
 import json
 
 from app import app
-from base import BaseMemeTest, BaseActionTest
+from base import BaseMemeTest, BaseActionTest, get_day
 
 class TestMemeWeb(BaseMemeTest):
 
@@ -227,6 +227,13 @@ class TestActionWeb(BaseActionTest):
         self.check_action(rv2, self.text0, 1)
         self.check_action(rv2, self.text1, 2)
         self.check_action(rv2, self.text2, 3)
+
+    def test_add_task(self):
+        self.login()
+        rv0 = self.client.post('/actions', data=dict(what=self.text0,
+            due=get_day(1)), follow_redirects=True)
+        self.check_action(rv0, self.text0, 1)
+        
 
     def test_update_search(self):
         """Test updating and then searching for a action"""
