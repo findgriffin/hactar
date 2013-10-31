@@ -31,7 +31,7 @@ def _jinja2_filter_reldatetime(date, now=None):
     else:
         return 'unknown type %s for date: %s' % (type(date), date)
     delta = now - dtime
-    if delta.total_seconds < 0:
+    if delta.total_seconds() < 0:
         mkrel = lambda s: 'in '+s
         future = True
         delta = abs(delta)
