@@ -144,9 +144,9 @@ class Action(db.Model):
     text = db.Column(db.Text())
     added = db.Column(db.DateTime())
     modified = db.Column(db.DateTime())
-    due = db.Column(db.DateTime())
-    start_time = db.Column(db.DateTime())
-    finish_time = db.Column(db.DateTime())
+    due = db.Column(db.DateTime(), nullable=True)
+    start_time = db.Column(db.DateTime(), nullable=True)
+    finish_time = db.Column(db.DateTime(), nullable=True)
     priority = db.Column(db.Integer(), default=0)
     points = db.Column(db.Integer(), default=0)
     _dict = None

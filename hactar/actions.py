@@ -93,10 +93,13 @@ def post_actions():
     form = request.form
     def parse_date_field(name):
         try:
+            if len(form[name]) < 3:
+                raise KeyError # dont give to parser if it's not a datetime
             newargs[name] = parse(form[name])
         except ValueError:
             flash('Unable to parse %s date: %s' % (name, form[name]))
-        except KeyError:
+        except KeyError as err:
+            current_app.logger.debug(err.message)
             pass
     newargs['text'] = unicode(form['what'])
     parse_date_field('due')
