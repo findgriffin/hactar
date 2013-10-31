@@ -31,23 +31,37 @@ def _jinja2_filter_reldatetime(date, now=None):
     else:
         return 'unknown type %s for date: %s' % (type(date), date)
     delta = now - dtime
+    if delta.total_seconds < 0:
+        mkrel = lambda s: 'in '+s
+        future = True
+        delta = abs(delta)
+    else:
+        mkrel = lambda s: s+' ago'
+        future = False
+        delta = abs(delta)
     if delta.days > 2*YEAR:
-        return '%s years ago' % int(delta.days/YEAR)
+        return mkrel('%s years' % int(delta.days/YEAR))
     elif delta.days > 2*MONTH:
-        return '%s months ago' % int(delta.days/MONTH)
+        return mkrel('%s months' % int(delta.days/MONTH))
     elif delta.days > 1:
-        return '%s days ago' % delta.days
+        return mkrel('%s days' % delta.days)
     elif delta.days == 1:
-        return 'yesterday'
+        return 'tomorrow' if future else 'yesterday'
     else:
         if delta.seconds > 7200:
-            return '%s hours ago' % int(round(float(delta.seconds)/60/60))
+            return mkrel('%s hours' % int(round(float(delta.seconds)/60/60)))
         elif delta.seconds > 60:
-            return '%s minutes ago' % int(round(float(delta.seconds)/60))
+            return mkrel('%s minutes' % int(round(float(delta.seconds)/60)))
         elif delta.seconds > 5:
-            return '%s seconds ago' % delta.seconds
+            return mkrel('%s seconds' % delta.seconds)
         else:
             return 'just now'
+
+def _form_reldatetime(main, future):
+    if future:
+        return 'in '+main
+    else:
+        return main+' ago'
 
 @current_app.template_filter('status')
 def _jinja2_filter_status(code):
