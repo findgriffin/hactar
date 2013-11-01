@@ -2,13 +2,36 @@
 {% block body %}
   {% if session.logged_in %}
   <form action="{{ url_for('action_handler', action=action.id) }}" method="post" class=add-action>
-      <dl>
-        <dt><h4>{{ action.heading }}</h4>
-        <dt>Why is this important?
-        <dd><textarea name=why rows=20 style="width: 100%;">{{ action.text }}</textarea>
-        <dd><input type="checkbox" name="delete" value="Delete">delete</input>
-        <dd><input type=submit value=Update>
+    <form action="{{ url_for('actions') }}" method="post">
+        <dl><h5>What?</h5>
+            <input type=text name=what id="what" style="width: 100%;" 
+            value="{{ action.what }}">
+      <div class="one columns alpha">Points:</div>
+      <div class="two columns omega">
+          <input type=text name=points id="points" style="width: 80%;"
+          value="{{ action.points }}">
+      </div>
+      <div class="one columns alpha">Due:</div>
+      <div class="two columns omega">
+          <input type=text name=due id="due" style="width: 80%;" 
+          value="{{ action.due if action.due else '' }}">
+      </div>
+      <div class="one columns alpha">Start:</div>
+      <div class="two columns omega">
+        <input type=text name=start id="start" style="width: 80%;"
+          value="{{ action.start_time if action.start_time else '' }}">
+      </div>
+      <div class="one columns alpha">Finish:</div>
+      <div class="two columns omega">
+        <input type=text name=finish id="finish" style="width: 80%;"
+          value="{{ action.finish_time if action.finish_time else '' }}">
+      </div>
+      <div class="twelve columns">
+      <input type=submit value=Add>
+      </div>
+        
       </dl>
+    </form>
   </form>
   {% else %}
     {% if action.uri %}
