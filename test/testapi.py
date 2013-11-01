@@ -186,6 +186,18 @@ class TestActionApi(BaseActionTest):
         rjson = json.loads(rv3.data)
         self.assertEqual(len(rjson['actions']), 10)
 
+    def test_add_blank(self):
+        """Test adding actions (with api)"""
+        self.login()
+        rv0 = self.client.post('/api/actions', data=dict(what=''), 
+                follow_redirects=True)
+#       self.check_action_json(rv0, self.text0)
+        cant_add = u'Action text must not be blank'
+        self.assertEqual(rv0.status_code, 200)
+        self.assertEqual(rv0.json, {'flashes': [cant_add], 'actions': []})
+        rv1 = self.client.post('/api/actions', data=dict(what=self.text1,
+        ), follow_redirects=True)
+
     def test_delete(self):
         """Test deleting a action (with api)"""
         self.login()

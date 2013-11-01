@@ -111,7 +111,7 @@ def post_actions():
         db.session.commit()
         flash('New action was successfully added')
     except ValueError as err:
-        current_app.logger.error('got error: %s' % err.message)
+        current_app.logger.debug('got error: %s' % err.message)
         db.session.rollback()
         flash(err.message)
     except IntegrityError as err:

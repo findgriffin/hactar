@@ -154,6 +154,8 @@ class Action(db.Model):
     
     def __init__(self, text, due=None, start=None, finish=None,
             priority=None, points=None):
+        if not text:
+            raise ValueError('Action text must not be blank')
         self.text = text
         if due is not None:
             self.due = due
