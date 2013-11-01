@@ -191,7 +191,7 @@ class BaseActionTest(BaseTest):
         self.assertIn('%s</small></h4>' % now, resp.data)
         return action_id
 
-def get_day(days=0):
+def get_day(days=0, hours=0):
     today = dtime.now()
-    newday = today+tdelta(days=days)
+    newday = today+tdelta(days=days, hours=hours)
     return newday

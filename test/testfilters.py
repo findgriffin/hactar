@@ -71,6 +71,7 @@ class TestFilters(TestCase):
         date3 = datetime.datetime(2013, 9, 1, 20, 45)
         date4 = datetime.datetime(2013, 9, 1, 12, 6)
         date5 = datetime.datetime(2013, 9, 1, 11, 54)
+        date6 = datetime.datetime(2013, 9, 2, 11, 53)
         filt = filters._jinja2_filter_reldatetime
         self.assertEqual('in 2 years', filt(date0, now))
         self.assertEqual('in 13 months', filt(date1, now))
@@ -78,6 +79,7 @@ class TestFilters(TestCase):
         self.assertEqual('in 9 hours', filt(date3, now))
         self.assertEqual('in 13 minutes', filt(date4, now))
         self.assertEqual('in 60 seconds', filt(date5, now))
+        self.assertEqual('tomorrow', filt(date6, now))
         now_really = datetime.datetime.now()
         self.assertEqual('just now', filt(time.time()))
         self.assertEqual('just now', filt(now_really))

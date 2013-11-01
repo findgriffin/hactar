@@ -207,9 +207,6 @@ def hello_world():
         self.check_meme(rv, self.uri0, 'This is a description:')
         self.assertIn(code_html, rv.data)
 
-
-
-
 class TestActionWeb(BaseActionTest):
 
     def test_add_actions(self):
@@ -231,9 +228,18 @@ class TestActionWeb(BaseActionTest):
     def test_add_task(self):
         self.login()
         rv0 = self.client.post('/actions', data=dict(what=self.text0,
-            due=get_day(1)), follow_redirects=True)
+            due=get_day(1, 1)), follow_redirects=True)
         self.check_action(rv0, self.text0, 1)
-        
+        self.assertIn('due: tomorrow', rv0.data)
+
+    def test_add_event(self):
+        self.login()
+        rv0 = self.client.post('/actions', data=dict(what=self.text0,
+            start=get_day(-1), finish=get_day(1, 1)), 
+            follow_redirects=True)
+        self.check_action(rv0, self.text0, 1)
+        self.assertIn('started: yesterday', rv0.data)
+        self.assertIn('finished: tomorrow', rv0.data)
 
     def test_update_search(self):
         """Test updating and then searching for a action"""
