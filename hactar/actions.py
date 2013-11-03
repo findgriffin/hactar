@@ -197,3 +197,11 @@ def delete_action(action):
             flash('action with that URI or description already exists')
         else:
             abort(500)
+
+def last_week(today=None):
+    if today is None:
+        today = dtime.now()
+    
+def get_daily_points(day):
+    daily = Action.query.filter(Action.finish_time == action).all()
+
