@@ -9,6 +9,8 @@ from flask import current_app, request, session, redirect, url_for, abort, \
 
 from hactar.models import Action, db
 
+DAYFIRST = True
+
 @current_app.route('/api/actions', methods=['GET', 'POST'])
 def api_actions():
     """Handle requests for actions through the api"""
@@ -95,7 +97,7 @@ def post_actions():
         try:
             if len(form[name]) < 3:
                 raise KeyError # dont give to parser if it's not a datetime
-            newargs[name] = parse(form[name])
+            newargs[name] = parse(form[name], dayfirst=DAYFIRST)
         except ValueError:
             flash('Unable to parse %s date: %s' % (name, form[name]))
         except KeyError as err:
