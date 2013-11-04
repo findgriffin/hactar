@@ -84,6 +84,13 @@ class TestFilters(TestCase):
         self.assertEqual('just now', filt(time.time()))
         self.assertEqual('just now', filt(now_really))
 
+    def test_reldate(self):
+        date = datetime.datetime(2013, 11, 05, 11, 40).date()
+        filt = filters._jinja2_filter_reldate
+        self.assertEqual(filt(date), 'Tue  5')
+        self.assertEqual(filt(date, 'short'), 'Tue')
+        self.assertEqual(filt(date, 'long'), 'Tuesday 05/11')
+
     def test_status(self):
         stat = filters._jinja2_filter_status 
         self.assertEqual(stat(200), 'OK')

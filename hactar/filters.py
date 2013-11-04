@@ -7,6 +7,9 @@ from flask import current_app
 YEAR  = 365.256
 MONTH = YEAR/12.0
 
+WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday' , 'Thursday' , 'Friday',
+'Saturday' , 'Sunday']
+
 @current_app.template_filter('datetime')
 def _jinja2_filter_datetime(date, fmt=None):
     """Application wide datetime filter."""
@@ -62,6 +65,21 @@ def _form_reldatetime(main, future):
         return 'in '+main
     else:
         return main+' ago'
+
+@current_app.template_filter('reldate')
+def _jinja2_filter_reldate(date, pretty='medium'):
+    """
+    Given a date object, return a human readable representation like Mon "27/9".
+
+    @param  date    date    The date to display
+    @param  string  pretty  Can be one of 'short', 'medium' (default) or 'long'.
+    """
+    if pretty == 'short':
+        return date.strftime('%a')
+    elif pretty == 'medium':
+        return date.strftime('%a %e')
+    elif pretty == 'long':
+        return date.strftime('%A %d/%m')
 
 @current_app.template_filter('status')
 def _jinja2_filter_status(code):
