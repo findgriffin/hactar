@@ -24,12 +24,16 @@ def api_actions():
 def actions(json=False):
     """Handle requests for actions and defer to helper methods"""
     mlist, terms = actions_handler()
+    week = [('today', 3), ('yesterday', 4), ('Sun  3', 6), ('Sat  2', 1),
+            ('Fri 1', 6), ('Thu', 31), ('Wed 30', 4), ('Tue 29', 16), ('Mon 28',
+                -1)] 
     if json:
         resp = {'actions': []}
         [resp['actions'].append(action.dictify()) for action in mlist]
         return jsonify(resp)
     else:
-        return render_template('actions.html', actions=mlist, searched=terms)
+        return render_template('actions.html', actions=mlist, searched=terms,
+                week=week)
 
 def actions_handler():
     """Call the various helper methods, be used by api and html"""
