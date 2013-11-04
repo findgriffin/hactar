@@ -111,6 +111,8 @@ def post_actions():
     parse_date_field('due')
     parse_date_field('start')
     parse_date_field('finish')
+    if 'just_finished' in form and 'finish' not in newargs:
+        newargs['finish'] = dtime.now()
     try:
         newaction = Action(**newargs)
         db.session.add(newaction)
