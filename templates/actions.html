@@ -22,13 +22,16 @@
       </div>
       <div class="twelve columns">
       <input type=submit value=Add>
+      <input type="checkbox" name="just_finished" value="just_finished">Just
+      finished
       </div>
-        
       </dl>
     </form>
   {% endif %}
-  <ul class=actions>
-      <br>
+  <ul class="twelve columns">
+  {% for day, points in week %}
+    {{ day }}: {{ points }}
+  {% endfor %}
   {% for action in actions %}
       <li>
        <h4>{{ action.text }}
