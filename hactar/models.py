@@ -229,11 +229,26 @@ class Action(db.Model):
             return False
 
     @property
+    def start_date(self):
+        if self.start_time is not None:
+            return self.start_time.date()
+        else:
+            return None
+
+    @property
     def finish_date(self):
         if self.finish_time is not None:
             return self.finish_time.date()
         else:
             return None
+
+    @property
+    def due_date(self):
+        if self.due_time is not None:
+            return self.due_time.date()
+        else:
+            return None
+
 
     def dictify(self):
         """Return a dictionary representation of this event"""
