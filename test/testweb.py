@@ -241,6 +241,15 @@ class TestActionWeb(BaseActionTest):
         self.assertIn('started: yesterday', rv0.data)
         self.assertIn('finished: tomorrow', rv0.data)
 
+    def test_add_just_finished(self):
+        self.login()
+        rv0 = self.client.post('/actions', data=dict(what=self.text0,
+            just_finished='just_finished', points=10), 
+            follow_redirects=True)
+        self.check_action(rv0, self.text0, 1)
+        self.assertIn('finished: just now', rv0.data)
+        self.assertIn('points: 10', rv0.data)
+
     def test_update_search(self):
         """Test updating and then searching for a action"""
         self.login()

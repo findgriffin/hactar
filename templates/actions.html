@@ -46,6 +46,8 @@
       started: {{ action.start_time|reldatetime }} {% endif %}
       {% if action.finish_time %} 
       finished: {{ action.finish_time|reldatetime }} {% endif %}
+      {% if action.points %} 
+      points: {{ action.points }} {% endif %}
   {% else %}
       <li><em>Unbelievable. No actions here so far</em>
   {% endfor %}
