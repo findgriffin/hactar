@@ -1,6 +1,7 @@
 """Views to handle individual and collections of actions"""
 
 from datetime import datetime as dtime
+from datetime import timedelta as tdelta
 from dateutil.parser import parse
 
 from sqlalchemy.exc import IntegrityError
@@ -24,9 +25,7 @@ def api_actions():
 def actions(json=False):
     """Handle requests for actions and defer to helper methods"""
     mlist, terms = actions_handler()
-    week = [('today', 3), ('yesterday', 4), ('Sun  3', 6), ('Sat  2', 1),
-            ('Fri 1', 6), ('Thu', 31), ('Wed 30', 4), ('Tue 29', 16), ('Mon 28',
-                -1)] 
+    week = last_weeks_points()
     if json:
         resp = {'actions': []}
         [resp['actions'].append(action.dictify()) for action in mlist]
@@ -206,10 +205,17 @@ def delete_action(action):
         else:
             abort(500)
 
-def last_week(today=None):
+def last_weeks_points(today=None):
+    """Returns today's points and the last 7 days (i.e. 8 days total)"""
     if today is None:
-        today = dtime.now()
+        today = dtime.now().date()
+    week = []
+    for i in xrange(8):
+        day = today-tdelta(days=i)
+        week.append((day, get_daily_points(day)))
+    return week
     
 def get_daily_points(day):
-    daily = Action.query.filter(Action.finish_time == action).all()
+    completed = Action.query.filter(Action.finish_date == day).all()
+    return sum([item.points for item in completed])
 
