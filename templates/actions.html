@@ -30,7 +30,7 @@
   {% endif %}
   <ul class="twelve columns">
   {% for day, points in week %}
-    {{ day }}: {{ points }}
+    {{ day|reldate }}: {{ points }}
   {% endfor %}
   {% for action in actions %}
       <li>
