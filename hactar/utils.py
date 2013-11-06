@@ -1,5 +1,6 @@
 """Various helper functions used by hactar"""
 from datetime import date
+import calendar
 
 def parse_iso8601(text):
     """Parse an iso 8601 string, must be in extended format, currently only
@@ -7,17 +8,20 @@ def parse_iso8601(text):
     parts = text.split('-')
     if len(parts) < 1:
         raise ValueError('date %s is invalid')
-    else:
+    elif len(parts) == 3:
+        first = date(int(parts[0]), int(parts[1]), int(parts[2]))
+        last = first
+    elif len(parts) == 2:
         year = int(parts[0])
-        accuracy = 'year'
-    if len(parts) > 1:
         month = int(parts[1])
-        accuracy = 'month'
+        first = date(year, month, 1)
+        days = calendar.monthrange(year, month)[1]
+        last = date(year, month, days)
+    elif len(parts) == 1:
+        year = int(parts[0])
+        first = date(year, 1, 1)
+        last = date(year, 12, 31)
     else:
-        month = 1
-    if len(parts) > 2:
-        day = int(parts[2])
-        accuracy = 'day'
-    else:
-        day = 1
-    return date(year, month, day), accuracy
+        raise ValueError('too many parts in iso 8601 date')
+
+    return first, last 
