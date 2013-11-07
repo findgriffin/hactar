@@ -171,7 +171,6 @@ class TestActionApi(BaseActionTest):
         rv1 = self.client.post('/api/actions', data=dict( what=self.text1,
         ), follow_redirects=True)
         self.check_action_json(rv1, self.text0, new=True, last=1)
-        self.assertEquals(rv1.json, 3)
         self.check_action_json(rv1, self.text1)
         rv2 = self.client.post('/api/actions', data=dict( what=self.text2,
         ), follow_redirects=True)
