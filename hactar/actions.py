@@ -215,6 +215,7 @@ def last_weeks_points(today=None):
     return week
     
 def get_daily_points(day):
-    completed = Action.query.filter(Action.finish_date == day).all()
+    next_day = day+tdelta(days=1)
+    completed = Action.query.filter(Action.finish_time.between(day, next_day))
     return sum([item.points for item in completed])
 
