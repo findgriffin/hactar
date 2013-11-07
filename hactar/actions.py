@@ -51,9 +51,9 @@ def actions_handler():
     if finish:
         f_start, f_end = parse_iso8601(finish)
         query.filter(f_end >= Action.finish_date >= f_start)
-    query.order_by(Action.modified.desc())
+    query = query.order_by(Action.modified.desc())
     if not terms and not finish:
-        query.limit(10)
+        query = query.limit(10)
     return query, terms
 
 
