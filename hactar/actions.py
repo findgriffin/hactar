@@ -50,7 +50,8 @@ def actions_handler():
         terms = False
     if finish:
         f_start, f_end = parse_iso8601(finish)
-        query.filter(f_end >= Action.finish_date >= f_start)
+        current_app.logger.debug('getting actions finished between %s and %s' % (f_start, f_end))
+        query = query.filter(Action.finish_time.between(f_start, f_end))
     query = query.order_by(Action.modified.desc())
     if not terms and not finish:
         query = query.limit(10)

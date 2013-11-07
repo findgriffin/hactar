@@ -171,6 +171,7 @@ class TestActionApi(BaseActionTest):
         rv1 = self.client.post('/api/actions', data=dict( what=self.text1,
         ), follow_redirects=True)
         self.check_action_json(rv1, self.text0, new=True, last=1)
+        self.assertEquals(rv1.json, 3)
         self.check_action_json(rv1, self.text1)
         rv2 = self.client.post('/api/actions', data=dict( what=self.text2,
         ), follow_redirects=True)
@@ -236,6 +237,28 @@ class TestActionApi(BaseActionTest):
         self.check_action_json(rv5, self.text1, last=2)
         self.assertEqual(len(json.loads(rv5.data)['actions']), 1)
         rv6 = self.client.get('/api/actions?q=another', follow_redirects=True)
+        self.assertEqual(len(json.loads(rv6.data)['actions']), 2)
+
+    def test_search_by_finish(self):
+        self.login()
+        # add 3 actions to get us started
+        rv0 = self.client.post('/api/actions', data=dict(what=self.text0,
+            finish='2013-09-11'), follow_redirects=True)
+        rv1 = self.client.post('/api/actions', data=dict(what=self.text1,
+            finish='2013-08-12'), follow_redirects=True)
+        rv2 = self.client.post('/api/actions', data=dict(what=self.text2, 
+            finish='2013-09-30'), follow_redirects=True)
+        rv3 = self.client.get('/api/actions?finish=2013', follow_redirects=True)
+        self.check_action_json(rv3, self.text0, last=1)
+        self.check_action_json(rv3, self.text1, last=2)
+        self.check_action_json(rv3, self.text2, last=3)
+        rv4 = self.client.get('/api/actions?finish=2013-09-11', follow_redirects=True)
+        self.check_action_json(rv4, self.text0, last=1)
+        self.assertEqual(len(json.loads(rv4.data)['actions']), 1)
+        rv5 = self.client.get('/api/actions?finish=2013-08-12', follow_redirects=True)
+        self.check_action_json(rv5, self.text1, last=2)
+        self.assertEqual(len(json.loads(rv5.data)['actions']), 1)
+        rv6 = self.client.get('/api/actions?finish=2013-09', follow_redirects=True)
         self.assertEqual(len(json.loads(rv6.data)['actions']), 2)
 
     def test_update_search(self):
