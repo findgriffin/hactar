@@ -9,6 +9,7 @@ from flask import current_app, request, session, redirect, url_for, abort, \
      render_template, flash, jsonify, get_flashed_messages
 
 from hactar.models import Action, db
+from hactar.utils import parse_iso8601
 
 DAYFIRST = True
 
@@ -39,12 +40,21 @@ def actions_handler():
     if request.method == 'POST':
         post_actions()
     terms = request.args.get('q')
+    finish = request.args.get('finish')
     if terms:
-        alist = search_actions(terms)
+        current_app.logger.debug('looking for memes with terms: %s' % terms)
+        query = Action.search_query(terms)
     else:
-        alist = get_actions()
+        # this produces an SAWarning when db is empty (empty sequence)
+        query = Action.query
         terms = False
-    return alist, terms
+    if finish:
+        f_start, f_end = parse_iso8601(finish)
+        query.filter(f_end >= Action.finish_date >= f_start)
+    query.order_by(Action.modified.desc())
+    if not terms and not finish:
+        query.limit(10)
+    return query, terms
 
 
 @current_app.route('/api/actions/<int:action>', methods=['GET', 'POST', 'DELETE'])
@@ -130,18 +140,6 @@ def post_actions():
             flash('action with that URI or description already exists')
         else:
             abort(500)
-
-def search_actions(terms):
-    """Return a query with the memes containing terms"""
-    current_app.logger.debug('looking for memes with terms: %s' % terms)
-    filtered = Action.search_query(terms)
-    return filtered.order_by(Action.modified.desc())
-
-def get_actions():
-    """Get the latest actions"""
-# this produces an SAWarning when db is empty (empty sequence)
-    return Action.query.order_by(Action.modified.desc()).limit(10)
-
 
 def update_action(action):
     """Update a action (i.e. implement an edit to a action)"""
