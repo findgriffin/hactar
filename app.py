@@ -16,6 +16,7 @@ with app.app_context():
     import hactar.errors
     import hactar.memes
     import hactar.actions
+    import hactar.points
     import hactar.filters
     import hactar.login
 

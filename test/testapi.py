@@ -286,3 +286,43 @@ class TestActionApi(BaseActionTest):
         rv1 = self.client.post('/api/actions/%s' % (int(action_id)-10), 
             data=dict(why=self.text1), follow_redirects=True)
         self.assertEquals(rv1.status_code, 404)
+
+class TestPointsApi(BaseActionTest):
+    count = 0
+
+    def add_completed_task(self, date, points):
+        self.count += 1
+        self.client.post('/api/actions',
+            data=dict(what='action %s' % self.count,
+                finish=date, points=points), follow_redirects=True)
+
+    def test_blank(self):
+        day0s = u'2013-09-05'
+        day0f = u'2013-09-06'
+        rv0 = self.client.get('/api/points/%s' % day0s)
+        self.assertEqual(rv0.json, {'start': day0s, 'end': day0f, 'points': 0})
+
+    def test_points_oneday(self):
+        """Test adding points (with api)"""
+        self.login()
+        day0s = u'2013-09-05'
+        day0f = u'2013-09-06'
+        self.add_completed_task(day0s, 5)
+        self.add_completed_task(day0s, 7)
+        self.add_completed_task(day0s, -4)
+        rv0 = self.client.get('/api/points/2013-09-5')
+        self.assertEqual(rv0.json, {'start': day0s, 'end': day0f, 'points': 8})
+
+    def test_points_multiday(self):
+        """Test adding points (with api)"""
+        self.login()
+        day0 = u'2013-09-05'
+        day1 = u'2013-09-06'
+        day2 = u'2013-09-07'
+        self.add_completed_task(day0, 5)
+        self.add_completed_task(day0, 7)
+        self.add_completed_task(day1, 4)
+        rv0 = self.client.get('/api/points/2013-09-5')
+        self.assertEqual(rv0.json, {'start': day0, 'end': day1, u'points': 12})
+        rv1 = self.client.get('/api/points/2013-09-6')
+        self.assertEqual(rv1.json, {'start': day1, 'end': day2, u'points': 4})
