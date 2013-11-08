@@ -55,11 +55,11 @@ def actions_handler():
         current_app.logger.debug('getting actions finished between %s and %s' % (f_start, f_end))
         query = query.filter(Action.finish_time.between(f_start, f_end))
     if start:
-        f_start, f_end = parse_iso8601(finish)
+        f_start, f_end = parse_iso8601(start)
         current_app.logger.debug('getting actions finished between %s and %s' % (f_start, f_end))
         query = query.filter(Action.start_time.between(f_start, f_end))
     if due:
-        f_start, f_end = parse_iso8601(finish)
+        f_start, f_end = parse_iso8601(due)
         current_app.logger.debug('getting actions finished between %s and %s' % (f_start, f_end))
         query = query.filter(Action.due.between(f_start, f_end))
     query = query.order_by(Action.modified.desc())
