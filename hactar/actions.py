@@ -41,6 +41,8 @@ def actions_handler():
         post_actions()
     terms = request.args.get('q')
     finish = request.args.get('finish')
+    start = request.args.get('start')
+    due = request.args.get('due')
     if terms:
         current_app.logger.debug('looking for memes with terms: %s' % terms)
         query = Action.search_query(terms)
@@ -52,6 +54,14 @@ def actions_handler():
         f_start, f_end = parse_iso8601(finish)
         current_app.logger.debug('getting actions finished between %s and %s' % (f_start, f_end))
         query = query.filter(Action.finish_time.between(f_start, f_end))
+    if start:
+        f_start, f_end = parse_iso8601(finish)
+        current_app.logger.debug('getting actions finished between %s and %s' % (f_start, f_end))
+        query = query.filter(Action.start_time.between(f_start, f_end))
+    if due:
+        f_start, f_end = parse_iso8601(finish)
+        current_app.logger.debug('getting actions finished between %s and %s' % (f_start, f_end))
+        query = query.filter(Action.due.between(f_start, f_end))
     query = query.order_by(Action.modified.desc())
     if not terms and not finish:
         query = query.limit(10)
