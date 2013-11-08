@@ -2,9 +2,9 @@
 import json
 from dateutil.parser import parse
 
-from base import BaseApi
+from base import BaseMemeTest, BaseActionTest
 
-class TestApi(BaseApi):
+class TestMemeApi(BaseMemeTest):
 
     # testing functions
     def test_empty_db(self):
@@ -152,3 +152,137 @@ class TestApi(BaseApi):
         self.assertTrue(checked > added)
         rv2 = self.client.get('/api/memes?q=duper', follow_redirects=True)
         self.check_meme_json(rv2, self.uri0, self.desc0, last=False)
+
+class TestActionApi(BaseActionTest):
+
+    # testing functions
+    def test_empty_db(self):
+        """Start with a blank database (via api)."""
+        rv = self.client.get('/api/actions', follow_redirects=True)
+        self.assertEquals(rv.status_code, 200)
+        self.assertEquals({'actions': [], 'flashes': []}, json.loads(rv.data))
+
+    def test_add_action(self):
+        """Test adding actions (with api)"""
+        self.login()
+        rv0 = self.client.post('/api/actions', data=dict(what=self.text0), 
+                follow_redirects=True)
+        self.check_action_json(rv0, self.text0)
+        rv1 = self.client.post('/api/actions', data=dict( what=self.text1,
+        ), follow_redirects=True)
+        self.check_action_json(rv1, self.text0, new=True, last=1)
+        self.check_action_json(rv1, self.text1)
+        rv2 = self.client.post('/api/actions', data=dict( what=self.text2,
+        ), follow_redirects=True)
+        self.check_action_json(rv2, self.text0, new=True, last=1)
+        self.check_action_json(rv2, self.text1, new=True, last=2)
+        self.check_action_json(rv2, self.text2)
+        extra =['four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'
+                'eleven', 'twelve', 'thirteen', 'fourteen'] 
+        for num in extra:
+            self.client.post('/api/actions', data=dict(what='event %s' % num), 
+                    follow_redirects=True)
+        rv3 = self.client.get('/api/actions', follow_redirects=True)
+        rjson = json.loads(rv3.data)
+        self.assertEqual(len(rjson['actions']), 10)
+
+    def test_add_blank(self):
+        """Test adding actions (with api)"""
+        self.login()
+        rv0 = self.client.post('/api/actions', data=dict(what=''), 
+                follow_redirects=True)
+#       self.check_action_json(rv0, self.text0)
+        cant_add = u'Action text must not be blank'
+        self.assertEqual(rv0.status_code, 200)
+        self.assertEqual(rv0.json, {'flashes': [cant_add], 'actions': []})
+        rv1 = self.client.post('/api/actions', data=dict(what=self.text1,
+        ), follow_redirects=True)
+
+    def test_delete(self):
+        """Test deleting a action (with api)"""
+        self.login()
+        rv0 = self.client.post('/api/actions', data=dict(what=self.text0), 
+                follow_redirects=True)
+        action_id = self.check_action_json(rv0, self.text0)
+        rv1 = self.client.delete('/api/actions/%s' % action_id)
+        self.assertEquals(rv1.status_code, 200)
+        self.assertEquals(json.loads(rv1.data), 
+                {unicode(action_id): u'deleted', 'flashes': [u'action deleted']})
+        rv2 = self.client.get('/api/actions', follow_redirects=True)
+        self.assertEquals(rv2.status_code, 200)
+        self.assertEquals({u'actions': [], u'flashes': []}, json.loads(rv2.data))
+        # try to delete it again
+        rv4 = self.client.delete('/api/actions/%s' % action_id, data=dict(
+            delete='Delete'), follow_redirects=True)
+        self.assertEquals(rv4.status_code, 404)
+
+    def test_search(self):
+        self.login()
+        # add 3 actions to get us started
+        rv0 = self.client.post('/api/actions', data=dict( what=self.text0),
+            follow_redirects=True)
+        rv1 = self.client.post('/api/actions', data=dict( what=self.text1),
+            follow_redirects=True)
+        rv2 = self.client.post('/api/actions', data=dict( what=self.text2),
+            follow_redirects=True)
+        rv3 = self.client.get('/api/actions?q=event', follow_redirects=True)
+        self.check_action_json(rv3, self.text0, last=1)
+        self.check_action_json(rv3, self.text1, last=2)
+        self.check_action_json(rv3, self.text2, last=3)
+        rv4 = self.client.get('/api/actions?q=cool', follow_redirects=True)
+        self.check_action_json(rv4, self.text0, last=1)
+        self.assertEqual(len(json.loads(rv4.data)['actions']), 1)
+        rv5 = self.client.get('/api/actions?q=fruity', follow_redirects=True)
+        self.check_action_json(rv5, self.text1, last=2)
+        self.assertEqual(len(json.loads(rv5.data)['actions']), 1)
+        rv6 = self.client.get('/api/actions?q=another', follow_redirects=True)
+        self.assertEqual(len(json.loads(rv6.data)['actions']), 2)
+
+    def test_search_by_finish(self):
+        self.login()
+        # add 3 actions to get us started
+        rv0 = self.client.post('/api/actions', data=dict(what=self.text0,
+            finish='2013-09-11'), follow_redirects=True)
+        rv1 = self.client.post('/api/actions', data=dict(what=self.text1,
+            finish='2013-08-12'), follow_redirects=True)
+        rv2 = self.client.post('/api/actions', data=dict(what=self.text2, 
+            finish='2013-09-30'), follow_redirects=True)
+        rv3 = self.client.get('/api/actions?finish=2013', follow_redirects=True)
+        self.check_action_json(rv3, self.text0, last=1)
+        self.check_action_json(rv3, self.text1, last=2)
+        self.check_action_json(rv3, self.text2, last=3)
+        rv4 = self.client.get('/api/actions?finish=2013-09-11', follow_redirects=True)
+        self.check_action_json(rv4, self.text0, last=1)
+        self.assertEqual(len(json.loads(rv4.data)['actions']), 1)
+        rv5 = self.client.get('/api/actions?finish=2013-08-12', follow_redirects=True)
+        self.check_action_json(rv5, self.text1, last=2)
+        self.assertEqual(len(json.loads(rv5.data)['actions']), 1)
+        rv6 = self.client.get('/api/actions?finish=2013-09', follow_redirects=True)
+        self.assertEqual(len(json.loads(rv6.data)['actions']), 2)
+
+    def test_update_search(self):
+        self.login()
+        rv0 = self.client.post('/api/actions', data=dict(what=self.text0),
+            follow_redirects=True)
+        action_id = self.check_action_json(rv0, self.text0)
+        rv1 = self.client.post('/api/actions/%s' % action_id, 
+                data=dict(why=self.text1), follow_redirects=True)
+        rjson = json.loads(rv1.data)
+        rjson_action = rjson[unicode(action_id)]
+        self.assertEquals(rv1.status_code, 200)
+        self.assertEquals(rjson['flashes'], [u'action successfully modified'])
+        self.assertEquals(rjson_action['text'], self.text1)
+        modified = parse(rjson_action['modified'])
+        added = parse(rjson_action['added'])
+        self.assertTrue(modified > added)
+        rv2 = self.client.get('/api/actions?q=event', follow_redirects=True )
+        self.check_action_json(rv2, self.text1, last=1, new=False)
+
+    def test_update_fail(self):
+        self.login()
+        rv0 = self.client.post('/api/actions', data=dict( what=self.text0),
+            follow_redirects=True) 
+        action_id = self.check_action_json(rv0, self.text0)
+        rv1 = self.client.post('/api/actions/%s' % (int(action_id)-10), 
+            data=dict(why=self.text1), follow_redirects=True)
+        self.assertEquals(rv1.status_code, 404)

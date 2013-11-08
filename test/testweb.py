@@ -7,9 +7,9 @@
 import json
 
 from app import app
-from base import BaseApi
+from base import BaseMemeTest, BaseActionTest, get_day
 
-class TestWeb(BaseApi):
+class TestMemeWeb(BaseMemeTest):
 
     # testing functions
 
@@ -17,6 +17,8 @@ class TestWeb(BaseApi):
         """Start with a blank database."""
         rv = self.client.get('/memes')
         self.assertIn('No memes here so far', rv.data)
+        rv = self.client.get('/actions')
+        self.assertIn('No actions here so far', rv.data)
 
     def test_login_logout(self):
         """Make sure login and logout works"""
@@ -204,3 +206,70 @@ def hello_world():
         ), follow_redirects=True)
         self.check_meme(rv, self.uri0, 'This is a description:')
         self.assertIn(code_html, rv.data)
+
+class TestActionWeb(BaseActionTest):
+
+    def test_add_actions(self):
+        """Test adding some actions with flask"""
+        self.login()
+        rv0 = self.client.post('/actions', data=dict(what=self.text0), 
+                follow_redirects=True)
+        self.check_action(rv0, self.text0, 1)
+        rv1 = self.client.post('/actions', data=dict(what=self.text1), 
+                follow_redirects=True)
+        self.check_action(rv1, self.text0, 1)
+        self.check_action(rv1, self.text1, 2)
+        rv2 = self.client.post('/actions', data=dict(what=self.text2), 
+                follow_redirects=True)
+        self.check_action(rv2, self.text0, 1)
+        self.check_action(rv2, self.text1, 2)
+        self.check_action(rv2, self.text2, 3)
+
+    def test_add_task(self):
+        self.login()
+        rv0 = self.client.post('/actions', data=dict(what=self.text0,
+            due=get_day(1, 1)), follow_redirects=True)
+        self.check_action(rv0, self.text0, 1)
+        self.assertIn('due: tomorrow', rv0.data)
+
+    def test_add_event(self):
+        self.login()
+        rv0 = self.client.post('/actions', data=dict(what=self.text0,
+            start=get_day(-1), finish=get_day(1, 1)), 
+            follow_redirects=True)
+        self.check_action(rv0, self.text0, 1)
+        self.assertIn('started: yesterday', rv0.data)
+        self.assertIn('finished: tomorrow', rv0.data)
+
+    def test_add_just_finished(self):
+        self.login()
+        rv0 = self.client.post('/actions', data=dict(what=self.text0,
+            just_finished='just_finished', points=10), 
+            follow_redirects=True)
+        self.check_action(rv0, self.text0, 1)
+        self.assertIn('finished: just now', rv0.data)
+        self.assertIn('points: 10', rv0.data)
+
+    def test_update_search(self):
+        """Test updating and then searching for a action"""
+        self.login()
+        rv0 = self.client.post('/actions', data=dict(what=self.text0),
+            follow_redirects=True)
+        action_id = self.check_action(rv0, self.text0, 1)
+        rv1 = self.client.post('/actions/%s' % action_id, 
+                data=dict(what=self.text1), follow_redirects=True)
+        self.check_action(rv1, self.text1, 1, new=False,
+            flash='action successfully modified')
+        rv2 = self.client.get('/actions?q=event', follow_redirects=True)
+        self.assertNotIn(self.text0, rv2.data)
+        self.assertIn(self.text1, rv2.data)
+
+    def test_update_fail(self):
+        """Test updating a nonexistant action"""
+        self.login()
+        rv0 = self.client.post('/actions', data=dict(what=self.text0),
+            follow_redirects=True)
+        action_id = 2
+        rv1 = self.client.post('/actions/%s' % action_id, data=dict(what=self.text1),
+                follow_redirects=True)
+        self.assertEquals(404, rv1.status_code)

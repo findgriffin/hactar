@@ -62,6 +62,35 @@ class TestFilters(TestCase):
         self.assertEqual('just now', filt(time.time()))
         self.assertEqual('just now', filt(now_really))
         
+    def test_future_reldatetime(self):
+        strf = '%H:%M %d/%m/%Y'
+        now = datetime.datetime(2013, 9, 1, 11, 53)
+        date0 = datetime.datetime(2015, 9, 2, 11, 53)
+        date1 = datetime.datetime(2014, 10, 6, 6, 5)
+        date2 = datetime.datetime(2013, 10, 27, 6, 5)
+        date3 = datetime.datetime(2013, 9, 1, 20, 45)
+        date4 = datetime.datetime(2013, 9, 1, 12, 6)
+        date5 = datetime.datetime(2013, 9, 1, 11, 54)
+        date6 = datetime.datetime(2013, 9, 2, 11, 53)
+        filt = filters._jinja2_filter_reldatetime
+        self.assertEqual('in 2 years', filt(date0, now))
+        self.assertEqual('in 13 months', filt(date1, now))
+        self.assertEqual('in 55 days', filt(date2, now))
+        self.assertEqual('in 9 hours', filt(date3, now))
+        self.assertEqual('in 13 minutes', filt(date4, now))
+        self.assertEqual('in 60 seconds', filt(date5, now))
+        self.assertEqual('tomorrow', filt(date6, now))
+        now_really = datetime.datetime.now()
+        self.assertEqual('just now', filt(time.time()))
+        self.assertEqual('just now', filt(now_really))
+
+    def test_reldate(self):
+        date = datetime.datetime(2013, 11, 05, 11, 40).date()
+        filt = filters._jinja2_filter_reldate
+        self.assertEqual(filt(date), 'Tue  5')
+        self.assertEqual(filt(date, 'short'), 'Tue')
+        self.assertEqual(filt(date, 'long'), 'Tuesday 05/11')
+
     def test_status(self):
         stat = filters._jinja2_filter_status 
         self.assertEqual(stat(200), 'OK')

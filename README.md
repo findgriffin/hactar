@@ -26,9 +26,9 @@ The tasks that alice needs to complete are:
  1. add meme/bookmark with text/description
  2. search meme by topic/keywords
 
-Betty likes to keep to-do lists. Hactar will accept various events and
-attempt to prioritise them for betty. Events can have information attached to
-them, due dates and contain subevents.
+Betty likes to keep to-do lists. Hactar will accept various actions and
+attempt to prioritise them for betty. Actions can have information attached to
+them, due dates and contain subactions.
 
 Data model
 ----------
@@ -37,16 +37,22 @@ Information is stored in a **meme**. A meme is defined by a title OR URL a meme
 also MUST have a description (in markdown). Data must be unique, i.e. each url
 or title may only exist once.
 
-TODO and action items are represented by a **event**. Events can have due
-dates, start times finish times etc.
+Information is only useful if it leads to *outcomes* in the real world, hence
+hactar stores **actions**. Actions are anything that the user does, has done,
+is doing or will do. 
 
-In the future **memes** and **events** may be linked (eg. events may have
-sub-events).
+The various fields of an action can often be left blank. 
 
-Feature Priority
-----------------
- 1. Demagicify whoosh integration
- 1. Implement upgrading of db schema
- 1. Implement asynchronous/background tasks
- 1. Implement tasks (using google calendar API)
- 1. AJAXify (eg. update web page status)
+A **task** is an action with a 'due' date/time.
+
+* A task is completed when it has a finish time that is in the past.
+* A task may also have a start time, points or priority.
+
+An **event** is an action with a start and/or finish time and has 3 states:
+
+* latent
+* ongoing
+* completed
+
+In the future **memes** and **actions** may be linked (eg. actions may have
+sub-actions).

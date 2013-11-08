@@ -9,3 +9,4 @@ tornado
 google-api-python-client
 nose
 celery-with-redis
+flask-migrate

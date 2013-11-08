@@ -4,6 +4,8 @@ Database models (using SQLAlchemy) for the hactar application.
 from hashlib import sha1
 import time
 import datetime
+from dateutil.parser import parse
+from datetime import datetime as dtime
 import json
 
 import markdown
@@ -121,6 +123,7 @@ class Meme(db.Model):
                 value = unicode(getattr(self, field.name))
                 self._dict[field.name] = value
         return self._dict
+
 def is_uri(uri):
     """ Check that the given URI is valid. Raise an exception if it is not."""
     parts = uri.split('/')
@@ -135,28 +138,117 @@ def is_uri(uri):
         return None
     return uri
 
-class Event(db.Model):
+class Action(db.Model):
     """ A event, something that the user may do or has done."""
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     text = db.Column(db.Text())
     added = db.Column(db.DateTime())
     modified = db.Column(db.DateTime())
-    due = db.Column(db.DateTime())
-    start_time = db.Column(db.DateTime())
-    finish_time = db.Column(db.DateTime())
-    priority = db.Column(db.Integer())
+    due = db.Column(db.DateTime(), nullable=True)
+    start_time = db.Column(db.DateTime(), nullable=True)
+    finish_time = db.Column(db.DateTime(), nullable=True)
+    priority = db.Column(db.Integer(), default=0)
+    points = db.Column(db.Integer(), default=0)
     _dict = None
+    __searchable__ = ['text']
     
-    def __init__(self, text, due=None, start_time=None, finish_time=None):
+    def __init__(self, text, due=None, start=None, finish=None,
+            priority=None, points=None):
+        if not text:
+            raise ValueError('Action text must not be blank')
         self.text = text
         if due is not None:
-            self.due = int(due)
-        if start_time is not None:
-            self.start_time = int(start_time)
-        if finish_time is not None:
-            self.finish_time = int(finish_time)
-        self.added = time.time()
+            self.due = due
+        if start is not None:
+            self.start_time = start
+        if finish is not None:
+            self.finish_time = finish
+        if priority is not None:
+            self.priority = int(priority)
+        if points is not None:
+            self.points = int(points)
+        self.added = datetime.datetime.now()
         self.modified = self.added
+
+    @property
+    def is_task(self):
+        """Check if this event is a task (has a due time)"""
+        return self.due is not None
+
+    @property
+    def is_event(self):
+        """Check if this event is a task (has a due time)"""
+        if self.start_time or self.finish_time:
+            return True
+        else:
+            return False
+            
+    @property
+    def completed(self):
+        """Return None if there is no finish time."""
+        return self.finish_time is not None
+
+    @property
+    def duration(self):
+        """The time this action took, or None if that cannot be determined."""
+        if self.start_time is not None and self.finish_time is not None:
+            return self.finish_time - self.start_time
+        else:
+            return None
+
+    @property
+    def latent(self):
+        if self.start_time is None:
+            if self.is_task and not self.completed:
+                return True
+            else:
+                return False
+        elif self.start_time > dtime.now():
+            return True
+        else:
+            return False
+
+    @property
+    def ongoing(self):
+        """Return true if this event has started but not finished."""
+        now = dtime.now()
+        if self.latent or self.completed or not self.is_task:
+            return False
+        else:
+            return True
+
+    @property
+    def completed(self):
+        """Return true if there is a finish time and it is in the past."""
+        now = dtime.now()
+        if self.finish_time is None:
+            return False
+        elif self.finish_time < now:
+            return True
+        else:
+            return False
+
+    @property
+    def start_date(self):
+        if self.start_time is not None:
+            return self.start_time.date()
+        else:
+            return None
+
+    @property
+    def finish_date(self):
+        if self.finish_time is not None:
+            return self.finish_time.date()
+        else:
+            return None
+
+    @property
+    def due_date(self):
+        if self.due_time is not None:
+            return self.due_time.date()
+        else:
+            return None
+
 
     def dictify(self):
         """Return a dictionary representation of this event"""
@@ -165,11 +257,13 @@ class Event(db.Model):
             for field in self.__mapper__.columns:
                 value = unicode(getattr(self, field.name))
                 self._dict[field.name] = value
+        return self._dict
 
 def setup(context, session=None):
     """Setup the whooshalchemy index service"""
     conf = json.load(open('config.json', 'rb'))[context]
     index_service = IndexService(conf, session=session)
     index_service.register_class(Meme)
+    index_service.register_class(Action)
     return index_service
 

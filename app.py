@@ -1,7 +1,10 @@
 """Put the hactar app together"""
+import os
 
 from sqlalchemy.exc import IntegrityError
 from flask import Flask, redirect, session, g, url_for
+from flask.ext.script import Manager
+from flask.ext.migrate import Migrate, MigrateCommand
 from hactar.models import db, setup
 
 # create our little application :)
@@ -12,6 +15,7 @@ app.config.from_envvar('HACTAR_SETTINGS', silent=True)
 with app.app_context():
     import hactar.errors
     import hactar.memes
+    import hactar.actions
     import hactar.filters
     import hactar.login
 
@@ -28,15 +32,17 @@ def home():
 def init_db(app):
     """ Delete the existing database and create new database from scratch."""
     import shutil
-    db_path = app.config['SQLALCHEMY_DATABASE_URI']
     whoosh = app.config['WHOOSH_BASE']
     try:
         shutil.rmtree(whoosh)
     except OSError:
         pass
     import os
-    if os.path.exists(db_path):
-        os.remove(db_path)
+    if os.path.exists(db_path(app)):
+        os.remove(db_path(app))
+    db_dir = os.path.sep.join(db_path(app).split(os.path.sep)[:-1])
+    if not os.path.exists(db_dir):
+        os.mkdir(db_dir)
     with app.test_request_context():
         db.create_all()
 
@@ -50,10 +56,20 @@ def config_app(application):
     application.config.update(conf)
     application.celery_running = False
 
+def db_path(app):
+    uri = app.config['SQLALCHEMY_DATABASE_URI']
+    return uri.replace('sqlite:///', '')
+
 if __name__ == '__main__':
     config_app(app)
     import sys
     if sys.argv[-1] == 'clean':
         init_db(app)
+        exit(0)
+    elif not os.path.exists(db_path(app)):
+        init_db(app)
+    migrate = Migrate(app, db)
+    manager = Manager(app)
+    manager.add_command('db', MigrateCommand)
     app.index_service = setup('develop')
-    app.run()
+    manager.run()

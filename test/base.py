@@ -5,6 +5,8 @@ import re
 import json
 import time
 from dateutil.parser import parse
+from datetime import datetime as dtime
+from datetime import timedelta as tdelta
 
 from flask.ext.testing import TestCase
 
@@ -15,14 +17,6 @@ class BaseTest(TestCase):
 
     _multiprocess_can_split = False
 
-    uri0 = 'http://foobar.com'
-    desc0 = 'a description of foobar'
-    uri1 = 'http://stuff.com/somewhere'
-    desc1 = 'a description of stuff'
-    uri2 = 'http://more.com/somewhere'
-    desc2 = 'a description of more'
-    title0 = 'A title not a URI'
-    desc4 = 'a description of this "not-URI"'
 
     def create_app(self):
         import json
@@ -60,7 +54,17 @@ class BaseTest(TestCase):
     def logout(self):
         return self.client.get('/logout', follow_redirects=True)
 
-class BaseApi(BaseTest):
+
+class BaseMemeTest(BaseTest):
+
+    uri0 = 'http://foobar.com'
+    desc0 = 'a description of foobar'
+    uri1 = 'http://stuff.com/somewhere'
+    desc1 = 'a description of stuff'
+    uri2 = 'http://more.com/somewhere'
+    desc2 = 'a description of more'
+    title0 = 'A title not a URI'
+    desc4 = 'a description of this "not-URI"'
 
     def check_meme(self, resp, uri, desc, new=True, flash=None, isuri=True,
             logged_in=True):
@@ -121,3 +125,73 @@ class BaseApi(BaseTest):
             self.assertTrue(modified > added, 
                     msg='modified not later than added %s' % meme)
         return meme_id
+
+class BaseActionTest(BaseTest):
+    text0 = 'cool event'
+    text1 = 'another fruity event'
+    text2 = 'yet another event'
+
+    def get_action(self, rjson, action_id):
+        for action in rjson['actions']:
+            if int(action['id']) == action_id:
+                return action
+        raise AssertionError('action: %s not in response:%s' % (action_id, rjson))
+
+    def check_action_json(self, resp, text, new=True, flash=None,
+            last=True):
+        rjson = json.loads(resp.data)
+        if flash:
+            self.assertEquals([flash], rjson['flashes'])
+        elif last is True and new:
+            msg = u'New action was successfully added'
+            self.assertEquals([msg], rjson['flashes'])
+        self.assertEqual(resp.status_code, 200)
+        # 1 is True evaluates to False, do it this way so we can pass in an int
+        # in place of last=False when required.
+        if last is True: # this 
+            action_id = len(rjson['actions'])
+            action = rjson['actions'][0]
+            self.assertIsInstance(action, dict, msg='no action found in: %s' %
+                    rjson)
+            self.assertEqual(action_id, int(action['id']))
+        elif type(last) == int:
+            action_id = last
+            action = self.get_action(rjson, action_id)
+        else:
+            raise ValueError('need an action_id or last=True')
+        self.assertEquals(len(action.keys()), 9)
+        self.assertEquals(text, action['text'])
+        now = int(time.time())
+        added = parse(action['added'])
+        modified = parse(action['modified'])
+        if new:
+            self.assertEquals(added, modified, 
+                    msg='created / modified times are not equal %s' % action)
+        else:
+            self.assertTrue(modified > added, 
+                    msg='modified not later than added %s' % action)
+        return action_id
+
+    def check_action(self, resp, text, action_id, new=True,
+            flash=None, logged_in=True):
+        if flash:
+            self.assertIn(flash, resp.data)
+        elif new:
+            msg = 'New action was successfully added'
+            self.assertIn(msg, resp.data)
+        now = 'just now'
+        self.assertEqual(resp.status_code, 200)
+        if logged_in:
+            self.assertIn('<ahref="/actions/%s">(edit)</a>' % action_id,
+                    re.sub('\s+', '', resp.data))
+        else:
+            self.assertIn('<ahref="/actions/%s">(view)</a>' % action_id,
+                    re.sub('\s+', '', resp.data))
+        self.assertIn('<h4>%s' % text, resp.data)
+        self.assertIn('%s</small></h4>' % now, resp.data)
+        return action_id
+
+def get_day(days=0, hours=0):
+    today = dtime.now()
+    newday = today+tdelta(days=days, hours=hours)
+    return newday
