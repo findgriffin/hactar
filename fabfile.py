@@ -150,5 +150,5 @@ def rebuild():
 
 def upgrade_db():
     with cd(CONF['ROOT']):
-        python app.py db upgrade
+        cuisine.run('python app.py db upgrade')
 
