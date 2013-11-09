@@ -16,7 +16,9 @@ fileConfig(config.config_file_name)
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 from flask import current_app
-config.set_main_option('sqlalchemy.url', current_app.config.get('SQLALCHEMY_DATABASE_URI'))
+import json
+db_uri = json.load(open('config.json', 'rb'))['production']['SQLALCHEMY_DATABASE_URI']
+config.set_main_option('sqlalchemy.url', db_uri )
 target_metadata = current_app.extensions['migrate'].metadata
 
 # other values from the config, defined by the needs of env.py,
