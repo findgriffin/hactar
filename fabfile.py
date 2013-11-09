@@ -148,3 +148,7 @@ def rebuild():
     release()
     
 
+def upgrade_db():
+    with cd(CONF['ROOT']):
+        python app.py db upgrade
+
