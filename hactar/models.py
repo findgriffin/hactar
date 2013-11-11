@@ -11,6 +11,9 @@ import json
 import markdown
 from flask.ext.sqlalchemy import SQLAlchemy
 from whooshalchemy import IndexService
+import pytz
+
+TIMEZONE = 'Australia/Sydney'
 
 
 URI_SCHEMES = [ 'aaa', 'aaas', 'about', 'acap', 'cap', 'cid', 'crid', 'data',
@@ -150,6 +153,7 @@ class Action(db.Model):
     priority = db.Column(db.Integer(), default=0)
     points = db.Column(db.Integer(), default=0)
     _dict = None
+    _tz = None
     __searchable__ = ['text']
     
     def __init__(self, text, due=None, start=None, finish=None,
@@ -158,16 +162,22 @@ class Action(db.Model):
             raise ValueError('Action text must not be blank')
         self.text = text
         if due is not None:
-            self.due = due
+            if due.tzinfo is None:
+                due = due.replace(tzinfo=self.tz)
+            self.due = due.astimezone(pytz.utc)
         if start is not None:
-            self.start_time = start
+            if start.tzinfo is None:
+                start = start.replace(tzinfo=self.tz)
+            self.start_time = start.astimezone(pytz.utc)
         if finish is not None:
-            self.finish_time = finish
+            if finish.tzinfo is None:
+                finish = finish.replace(tzinfo=self.tz)
+            self.finish_time = finish.astimezone(pytz.utc)
         if priority is not None:
             self.priority = int(priority)
         if points is not None:
             self.points = int(points)
-        self.added = datetime.datetime.now()
+        self.added = datetime.datetime.utcnow()
         self.modified = self.added
 
     @property
@@ -229,6 +239,28 @@ class Action(db.Model):
             return False
 
     @property
+    def start_local(self):
+        if self.start_time is not None:
+            return self.start_time.replace(self.tz)
+        else:
+            return None
+
+    @property
+    def finish_local(self):
+        if self.finish_time is not None:
+            return self.finish_time.replace(self.tz)
+        else:
+            return None
+
+    @property
+    def due_local(self):
+        if self.due is not None:
+            return self.due.replace(self.tz)
+        else:
+            return None
+
+
+    @property
     def start_date(self):
         if self.start_time is not None:
             return self.start_time.date()
@@ -244,10 +276,16 @@ class Action(db.Model):
 
     @property
     def due_date(self):
-        if self.due_time is not None:
-            return self.due_time.date()
+        if self.due is not None:
+            return self.due.date()
         else:
             return None
+
+    @property
+    def tz(self):
+        if self._tz is None:
+            self._tz = pytz.timezone(TIMEZONE)
+        return self._tz
 
 
     def dictify(self):

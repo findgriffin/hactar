@@ -130,7 +130,7 @@ class TestActionModel(TestCase):
         start_date = get_day()
         action0 = Action(self.text, due=due_date, start=start_date)
         self.assertEqual(action0.text, self.text)
-        self.assertEqual(action0.due, due_date)
+        self.assertEqual(action0.due_local, due_date)
         self.assertEqual(action0.start_time, start_date)
         self.assertEqual(action0.finish_time, None)
         self.assertEqual(action0.is_task, True)
@@ -156,3 +156,6 @@ class TestActionModel(TestCase):
         self.assertEqual(action0.duration, tdelta(days=1))
         self.assertEqual(action0.latent, False)
         self.assertEqual(action0.ongoing, False)
+
+    def test_timezones(self):
+        due_date = 4

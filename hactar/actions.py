@@ -7,11 +7,13 @@ from dateutil.parser import parse
 from sqlalchemy.exc import IntegrityError
 from flask import current_app, request, session, redirect, url_for, abort, \
      render_template, flash, jsonify, get_flashed_messages
+import pytz
 
 from hactar.models import Action, db
 from hactar.utils import parse_iso8601
 
 DAYFIRST = True
+TIMEZONE = 'Australia/Sydney'
 
 @current_app.route('/api/actions', methods=['GET', 'POST'])
 def api_actions():
@@ -122,6 +124,9 @@ def post_actions():
             if len(form[name]) < 3:
                 raise KeyError # dont give to parser if it's not a datetime
             newargs[name] = parse(form[name], dayfirst=DAYFIRST)
+            if new_date.tzinfo == None:
+                tz = pytz.timezone(TIMEZONE)
+                newargs[name] = newargs[name].replace(tzinfo=tz)
         except ValueError:
             flash('Unable to parse %s date: %s' % (name, form[name]))
         except KeyError as err:
