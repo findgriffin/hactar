@@ -1,9 +1,14 @@
 from unittest import TestCase
 import logging
 from datetime import timedelta as tdelta
+from dateutil.parser import parse
+
+import pytz
 
 from hactar.models import Meme, Action, is_uri
 from test.base import get_day
+
+TIMEZONE = pytz.timezone('Australia/Sydney')
 
 class TestMemeModel(TestCase):
     _multiprocess_can_split = True
@@ -130,7 +135,7 @@ class TestActionModel(TestCase):
         start_date = get_day()
         action0 = Action(self.text, due=due_date, start=start_date)
         self.assertEqual(action0.text, self.text)
-        self.assertEqual(action0.due_local, due_date)
+        self.assertEqual(action0.due, due_date)
         self.assertEqual(action0.start_time, start_date)
         self.assertEqual(action0.finish_time, None)
         self.assertEqual(action0.is_task, True)
@@ -147,9 +152,9 @@ class TestActionModel(TestCase):
         action0 = Action(self.text, due=due_date, start=start_date,
                 finish=finish_date)
         self.assertEqual(action0.text, self.text)
-        self.assertEqual(action0.due, due_date)
-        self.assertEqual(action0.start_time, start_date)
-        self.assertEqual(action0.finish_time, finish_date)
+        self.assertEqual(action0.due_date, due_date)
+        self.assertEqual(action0.start_date, start_date)
+        self.assertEqual(action0.finish_date, finish_date)
         self.assertEqual(action0.is_task, True)
         self.assertEqual(action0.is_event, True)
         self.assertEqual(action0.completed, True)
@@ -158,4 +163,18 @@ class TestActionModel(TestCase):
         self.assertEqual(action0.ongoing, False)
 
     def test_timezones(self):
-        due_date = 4
+        due_time = parse('2013-11-09T15:30')
+        start_time = parse('2013-11-09T14:00')
+        finish_time = parse('2013-11-09T16:00')
+        action0 = Action(self.text, due=due_time, start=start_time,
+                finish=finish_time)
+        self.assertEqual(action0.start_local, aslocal(start_time))
+        self.assertEqual(action0.finish_local, aslocal(finish_time))
+        self.assertEqual(action0.due_local, aslocal(due_time))
+        self.assertEqual(action0.start_time, aslocal(start_time))
+        self.assertEqual(action0.finish_time, aslocal(finish_time))
+        self.assertEqual(action0.due, aslocal(due_time))
+
+def aslocal(unaware):
+    return unaware.replace(tzinfo=TIMEZONE)
+

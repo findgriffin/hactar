@@ -77,7 +77,7 @@ class Meme(db.Model):
             raise ValueError('Description must be more than one word.')
 
         self.text = text
-        self.added = datetime.datetime.now()
+        self.added = datetime.datetime.utcnow()
         self.modified = self.added
         self.id = self.getid()
 
@@ -213,7 +213,7 @@ class Action(db.Model):
                 return True
             else:
                 return False
-        elif self.start_time > dtime.now():
+        elif self.start_time > dtime.utcnow().replace(tzinfo=pytz.utc):
             return True
         else:
             return False
@@ -221,7 +221,7 @@ class Action(db.Model):
     @property
     def ongoing(self):
         """Return true if this event has started but not finished."""
-        now = dtime.now()
+        now = dtime.utcnow()
         if self.latent or self.completed or not self.is_task:
             return False
         else:
@@ -230,7 +230,7 @@ class Action(db.Model):
     @property
     def completed(self):
         """Return true if there is a finish time and it is in the past."""
-        now = dtime.now()
+        now = dtime.utcnow()
         if self.finish_time is None:
             return False
         elif self.finish_time < now:
@@ -241,21 +241,21 @@ class Action(db.Model):
     @property
     def start_local(self):
         if self.start_time is not None:
-            return self.start_time.replace(self.tz)
+            return self.start_time.astimezone(self.tz)
         else:
             return None
 
     @property
     def finish_local(self):
         if self.finish_time is not None:
-            return self.finish_time.replace(self.tz)
+            return self.finish_time.astimezone(self.tz)
         else:
             return None
 
     @property
     def due_local(self):
         if self.due is not None:
-            return self.due.replace(self.tz)
+            return self.due.astimezone(self.tz)
         else:
             return None
 
@@ -263,21 +263,21 @@ class Action(db.Model):
     @property
     def start_date(self):
         if self.start_time is not None:
-            return self.start_time.date()
+            return self.start_local.date()
         else:
             return None
 
     @property
     def finish_date(self):
         if self.finish_time is not None:
-            return self.finish_time.date()
+            return self.finish_local.date()
         else:
             return None
 
     @property
     def due_date(self):
         if self.due is not None:
-            return self.due.date()
+            return self.due_local.date()
         else:
             return None
 
