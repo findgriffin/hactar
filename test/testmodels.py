@@ -152,9 +152,9 @@ class TestActionModel(TestCase):
         action0 = Action(self.text, due=due_date, start=start_date,
                 finish=finish_date)
         self.assertEqual(action0.text, self.text)
-        self.assertEqual(action0.due_date, due_date)
-        self.assertEqual(action0.start_date, start_date)
-        self.assertEqual(action0.finish_date, finish_date)
+        self.assertEqual(action0.due, due_date)
+        self.assertEqual(action0.start_time, start_date)
+        self.assertEqual(action0.finish_time, finish_date)
         self.assertEqual(action0.is_task, True)
         self.assertEqual(action0.is_event, True)
         self.assertEqual(action0.completed, True)

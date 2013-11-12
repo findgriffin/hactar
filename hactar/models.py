@@ -77,7 +77,7 @@ class Meme(db.Model):
             raise ValueError('Description must be more than one word.')
 
         self.text = text
-        self.added = datetime.datetime.utcnow()
+        self.added = utcnow()
         self.modified = self.added
         self.id = self.getid()
 
@@ -177,7 +177,7 @@ class Action(db.Model):
             self.priority = int(priority)
         if points is not None:
             self.points = int(points)
-        self.added = datetime.datetime.utcnow()
+        self.added = utcnow()
         self.modified = self.added
 
     @property
@@ -213,7 +213,7 @@ class Action(db.Model):
                 return True
             else:
                 return False
-        elif self.start_time > dtime.utcnow().replace(tzinfo=pytz.utc):
+        elif self.start_time > utcnow():
             return True
         else:
             return False
@@ -221,7 +221,7 @@ class Action(db.Model):
     @property
     def ongoing(self):
         """Return true if this event has started but not finished."""
-        now = dtime.utcnow()
+        now = utcnow()
         if self.latent or self.completed or not self.is_task:
             return False
         else:
@@ -230,7 +230,7 @@ class Action(db.Model):
     @property
     def completed(self):
         """Return true if there is a finish time and it is in the past."""
-        now = dtime.utcnow()
+        now = utcnow()
         if self.finish_time is None:
             return False
         elif self.finish_time < now:
@@ -305,3 +305,5 @@ def setup(context, session=None):
     index_service.register_class(Action)
     return index_service
 
+def utcnow():
+    return dtime.utcnow().replace(tzinfo=pytz.utc)

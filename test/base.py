@@ -193,6 +193,6 @@ class BaseActionTest(BaseTest):
         return action_id
 
 def get_day(days=0, hours=0):
-    today = dtime.now().replace(tzinfo=pytz.utc)
+    today = dtime.utcnow().replace(tzinfo=pytz.utc)
     newday = today+tdelta(days=days, hours=hours)
     return newday
