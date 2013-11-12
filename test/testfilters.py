@@ -2,11 +2,13 @@ import shutil
 import datetime
 import time
 
+import pytz
 from flask.ext.testing import TestCase
 
 from app import db, app
 import hactar.filters as filters
 import hactar.models
+from hactar.utils import utcnow
 
 class TestFilters(TestCase):
     _multiprocess_can_split = True
@@ -37,16 +39,16 @@ class TestFilters(TestCase):
 
     def test_datetime(self):
         strf = '%H:%M %d/%m/%Y'
-        adate = datetime.datetime(2011, 8, 06, 06, 05)
+        adate = datetime.datetime(2011, 8, 06, 06, 05, tzinfo=pytz.utc)
         filt = filters._jinja2_filter_datetime
         self.assertEqual(adate.strftime(strf), filt(adate))
-        now = datetime.datetime.now()
+        now = utcnow()
         self.assertEqual(now.strftime(strf), filt(time.time()))
         self.assertEqual(now.strftime(strf), filt(now))
 
     def test_reldatetime(self):
         strf = '%H:%M %d/%m/%Y'
-        now = datetime.datetime(2013, 9, 30, 11, 53)
+        now = datetime.datetime(2013, 9, 30, 11, 53, tzinfo=pytz.utc)
         date0 = datetime.datetime(2011, 8, 6, 6, 5)
         date1 = datetime.datetime(2012, 8, 6, 6, 5)
         date2 = datetime.datetime(2013, 8, 6, 6, 5)
@@ -64,7 +66,7 @@ class TestFilters(TestCase):
         
     def test_future_reldatetime(self):
         strf = '%H:%M %d/%m/%Y'
-        now = datetime.datetime(2013, 9, 1, 11, 53)
+        now = datetime.datetime(2013, 9, 1, 11, 53, tzinfo=pytz.utc)
         date0 = datetime.datetime(2015, 9, 2, 11, 53)
         date1 = datetime.datetime(2014, 10, 6, 6, 5)
         date2 = datetime.datetime(2013, 10, 27, 6, 5)

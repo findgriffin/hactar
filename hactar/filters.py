@@ -32,7 +32,7 @@ def _jinja2_filter_reldatetime(date, now=None):
     if type(date) == datetime.datetime:
         dtime = date
     elif type(date) in (float, int):
-        dtime = datetime.datetime.fromtimestamp(date)
+        dtime = datetime.datetime.fromtimestamp(date).replace(tzinfo=pytz.utc)
     else:
         return 'unknown type %s for date: %s' % (type(date), date)
     delta = now - dtime
