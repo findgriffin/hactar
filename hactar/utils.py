@@ -3,7 +3,7 @@ from datetime import date
 from datetime import timedelta as tdelta
 import calendar
 
-def parse_iso8601(text):
+def parse_iso8601(text, tz=None):
     """Parse an iso 8601 string, must be in extended format, currently only
     supports dates."""
     parts = text.split('-')

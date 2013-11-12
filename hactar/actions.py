@@ -53,15 +53,15 @@ def actions_handler():
         query = Action.query
         terms = False
     if finish:
-        f_start, f_end = parse_iso8601(finish)
+        f_start, f_end = parse_iso8601(finish, tz=TIMEZONE)
         current_app.logger.debug('getting actions finished between %s and %s' % (f_start, f_end))
         query = query.filter(Action.finish_time.between(f_start, f_end))
     if start:
-        f_start, f_end = parse_iso8601(start)
+        f_start, f_end = parse_iso8601(start, tz=TIMEZONE)
         current_app.logger.debug('getting actions finished between %s and %s' % (f_start, f_end))
         query = query.filter(Action.start_time.between(f_start, f_end))
     if due:
-        f_start, f_end = parse_iso8601(due)
+        f_start, f_end = parse_iso8601(due, tz=TIMEZONE)
         current_app.logger.debug('getting actions finished between %s and %s' % (f_start, f_end))
         query = query.filter(Action.due.between(f_start, f_end))
     query = query.order_by(Action.modified.desc())
@@ -124,7 +124,7 @@ def post_actions():
             if len(form[name]) < 3:
                 raise KeyError # dont give to parser if it's not a datetime
             newargs[name] = parse(form[name], dayfirst=DAYFIRST)
-            if new_date.tzinfo == None:
+            if newargs[name].tzinfo == None:
                 tz = pytz.timezone(TIMEZONE)
                 newargs[name] = newargs[name].replace(tzinfo=tz)
         except ValueError:
