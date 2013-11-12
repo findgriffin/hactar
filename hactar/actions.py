@@ -13,7 +13,7 @@ from hactar.models import Action, db
 from hactar.utils import parse_iso8601
 
 DAYFIRST = True
-TIMEZONE = 'Australia/Sydney'
+TIMEZONE = pytz.timezone('Australia/Sydney')
 
 @current_app.route('/api/actions', methods=['GET', 'POST'])
 def api_actions():
@@ -125,8 +125,7 @@ def post_actions():
                 raise KeyError # dont give to parser if it's not a datetime
             newargs[name] = parse(form[name], dayfirst=DAYFIRST)
             if newargs[name].tzinfo == None:
-                tz = pytz.timezone(TIMEZONE)
-                newargs[name] = newargs[name].replace(tzinfo=tz)
+                newargs[name] = newargs[name].replace(tzinfo=TIMEZONE)
         except ValueError:
             flash('Unable to parse %s date: %s' % (name, form[name]))
         except KeyError as err:
@@ -184,11 +183,11 @@ def update_content(action):
         current_app.logger.debug('updating content: %s' % action)
         first = Action.query.filter(Action.id == int(action)).first_or_404()
         if 'status_code' in form:
-            first.checked = dtime.now()
+            first.checked = utcnow()
             for key, val in form.items():
                 setattr(first, key, val)
         elif 'why' in form:
-            first.modified = dtime.now()
+            first.modified = utcnow()
             first.text = unicode(form['why'])
         else:
             abort(400)
@@ -222,7 +221,7 @@ def delete_action(action):
 def last_weeks_points(today=None):
     """Returns today's points and the last 7 days (i.e. 8 days total)"""
     if today is None:
-        today = dtime.now().date()
+        today = utcnow().astimezone(TIMEZONE).date()
     week = []
     for i in xrange(8):
         day = today-tdelta(days=i)

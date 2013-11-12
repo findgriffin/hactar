@@ -1,7 +1,9 @@
 """Various helper functions used by hactar"""
 from datetime import date
 from datetime import timedelta as tdelta
+from datetime import datetime as dtime
 import calendar
+import pytz
 
 def parse_iso8601(text, tz=None):
     """Parse an iso 8601 string, must be in extended format, currently only
@@ -26,3 +28,6 @@ def parse_iso8601(text, tz=None):
         raise ValueError('too many parts in iso 8601 date')
 
     return first, last 
+
+def utcnow():
+    return dtime.utcnow().replace(tzinfo=pytz.utc)

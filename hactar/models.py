@@ -13,6 +13,8 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from whooshalchemy import IndexService
 import pytz
 
+from hactar.utils import utcnow
+
 TIMEZONE = 'Australia/Sydney'
 
 
@@ -304,6 +306,3 @@ def setup(context, session=None):
     index_service.register_class(Meme)
     index_service.register_class(Action)
     return index_service
-
-def utcnow():
-    return dtime.utcnow().replace(tzinfo=pytz.utc)

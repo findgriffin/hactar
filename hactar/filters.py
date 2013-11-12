@@ -2,6 +2,8 @@
 import datetime
 from httplib import responses
 
+from hactar.models import utcnow
+
 from flask import current_app
 
 YEAR  = 365.256
@@ -26,7 +28,7 @@ def _jinja2_filter_reldatetime(date, now=None):
     """Application wide datetime filter. We allow passing in a different value
     of 'now' to assist # with testing"""
     if now == None:
-        now = datetime.datetime.now()
+        now = utcnow()
     if type(date) == datetime.datetime:
         dtime = date
     elif type(date) in (float, int):
