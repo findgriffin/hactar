@@ -2,8 +2,9 @@
 import datetime
 from httplib import responses
 
-from hactar.models import utcnow
+import pytz
 
+from hactar.models import utcnow
 from flask import current_app
 
 YEAR  = 365.256
@@ -11,6 +12,8 @@ MONTH = YEAR/12.0
 
 WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday' , 'Thursday' , 'Friday',
 'Saturday' , 'Sunday']
+
+local = pytz.timezone('Australia/Sydney')
 
 @current_app.template_filter('datetime')
 def _jinja2_filter_datetime(date, fmt=None):
@@ -28,11 +31,15 @@ def _jinja2_filter_reldatetime(date, now=None):
     """Application wide datetime filter. We allow passing in a different value
     of 'now' to assist # with testing"""
     if now == None:
-        now = utcnow()
+        now = utcnow().replace(tzinfo=pytz.utc)
     if type(date) == datetime.datetime:
-        dtime = date
+        if not date.tzinfo:
+            raise ValueError('can only compare datetimes with timezone')
+        else:
+            dtime = date
     elif type(date) in (float, int):
-        dtime = datetime.datetime.fromtimestamp(date).replace(tzinfo=pytz.utc)
+        dtime = datetime.datetime.utcfromtimestamp(date).replace(tzinfo=pytz.utc)
+        dtime = dtime.astimezone(local)
     else:
         return 'unknown type %s for date: %s' % (type(date), date)
     delta = now - dtime
