@@ -10,7 +10,7 @@ from flask import current_app, request, session, redirect, url_for, abort, \
 import pytz
 
 from hactar.models import Action, db
-from hactar.utils import parse_iso8601
+from hactar.utils import parse_iso8601, utcnow
 
 DAYFIRST = True
 TIMEZONE = pytz.timezone('Australia/Sydney')
@@ -138,7 +138,7 @@ def post_actions():
     if 'points' in form:
         newargs['points'] = int(form['points'])
     if 'just_finished' in form and 'finish' not in newargs:
-        newargs['finish'] = dtime.now()
+        newargs['finish'] = utcnow()
     try:
         newaction = Action(**newargs)
         db.session.add(newaction)
@@ -166,7 +166,7 @@ def update_action(action):
     try:
         first = Action.query.filter(Action.id == int(action)).first_or_404()
         first.text = text
-        first.modified = dtime.now()
+        first.modified = utcnow()
         db.session.commit()
         flash('action successfully modified')
     except ValueError as err:
