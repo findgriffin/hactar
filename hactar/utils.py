@@ -26,6 +26,8 @@ def parse_iso8601(text, tz=None):
         last = date(year+1, 1, 1)
     else:
         raise ValueError('too many parts in iso 8601 date')
+    first = dtime(first.year, first.month, first.day, 0, 0, 0, 0, tzinfo=tz)
+    last = dtime(last.year, last.month, last.day, 23, 59, 59, 999999, tzinfo=tz)
 
     return first, last 
 
