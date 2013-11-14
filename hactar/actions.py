@@ -183,11 +183,14 @@ def update_content(action):
         current_app.logger.debug('updating content: %s' % action)
         first = Action.query.filter(Action.id == int(action)).first_or_404()
         if 'status_code' in form:
-            first.checked = utcnow()
+            first.checked = dtime.utcnow()
             for key, val in form.items():
+                if hasattr(val, 'tzinfo') and val.tzinfo == None:
+                    val = val.replace(tzinfo=TIMEZONE)
                 setattr(first, key, val)
         elif 'why' in form:
-            first.modified = utcnow()
+            # why does making modified timezone aware here cause exception?
+            first.modified = dtime.utcnow()
             first.text = unicode(form['why'])
         else:
             abort(400)
