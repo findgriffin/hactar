@@ -12,6 +12,9 @@ import markdown
 from flask.ext.sqlalchemy import SQLAlchemy
 from whooshalchemy import IndexService
 
+import pytz
+
+TIMEZONE = 'Australia/Sydney'
 
 URI_SCHEMES = [ 'aaa', 'aaas', 'about', 'acap', 'cap', 'cid', 'crid', 'data',
 'dav', 'dict', 'dns', 'fax', 'file', 'ftp', 'geo', 'go', 'gopher', 'h323',
@@ -149,6 +152,7 @@ class Action(db.Model):
     finish_time = db.Column(db.DateTime(), nullable=True)
     priority = db.Column(db.Integer(), default=0)
     points = db.Column(db.Integer(), default=0)
+    _tz = None
     _dict = None
     __searchable__ = ['text']
     
@@ -249,8 +253,26 @@ class Action(db.Model):
         else:
             return None
 
+    def dt(self, name, tz):
+        unaware = getattr(self, name)
+        if not hasattr(unaware, 'tzinfo'):
+            raise ValueError('%s is not a datetime it is a %s' % (name,
+                type(unaware)))
+        aware = unaware.replace(tzinfo=pytz.utc)
+        if tz == 'utc':
+            return aware
+        elif tz == 'local':
+            return aware.astimezone(self.tz)
 
-    def dictify(self):
+    @property
+    def tz(self):
+        if self._tz is None:
+            self._tz = pytz.timezone(TIMEZONE)
+        return self._tz
+
+
+
+def dictify(self):
         """Return a dictionary representation of this event"""
         if not type(self._dict) == dict:
             self._dict = {}
