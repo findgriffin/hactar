@@ -270,16 +270,14 @@ class Action(db.Model):
             self._tz = pytz.timezone(TIMEZONE)
         return self._tz
 
-
-
-def dictify(self):
-        """Return a dictionary representation of this event"""
-        if not type(self._dict) == dict:
-            self._dict = {}
-            for field in self.__mapper__.columns:
-                value = unicode(getattr(self, field.name))
-                self._dict[field.name] = value
-        return self._dict
+    def dictify(self):
+            """Return a dictionary representation of this event"""
+            if not type(self._dict) == dict:
+                self._dict = {}
+                for field in self.__mapper__.columns:
+                    value = unicode(getattr(self, field.name))
+                    self._dict[field.name] = value
+            return self._dict
 
 def setup(context, session=None):
     """Setup the whooshalchemy index service"""
