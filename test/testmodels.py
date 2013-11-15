@@ -172,3 +172,12 @@ class TestActionModel(TestCase):
         self.assertEqual(action0.dt('due', 'local').hour, 16)
         self.assertEqual(action0.dt('start_time', 'local').day, 2)
         self.assertEqual(action0.dt('finish_time', 'local').hour, 16)
+
+    def test_metadata_timezones(self):
+        action0 = Action(self.text)
+        hour_utc = dtime.utcnow().hour
+        hour_local = dtime.now().hour
+        self.assertEqual(action0.dt('added', 'utc').hour, hour_utc)
+        self.assertEqual(action0.dt('modified', 'utc').hour, hour_utc)
+        self.assertEqual(action0.dt('added', 'local').hour, hour_local)
+        self.assertEqual(action0.dt('modified', 'local').hour, hour_local)
