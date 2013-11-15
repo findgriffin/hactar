@@ -1,12 +1,13 @@
 """Views to handle individual and collections of memes"""
+from datetime import datetime as dtime
 
 from sqlalchemy.exc import IntegrityError
 from flask import current_app, request, session, redirect, url_for, abort, \
      render_template, flash, jsonify, get_flashed_messages
 
+from hactar.utils import utcnow
 from hactar.models import Meme, db
 from hactar.scraper import crawl
-from datetime import datetime as dtime
 
 @current_app.route('/api/memes', methods=['GET', 'POST'])
 def api_memes():
@@ -132,7 +133,7 @@ def update_meme(meme):
     try:
         first = Meme.query.filter(Meme.id == int(meme)).first_or_404()
         first.text = text
-        first.modified = dtime.now()
+        first.modified = utcnow()
         db.session.commit()
         if current_app.celery_running and first.uri:
             current_app.logger.debug('submitting to celery: %s' % first)
@@ -153,11 +154,11 @@ def update_content(meme):
         current_app.logger.debug('updating content: %s' % meme)
         first = Meme.query.filter(Meme.id == int(meme)).first_or_404()
         if 'status_code' in form:
-            first.checked = dtime.now()
+            first.checked = utcnow()
             for key, val in form.items():
                 setattr(first, key, val)
         elif 'why' in form:
-            first.modified = dtime.now()
+            first.modified = utcnow()
             first.text = unicode(form['why'])
         else:
             abort(400)
