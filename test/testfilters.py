@@ -3,6 +3,7 @@ import datetime
 import time
 
 from flask.ext.testing import TestCase
+import pytz
 
 from app import db, app
 import hactar.filters as filters
@@ -82,6 +83,33 @@ class TestFilters(TestCase):
         self.assertEqual('tomorrow', filt(date6, now))
         now_really = datetime.datetime.now()
         self.assertEqual('just now', filt(time.time()))
+        self.assertEqual('just now', filt(now_really))
+
+    def test_utcreldatetime(self):
+        strf = '%H:%M %d/%m/%Y'
+        tz = pytz.timezone('Australia/Sydney')
+        now = datetime.datetime(2013, 9, 30, 11, 53, tzinfo=tz)
+        now_utc = now.astimezone(pytz.utc)
+        now_naive = now_utc.replace(tzinfo=None)
+        date2 = datetime.datetime(2013, 8, 6, 6, 5, tzinfo=tz)
+        date3 = datetime.datetime(2013, 9, 30, 3, 5, tzinfo=tz)
+        date4 = datetime.datetime(2013, 9, 30, 11, 40, tzinfo=tz)
+        date4_utc = date4.astimezone(pytz.utc)
+        date4_naive = date4_utc.replace(tzinfo=None)
+        filt = filters._jinja2_filter_utcreldatetime
+        self.assertEqual('55 days ago', filt(date2, now))
+        self.assertEqual('9 hours ago', filt(date3, now))
+        few_mins = '13 minutes ago'
+        self.assertEqual(few_mins, filt(date4, now))
+        self.assertEqual(few_mins, filt(date4, now_utc))
+        self.assertEqual(few_mins, filt(date4, now_naive))
+        self.assertEqual(few_mins, filt(date4_utc, now))
+        self.assertEqual(few_mins, filt(date4_utc, now_utc))
+        self.assertEqual(few_mins, filt(date4_utc, now_naive))
+        self.assertEqual(few_mins, filt(date4_naive, now))
+        self.assertEqual(few_mins, filt(date4_naive, now_utc))
+        self.assertEqual(few_mins, filt(date4_naive, now_naive))
+        now_really = tz.localize(datetime.datetime.now())
         self.assertEqual('just now', filt(now_really))
 
     def test_reldate(self):
