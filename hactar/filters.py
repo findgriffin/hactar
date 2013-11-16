@@ -3,6 +3,7 @@ import datetime
 from httplib import responses
 
 from flask import current_app
+import pytz
 
 YEAR  = 365.256
 MONTH = YEAR/12.0
@@ -20,6 +21,19 @@ def _jinja2_filter_datetime(date, fmt=None):
     if not fmt:
         fmt = '%H:%M %d/%m/%Y'
     return dtime.strftime(fmt)
+
+@current_app.template_filter('utcreldatetime')
+def _jinja2_filter_utcreldatetime(date, now=None):
+    if hasattr(date, 'tzinfo'):
+        if date.tzinfo is not None:
+            date = date.astimezone(pytz.utc).replace(tzinfo=None)
+    else:
+        raise ValueError('can only accept datetime objects')
+    if now is None:
+        now = datetime.datetime.utcnow()
+    elif hasattr(now, 'tzinfo') and now.tzinfo is not None:
+        now = now.astimezone(pytz.utc).replace(tzinfo=None)
+    return _jinja2_filter_reldatetime(date, now=now)
 
 @current_app.template_filter('reldatetime')
 def _jinja2_filter_reldatetime(date, now=None):
