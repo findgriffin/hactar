@@ -371,3 +371,16 @@ class TestPointsApi(BaseActionTest):
         self.assertEqual(rv0.json, {'start': day0, 'end': day1, u'points': 5})
         rv1 = self.client.get('/api/points/2013-09-6')
         self.assertEqual(rv1.json, {'start': day1, 'end': day2, u'points': 11})
+
+    def test_points_monthly(self):
+        self.login()
+        day0 = u'2013-09-01'
+        day1 = u'2013-09-06'
+        day2 = u'2013-10-01'
+        self.add_completed_task(day0, 5)
+        self.add_completed_task(day1, 7)
+        self.add_completed_task(day1, 4)
+        self.add_completed_task(day2, 4)
+        rv0 = self.client.get('/api/points/2013-09')
+        self.assertEqual(rv0.json, {'start': day0, 'end': day2, u'points': 16})
+
