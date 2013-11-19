@@ -3,7 +3,10 @@ from datetime import date
 from datetime import time
 from datetime import timedelta as tdelta
 from datetime import datetime as dtime
+from dateutil.parser import parse
 import calendar
+
+DAYFIRST = True
 
 def parse_iso8601(text):
     """Parse an iso 8601 string, must be in extended format, currently only
@@ -40,3 +43,23 @@ def parse_iso8601(text):
 def combine_dt(date, time):
     return dtime(date.year, date.month, date.day, time.hour, time.minute,
             time.second)
+
+def parse_user_dt(text):
+    parsed = parse(text, dayfirst=DAYFIRST)
+    if is_only_date(text):
+        return parsed.replace(hour=12)
+    else:
+        return parsed
+
+def is_only_date(text):
+    """Return true if text only contains date and no time information."""
+    if 'T' in text:
+        return False
+    elif ' ' in text:
+        return False
+    elif 'am' in text.lower():
+        return False
+    elif 'pm' in text.lower():
+        return False
+    return True
+

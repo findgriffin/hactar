@@ -24,4 +24,10 @@ class TestUtil(TestCase):
         self.assertRaises(ValueError, func, '2013-hi-03')
         self.assertRaises(ValueError, func, '2013-13-03')
         self.assertRaises(ValueError, func, 'garbled')
+
+    def test_parse_user_dt(self):
+        func = utils.parse_user_dt
+        self.assertEqual(func('1/2/2013'), (dt(2013, 2, 1, 12, 0)))
+        self.assertEqual(func('11 am 1/2/2013'), (dt(2013, 2, 1, 11, 0)))
+        self.assertEqual(func('19/10/13 9:30 pm'), (dt(2013, 10, 19, 21, 30)))
         
