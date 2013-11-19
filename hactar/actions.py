@@ -2,14 +2,13 @@
 
 from datetime import datetime as dtime
 from datetime import timedelta as tdelta
-from dateutil.parser import parse
 
 from sqlalchemy.exc import IntegrityError
 from flask import current_app, request, session, redirect, url_for, abort, \
      render_template, flash, jsonify, get_flashed_messages
 
 from hactar.models import Action, db
-from hactar.utils import parse_iso8601
+from hactar.utils import parse_iso8601, parse_user_dt
 
 DAYFIRST = True
 
@@ -121,7 +120,7 @@ def post_actions():
         try:
             if len(form[name]) < 3:
                 raise KeyError # dont give to parser if it's not a datetime
-            newargs[name] = parse(form[name], dayfirst=DAYFIRST)
+            newargs[name] = parse_user_dt(form[name])
         except ValueError:
             flash('Unable to parse %s date: %s' % (name, form[name]))
         except KeyError as err:
