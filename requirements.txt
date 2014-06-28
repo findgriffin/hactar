@@ -11,3 +11,4 @@ nose
 celery-with-redis
 flask-migrate
 dateutil
+python-dateutil
