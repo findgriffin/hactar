@@ -104,10 +104,16 @@ def post_memes():
         flash(err.message)
     except IntegrityError as err:
         db.session.rollback()
-        if 'primary key must be unique' in err.message.lower():
+        error1 = 'primary key must be unique' 
+        error2 = 'unique constraint failed'
+        msg = err.message.lower() 
+        if error1 in msg or error2 in msg:
             current_app.logger.debug("can't add duplicate meme: %s" % uri )
             flash('Meme with that URI or description already exists')
         else:
+            import pdb
+            pdb.set_trace()
+            current_app.logger.debug('IntegrityError: ' + err)
             abort(500)
 
 def search_memes(terms):
