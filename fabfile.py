@@ -3,13 +3,18 @@ import os
 import json
 import re
 import time
+import sys
 
 import cuisine
 from fabric.api import cd, env
 
+PROD = 'production'
+BETA = 'staging'
+
 CONF = json.load(open('config.json', 'rb'))['production']
-env.roledefs = {'production': ['vagrant@grumman'],
-                'staging': ['vagrant@roger'],
+DB_PATH = CONF['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
+env.roledefs = {PROD: ['vagrant@grumman'],
+                BETA: ['vagrant@roger'],
                 }
 
 def parent(location):
@@ -78,7 +83,7 @@ def test_config():
     paths.append
     for path in paths:
         cuisine.dir_ensure(CONF[path])
-    cuisine.dir_ensure(CONF["SQLALCHEMY_DATABASE_URI"].replace('sqlite:///', ''))
+    cuisine.file_ensure(DB_PATH)
     cuisine.file_ensure(CONF["SECRETS"])
 
 def test_running():
@@ -98,23 +103,31 @@ def backup_data(dest=None):
     if dest is None:
         dest = '.'
     cuisine.mode_local()
-    rsync = 'rsync -r --archive'
-    db_path = CONF['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
+    rsync = 'rsync -rv --archive'
     db_dest = os.path.join(dest, 'hactar.db')
     wh_dest = os.path.join(dest, 'whoosh')
-    cuisine.run('%s %s:%s %s' % (rsync, env.host_string, db_path, db_dest))
+    cuisine.run('%s %s:%s %s' % (rsync, env.host_string, DB_PATH, db_dest))
     cuisine.run('%s %s:%s %s' % (rsync, env.host_string, 
         CONF['WHOOSH_BASE'], wh_dest))
 
-def restore_data():
-    """Restore sql db and whoosh index from current dir, must be run with
-    mode_local"""
+def restore_data(source=None):
+    """Restore sql db and whoosh index from source (defaults to current dir,
+    must be run with mode_local"""
+    answer = raw_input("Restore data to %s?(yes/NO)\n" % ''.join(env.roles))
+    if not answer.startswith('yes'):
+        print 'exiting'
+        exit(0)
     cuisine.mode_local()
-    rsync = 'rsync -r --archive'
-    cuisine.run('%s hactar.db %s:%s' % (rsync, env.host_string, 
-        CONF['SQLALCHEMY_DATABASE_URI']))
-    cuisine.run('%s whoosh %s:%s' % (rsync, env.host_string, 
-        CONF['WHOOSH_BASE']))
+    if source is None:
+        source = '.'
+    rsync = 'rsync -rv --archive'
+    db_source = os.path.join(source, 'hactar.db')
+    wh_source = os.path.join(source, 'whoosh')
+    cmd1 = '%s %s %s:%s' % (rsync, db_source, env.host_string, DB_PATH)
+    cmd2 = '%s %s %s:%s' % (rsync, wh_source, env.host_string, 
+        CONF['WHOOSH_BASE'])
+    cuisine.run(cmd1)
+    cuisine.run(cmd2)
    
 def release():
     """Get the latest release of hactar (assumes local host will push to github
@@ -133,7 +146,7 @@ def release():
 
 def rebuild():
     cuisine.mode_local()
-    if 'production' in env.roles:
+    if PROD in env.roles:
         backup_data()
         cuisine.run('vagrant rebuild %s' % env.host_string)
     elif 'staging' in env.roles:

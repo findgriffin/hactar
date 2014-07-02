@@ -11,7 +11,8 @@ Vagrant.configure("2") do |config|
   config.vm.define "roger" do |roger|
     roger.vm.box = "roger"
     roger.vm.network :private_network, ip: "192.168.33.10"
-#   roger.vm.network "forwarded_port", guest: 80, host:8081
+    roger.vm.network "forwarded_port", guest: 80, host:8081
+    roger.vm.network "forwarded_port", guest: 8080, host:8082
     roger.vm.host_name = 'roger'
   end
   config.vm.provider :digital_ocean do |provider, override|
