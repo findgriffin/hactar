@@ -14,7 +14,7 @@ from whooshalchemy import IndexService
 
 import pytz
 
-TIMEZONE = 'Australia/Sydney'
+TIMEZONE = 'America/Los_Angeles'
 
 URI_SCHEMES = [ 'aaa', 'aaas', 'about', 'acap', 'cap', 'cid', 'crid', 'data',
 'dav', 'dict', 'dns', 'fax', 'file', 'ftp', 'geo', 'go', 'gopher', 'h323',

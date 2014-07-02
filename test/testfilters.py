@@ -87,7 +87,7 @@ class TestFilters(TestCase):
 
     def test_utcreldatetime(self):
         strf = '%H:%M %d/%m/%Y'
-        tz = pytz.timezone('Australia/Sydney')
+        tz = pytz.timezone('America/Los_Angeles')
         now = datetime.datetime(2013, 9, 30, 11, 53, tzinfo=tz)
         now_utc = now.astimezone(pytz.utc)
         now_naive = now_utc.replace(tzinfo=None)
